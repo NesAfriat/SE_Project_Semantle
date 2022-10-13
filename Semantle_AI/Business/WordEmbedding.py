@@ -1,6 +1,9 @@
 # Python program to generate word vectors using Word2Vec
 # Code from https://www.geeksforgeeks.org/python-word-embedding-using-word2vec/
 # importing all necessary modules
+from nltk.corpus import words
+import enchant
+
 from nltk.tokenize import sent_tokenize, word_tokenize
 import warnings
 import nltk
@@ -9,7 +12,7 @@ import gensim
 from gensim.models import Word2Vec
 
 
-class WordEmbeddeing:
+class WordEmbedding:
     def __init__(self):
         self.data=[]
 
@@ -30,13 +33,13 @@ class WordEmbeddeing:
         return model
 
     def get_similarity(self,model,word1,word2):
-        # Print results
         return model.wv.similarity(word1, word2)
 
     def words_to_data(self,file):
         #  Reads a words file
         sample = open(file,mode="r", encoding="utf-8")
         s = sample.read()
+        d = enchant.Dict("en_US")
         # Replaces escape character with space
         f = s.replace("\n", " ")
         # iterate through each sentence in the file
@@ -45,7 +48,8 @@ class WordEmbeddeing:
             temp = []
             # tokenize the sentence into words
             for j in word_tokenize(i):
-                temp.append(j.lower())
+                if d.check(j.lower()):
+                    temp.append(j.lower())
 
             self.data.append(temp)
 
