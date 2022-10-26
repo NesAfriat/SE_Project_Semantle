@@ -16,7 +16,7 @@ class Play:
         if os.path.isfile(path):
             return LM.load_from_file()
         else:
-            if os.path.isdir(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Trains"):
+            if os.path.isdir(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"):
                 return MT.train_new_model()
             else:
                 print(">> Unable to create model, Train files are missing.")

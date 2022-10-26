@@ -16,7 +16,7 @@ def train_new_model(dementions=100, model_type=1) -> Word2Vec:
     ignore = {".DS_Store", ".txt"}
     sentences = []
     print("\n\n\n\n========================  starting parse the source  ========================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Trains"
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
     for root, dirs, files in os.walk(path):
         for filename in files:
             if filename not in ignore:
