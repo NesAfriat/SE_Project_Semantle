@@ -1,9 +1,10 @@
 import os.path
 from pathlib import Path
+from decimal import Decimal
 
-from Business.GameHost import GameHost
-import Business.ModelTrainer as MT
-import Business.LoadModel as LM
+from Semantle_AI.Business.GameHost import GameHost
+import Semantle_AI.Business.ModelTrainer as MT
+import Semantle_AI.Business.LoadModel as LM
 
 
 class Play:
@@ -36,14 +37,14 @@ class Play:
                 if score == '-1':
                     print("Word is not in the vocabulary, Please try another words.")
                 else:
-                    print("The similarity of the words is: ", score)
+                    value = round(score*100, 2)
+                    print("The similarity of the words is: ", value)
             print("You won!")
         except ValueError:
             if str(ValueError) == "Train file not found.":
                 path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
                 print(f"Train file not found. \nplease add the file in the path: {path_trains}")
                 return
-
 
 
     # elif value == '3':

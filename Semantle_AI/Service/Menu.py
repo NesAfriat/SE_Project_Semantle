@@ -1,7 +1,7 @@
-from Business.GameHost import GameHost
-from Service.Play import Play
-import Business.ModelTrainer as WE
-import Business.LoadModel as LM
+from Semantle_AI.Business.GameHost import GameHost
+from Semantle_AI.Service.Play import Play
+import Semantle_AI.Business.ModelTrainer as WE
+import Semantle_AI.Business.LoadModel as LM
 from Play import Play
 
 model = []

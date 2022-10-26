@@ -15,16 +15,17 @@ def tokenize(text):
 def train_new_model(dementions=100, model_type=1) -> Word2Vec:
     ignore = {".DS_Store", ".txt"}
     sentences = []
-    print("\n\n\n\n========================  starting parse the source  ========================")
+    print("\n\n\n\n========================  creating the new model  ========================")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
+    print("\nparsing files and words")
     for root, dirs, files in os.walk(path):
         for filename in files:
             if filename not in ignore:
                 with open(os.path.join(root, filename), 'r', encoding='utf8') as rf:
                     text = rf.read()
                     sentences.extend(tokenize(text))
-    print(">>parsing ended.")
-    print(">>starting model training.")
+    print(">>parsing ended")
+    print(">>starting model training")
     model = gensim.models.Word2Vec(
         sentences,
         sg=model_type,  # skipgram, 0 for cbow
@@ -32,7 +33,7 @@ def train_new_model(dementions=100, model_type=1) -> Word2Vec:
         vector_size=dementions  # num of dementions
     )
     vocab = model.wv.key_to_index.keys()
-    print(">>model training finished.\n>>Saving model")
+    print(">>model training finished\n>>Saving model")
     # save the model to file
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
     model.save(path)
@@ -42,7 +43,7 @@ def train_new_model(dementions=100, model_type=1) -> Word2Vec:
 def train_existing_model(filename, model):
     sentences = []
     ignore = {".DS_Store", ".txt"}
-    print(">> starting parse the source.")
+    print(">> starting parse the source")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/"
     if filename == "":
         path = path + "Model.p"

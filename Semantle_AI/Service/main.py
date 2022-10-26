@@ -8,7 +8,7 @@
 
 
 # Press the green button in the gutter to run the script.
-from Service.Menu import Menu
+from Menu import Menu
 
 if __name__ == '__main__':
     menu = Menu()

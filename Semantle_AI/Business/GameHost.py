@@ -1,6 +1,6 @@
 import random
 
-from Business.Model import Model
+from Semantle_AI.Business.Model import Model
 
 
 class GameHost:
