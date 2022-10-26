@@ -12,14 +12,16 @@ class Play:
         pass
 
     def load_model(self):
-        path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
-        if os.path.isfile(path):
+        path_model = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
+        path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
+        if os.path.isfile(path_model):
             return LM.load_from_file()
         else:
-            if os.path.isdir(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"):
+            if os.path.isdir(path_trains):
                 return MT.train_new_model()
             else:
                 print(">> Unable to create model, Train files are missing.")
+
                 raise Exception("Train file not found.")
 
     def start_play_with_host_offline(self):
@@ -38,6 +40,8 @@ class Play:
             print("You won!")
         except ValueError:
             if str(ValueError) == "Train file not found.":
+                path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
+                print(f"Train file not found. \nplease add the file in the path: {path_trains}")
                 return
 
 
