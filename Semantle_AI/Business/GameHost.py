@@ -1,4 +1,6 @@
 import random
+from nltk.corpus import words
+
 
 from Semantle_AI.Business.Model import Model
 
@@ -14,7 +16,8 @@ class GameHost:
 
     def select_Word(self):
         range = len(self.vocabulary)
-        word = random.choice(self.vocabulary)
+        word_list = words.words()
+        word = random.choice(word_list)
         self.secret_word = word
 
     def check_word(self, word):
@@ -22,3 +25,9 @@ class GameHost:
             return -1
         else:
             return self.model.get_distance_of_word(self.secret_word, word)
+
+    def setWord(self, neww):
+        self.secret_word = neww
+
+    def in_vocab(self, neww):
+        return neww in self.vocabulary
