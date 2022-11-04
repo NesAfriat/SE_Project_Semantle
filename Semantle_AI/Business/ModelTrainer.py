@@ -43,17 +43,11 @@ def train_new_model(dementions=100, model_type=1) -> Word2Vec:
     vocab = model.wv.key_to_index.keys()
     print(">>model training finished\n>>Saving model")
     # save the model to file
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
-    model.save(path)
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.bin"
+    model.wv.save(path)
     print(">>Saving ended")
-    # instantiate the pca objects
-    print(">>instantiating pca components.")
-    pca = PCA(n_components=2)
-    print(">>instantiated, creating pca object of the model...")
-    # fit and transform the pca object
-    my_pca = pca.fit_transform(model.wv[vocab])
     print(">>done!")
-    return model, vocab , pca
+    return model, vocab
 
 def contains_number(string):
     return any(char.isdigit() for char in string)
