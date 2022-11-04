@@ -11,26 +11,20 @@ class Play:
 
     pca = None
 
-    def __init__(self):
-        pass
+    def __init__(self, model = None , vocabulary = None):
+        self.model = model
+        self.vocabulary = vocabulary
 
 
     def load_model(self):
-        path_model = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
-        path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
-        if os.path.isfile(path_model):
-            return LM.load_from_file()
-        else:
-            if os.path.isdir(path_trains):
-                return MT.train_new_model()
-            else:
-                print(">> Unable to create model, Train files are missing.")
-
-                raise Exception("Train file not found.")
+        return LM.load_from_file()
 
     def start_play_with_host_offline(self):
         try:
-            self.model, self.vocabulary, self.pca = self.load_model()
+            if self.model is None:
+                self.model, self.vocabulary = self.load_model()
+            if self.model is None:
+                return
             host = GameHost(self.model, self.vocabulary)
             host.select_Word()
             score = -1
@@ -63,6 +57,7 @@ class Play:
                     value = round(score*100, 2)
                     print("The similarity of the words is: ", value)
             print("You won!")
+            return self.model, self.vocabulary
         except ValueError:
             if str(ValueError) == "Train file not found.":
                 path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"

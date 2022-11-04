@@ -10,14 +10,15 @@ class Menu:
     model = None
     vocabulary = None
     Exit_Menu = 0
-    pca = None
 
     def play_with_host_only(self):
-        off_on = input("==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
+        off_on = input("\n==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
         done = False
         while not done:
             if off_on == '1':
-                play = Play()
+                if self.model is None:
+                    self.model, self.vocabulary = LM.load_from_file()
+                play = Play(self.model, self.vocabulary)
                 play.start_play_with_host_offline()
                 done = True
             elif off_on == '2':
@@ -34,26 +35,25 @@ class Menu:
         model, vocabulary = WE.train_existing_model(model=self.model)
 
     def admin_menu(self):
+        print("\n==================================================")
         option = input("Please choose and option:\n1.Create new model.\n2.load model from files. \n3.reTrain existing "
-                       "model\n4.show the model visually.\n5.Back to previous menu.")
+                       "model\n4.Back to previous menu.")
         isGood = False
         while not isGood:
             if option == '1':
-                model, vocabulary,pca = WE.train_new_model(model)
+                self.model, self.vocabulary = WE.train_new_model()
+                isGood = True
             elif option == '2':
-                filename = input("\nPlease enter file name, or keep empty for default name.\n")
-                model, vocabulary, pca = LM.load_from_file()
+                self.model, self.vocabulary = LM.load_from_file()
+                isGood = True
             elif option == '3':
                 self.train_again()
+                isGood = True
             elif option == '4':
-                if self.model is None:
-                    print(">>No model loaded, loading from files.")
-                    model, vocabulary, pca = LM.load_from_file()
-                LM.show_visual(vocabulary,pca)
-            elif option == '5':
                 isGood = True
             else:
-                print("Illegal input, please try again.")
+                option = input("Illegal input, please try again.")
+                isGood = True
 
     def check_option(self,value):
         Exit_Menu = 0
