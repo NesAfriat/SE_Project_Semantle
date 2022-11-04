@@ -19,13 +19,13 @@ class Play:
     def load_model(self):
         return LM.load_from_file()
 
-    def start_play_with_host_offline(self):
+    def start_play_with_host_offline(self, trained):
         try:
             if self.model is None:
                 self.model, self.vocabulary = self.load_model()
             if self.model is None:
                 return
-            host = GameHost(self.model, self.vocabulary)
+            host = GameHost(self.model)
             host.select_Word()
             score = -1
             print("==================================================\nTry to Guess a word,\npress 0 to exit: ")
@@ -50,12 +50,13 @@ class Play:
                 if word == '0':
                     print("==================================================")
                     return
-                score = host.check_word(word)
-                if score == '-1':
-                    print("Word is not in the vocabulary, Please try another words.")
+                if host.in_vocab(word,trained):
+                    score = host.check_word(word)
                 else:
-                    value = round(score*100, 2)
-                    print("The similarity of the words is: ", value)
+                    print("Word is not in the vocabulary, Please try another words.")
+                    continue
+                value = round(score*100, 2)
+                print("The similarity of the words is: ", value)
             print("You won!")
             return self.model, self.vocabulary
         except ValueError:

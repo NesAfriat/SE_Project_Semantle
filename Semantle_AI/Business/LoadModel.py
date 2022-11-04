@@ -1,27 +1,45 @@
+import os
+from pathlib import Path
+
+from gensim import models
+from gensim.models import KeyedVectors
 import gensim.downloader as api
 
 # load model from file
-def load_from_file():
+
+def existing_model(name):
+    return os.path.isfile(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/"+name)
+
+def load_trained_model(name):
+    print("======================  loading existing model from file  ======================")
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/"+name
+    my_model = KeyedVectors.load(path, mmap='r')
+    print(">>model loaded successfully!")
+    print(">>loading vocabulary!")
+    # getting the vocabulary
+    vocab = list(my_model.index_to_key)
+    print(">>vocabulary is loaded")
+    print(f">> vocab size is: {len(vocab)} words.")
+    print(">>done!")
+    return my_model, vocab, True
+
+
+def load_from_file(trained, name):
     try:
-        print("\n\n======================  loading existing model from file  ======================")
-    # Show all available models in gensim-data
+        print("\n\n======================  loading existing model  ======================")
+        if(existing_model(name)):
+            return load_trained_model(name)
+        print(f"file not fount in dir : {Path(os.curdir).parent.absolute()}/Model/Model.p ,\ndownloading from gensim models...")
         print(">>Downloading gensim model, please make sure you have an active internet connection.")
         my_model = api.load("glove-wiki-gigaword-50")
-        #my_model = gensim.models.Word2Vec(model)
         print(">>model loaded successfully!")
         print(">>loading vocabulary!")
     # getting the vocabulary
         vocab = list(my_model.key_to_index)
         print(">>vocabulary is loaded")
         print(f">> vocab size is: {len(vocab)} words.")
-    # instantiate the pca objects
-        #print(">>instantiating pca components.")
-        #pca = PCA(n_components=2)
-        #print(">>instantiated, creating pca object of the model.")
-    # fit and transform the pca object
-        #my_pca = pca.fit_transform(model.wv[vocab])
         print(">>done!")
     except ValueError as e:
         print(f"Error while trying download to model.\n{str(e)}")
         return None, None, None
-    return my_model, vocab
+    return my_model, vocab, False
