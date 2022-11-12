@@ -17,7 +17,7 @@ class Menu:
         while not done:
             if off_on == '1':
                 if self.model is None:
-                    self.model, self.vocabulary = LM.load_from_file()
+                    self.model, self.vocabulary,self.trained = LM.load_from_file(self.trained, self.trained_model_name)
                 play = Play(self.model, self.vocabulary)
                 play.start_play_with_host_offline(self.trained)
                 done = True

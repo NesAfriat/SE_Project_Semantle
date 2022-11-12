@@ -1,20 +1,16 @@
 import os.path
 from pathlib import Path
-from decimal import Decimal
 
 from Semantle_AI.Business.GameHost import GameHost
-import Semantle_AI.Business.ModelTrainer as MT
 import Semantle_AI.Business.LoadModel as LM
 
 
 class Play:
-
     pca = None
 
-    def __init__(self, model = None , vocabulary = None):
+    def __init__(self, model=None, vocabulary=None):
         self.model = model
         self.vocabulary = vocabulary
-
 
     def load_model(self):
         return LM.load_from_file()
@@ -39,23 +35,31 @@ class Play:
                     done = False
                     while not done:
                         neww = input("Enter the new word:   ")
-                        if host.in_vocab(neww):
+                        if host.in_vocab(neww, trained):
                             host.setWord(neww)
                             done = True
+                            continue
                         else:
                             print(" word is not in the vocabulary, please try another one.")
+                            continue
                     if done:
                         done = False
                         continue
+                if word == 'most_similar':
+                    send = host.most_similar()
+                    print("most similar words are:\n ")
+                    [print(i[0]) for i in send]
+                    print("==================================================")
+                    continue
                 if word == '0':
                     print("==================================================")
                     return
-                if host.in_vocab(word,trained):
+                if host.in_vocab(word, trained):
                     score = host.check_word(word)
                 else:
                     print("Word is not in the vocabulary, Please try another words.")
                     continue
-                value = round(score*100, 2)
+                value = round(score * 100, 2)
                 print("The similarity of the words is: ", value)
             print("You won!")
             return self.model, self.vocabulary

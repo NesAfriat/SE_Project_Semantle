@@ -8,3 +8,6 @@ class Model:
 
     def get_word_from_distance(self, dis: float) -> str:
         pass
+
+    def get_most_similar(self, word):
+        return self.model.most_similar(word)

@@ -1,5 +1,4 @@
 import random
-from nltk.corpus import words
 
 from Semantle_AI.Business.Model import Model
 
@@ -38,3 +37,6 @@ class GameHost:
             anss = type(self.vocabulary)
             ans = neww in self.vocabulary
             return ans
+    def most_similar(self):
+
+        return self.model.get_most_similar(self.secret_word)
