@@ -21,3 +21,8 @@ For specific preperation instructions use the [link](https://github.com/yohasebe
 
 ## Training
 To train the model, there is a need for large database of files. As said before, we used the wikipedia database. Before training, make sure the current project directory must include a folder named 'Model' for saving the created the model after training, and for loading an existing model. 
+ 
+## useful links
+[presentation] (https://www.canva.com/design/DAFRYJAmbNg/_d_bKCAGRgMu5d2TtldRHQ/edit?utm_source=shareButton&utm_medium=email&utm_campaign=designshare#)
+[UML] (https://app.diagrams.net/#G1-d7tI8ivWkuQoYyhlRgrr8loEUvlj2Z_)
+[ARD] (https://docs.google.com/document/d/1drYsqAkdsnR_eQdjR0mnUvczxVibufzVPYcYIjzX1-4/edit#)
