@@ -24,5 +24,5 @@ To train the model, there is a need for large database of files. As said before,
  
 ## useful links
 [Presentation](https://www.canva.com/design/DAFRYJAmbNg/_d_bKCAGRgMu5d2TtldRHQ/edit?utm_source=shareButton&utm_medium=email&utm_campaign=designshare#)
-[UML] (https://app.diagrams.net/#G1-d7tI8ivWkuQoYyhlRgrr8loEUvlj2Z_)
-[ARD] (https://docs.google.com/document/d/1drYsqAkdsnR_eQdjR0mnUvczxVibufzVPYcYIjzX1-4/edit#)
+[UML](https://app.diagrams.net/#G1-d7tI8ivWkuQoYyhlRgrr8loEUvlj2Z_)
+[ARD](https://docs.google.com/document/d/1drYsqAkdsnR_eQdjR0mnUvczxVibufzVPYcYIjzX1-4/edit#)
