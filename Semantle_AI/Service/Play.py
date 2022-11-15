@@ -1,37 +1,27 @@
 import os.path
 from pathlib import Path
-from decimal import Decimal
 
 from Semantle_AI.Business.GameHost import GameHost
-import Semantle_AI.Business.ModelTrainer as MT
 import Semantle_AI.Business.LoadModel as LM
 
 
 class Play:
-
     pca = None
 
-    def __init__(self):
-        pass
-
+    def __init__(self, model=None, vocabulary=None):
+        self.model = model
+        self.vocabulary = vocabulary
 
     def load_model(self):
-        path_model = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
-        path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
-        if os.path.isfile(path_model):
-            return LM.load_from_file()
-        else:
-            if os.path.isdir(path_trains):
-                return MT.train_new_model()
-            else:
-                print(">> Unable to create model, Train files are missing.")
+        return LM.load_from_file()
 
-                raise Exception("Train file not found.")
-
-    def start_play_with_host_offline(self):
+    def start_play_with_host_offline(self, trained):
         try:
-            self.model, self.vocabulary, self.pca = self.load_model()
-            host = GameHost(self.model, self.vocabulary)
+            if self.model is None:
+                self.model, self.vocabulary = self.load_model()
+            if self.model is None:
+                return
+            host = GameHost(self.model)
             host.select_Word()
             score = -1
             print("==================================================\nTry to Guess a word,\npress 0 to exit: ")
@@ -45,24 +35,34 @@ class Play:
                     done = False
                     while not done:
                         neww = input("Enter the new word:   ")
-                        if host.in_vocab(neww):
+                        if host.in_vocab(neww, trained):
                             host.setWord(neww)
                             done = True
+                            continue
                         else:
                             print(" word is not in the vocabulary, please try another one.")
+                            continue
                     if done:
                         done = False
                         continue
+                if word == 'most_similar':
+                    send = host.most_similar()
+                    print("most similar words are:\n ")
+                    [print(i[0]) for i in send]
+                    print("==================================================")
+                    continue
                 if word == '0':
                     print("==================================================")
                     return
-                score = host.check_word(word)
-                if score == '-1':
-                    print("Word is not in the vocabulary, Please try another words.")
+                if host.in_vocab(word, trained):
+                    score = host.check_word(word)
                 else:
-                    value = round(score*100, 2)
-                    print("The similarity of the words is: ", value)
+                    print("Word is not in the vocabulary, Please try another words.")
+                    continue
+                value = round(score * 100, 2)
+                print("The similarity of the words is: ", value)
             print("You won!")
+            return self.model, self.vocabulary
         except ValueError:
             if str(ValueError) == "Train file not found.":
                 path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"

@@ -1,54 +1,47 @@
 import os
-
-import gensim
-import matplotlib.pyplot as plt
-from gensim.models import Word2Vec
-from sklearn.decomposition import PCA
 from pathlib import Path
-from nltk.corpus import words
-from pylab import mpl
+from gensim.models import KeyedVectors
+import gensim.downloader as api
 
 
 # load model from file
-def load_from_file():
+
+def existing_model(name):
+    return os.path.isfile(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name)
+
+
+def load_trained_model(name):
     print("======================  loading existing model from file  ======================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/Model.p"
-    my_model = gensim.models.Word2Vec.load(path)
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
+    my_model = KeyedVectors.load(path, mmap='r')
     print(">>model loaded successfully!")
     print(">>loading vocabulary!")
     # getting the vocabulary
-    vocab = list( my_model.wv.key_to_index.keys())
+    vocab = list(my_model.index_to_key)
     print(">>vocabulary is loaded")
     print(f">> vocab size is: {len(vocab)} words.")
-    # instantiate the pca objects
-    print(">>instantiating pca components.")
-    pca = PCA(n_components=2)
-    print(">>instantiated, creating pca object of the model...")
-    # fit and transform the pca object
-    my_pca = pca.fit_transform(my_model.wv[vocab])
     print(">>done!")
-    return my_model,vocab,my_pca
+    return my_model, vocab, True
 
-def read_words():
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Vocab/vocab.txt"
-    words = []
-    with open(path,'r') as file:
-        for line in file:
-            for word in line.split():
-                words.append(word)
-    return words
 
-def filter_vocab(model, path):
-    words = read_words()
-
-def show_visual( vocab, pca):
-
-    print("==================================================")
-    # plot the data
-    print(">>creating model plot...")
-    mpl.rcParams["font.sans-serif"] = ["SimHei"]
-    mpl.rcParams["axes.unicode._minus"] = False
-    plt.scatter(pca[:,0], pca[:,1])
-    for i,word in enumerate(vocab):
-        plt.annotate(word, xy=(pca[i,0],pca[i,1]))
-    plt.show()
+def load_from_file(trained, name):
+    try:
+        print("\n\n======================  loading existing model  ======================")
+        if existing_model(name):
+            return load_trained_model(name)
+        print(
+            f"file not fount in dir : {Path(os.curdir).parent.absolute()}/Model/" + name + ",\nDownloading from gensim "
+                                                                                           "models...")
+        print(">>Downloading gensim model, please make sure you have an active internet connection.")
+        my_model = api.load("word2vec-google-news-300")
+        print(">>model loaded successfully!")
+        print(">>loading vocabulary!")
+        # getting the vocabulary
+        vocab = list(my_model.key_to_index)
+        print(">>vocabulary is loaded")
+        print(f">> vocab size is: {len(vocab)} words.")
+        print(">>done!")
+    except ValueError as e:
+        print(f"Error while trying download to model.\n{str(e)}")
+        return None, None, None
+    return my_model, vocab, False
