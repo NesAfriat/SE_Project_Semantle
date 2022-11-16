@@ -5,6 +5,8 @@ import gensim.downloader as api
 
 
 # load model from file
+from Semantle_AI.Business.Model import Model
+
 
 def existing_model(name):
     return os.path.isfile(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name)
@@ -13,15 +15,15 @@ def existing_model(name):
 def load_trained_model(name):
     print("======================  loading existing model from file  ======================")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
-    my_model = KeyedVectors.load(path, mmap='r')
+    my_model = Model(KeyedVectors.load(path, mmap='r'))
     print(">>model loaded successfully!")
     print(">>loading vocabulary!")
     # getting the vocabulary
-    vocab = list(my_model.index_to_key)
+    vocab = my_model.get_vocab()
     print(">>vocabulary is loaded")
     print(f">> vocab size is: {len(vocab)} words.")
     print(">>done!")
-    return my_model, vocab, True
+    return my_model, vocab
 
 
 def load_from_file(name):
@@ -31,13 +33,13 @@ def load_from_file(name):
             return load_trained_model(name)
         print(
             f"file not fount in dir : {Path(os.curdir).parent.absolute()}/Model/" + name + ",\nDownloading from gensim "
-                                                                                           "models...")
+                                                                                        "models...")
         print(">>Downloading gensim model, please make sure you have an active internet connection.")
-        my_model = api.load("word2vec-google-news-300")
+        my_model = Model(api.load("word2vec-google-news-300"))
         print(">>model loaded successfully!")
         print(">>loading vocabulary!")
         # getting the vocabulary
-        vocab = list(my_model.key_to_index)
+        vocab = my_model.get_vocab()
         print(">>vocabulary is loaded")
         print(f">> vocab size is: {len(vocab)} words.")
         print(">>done!")

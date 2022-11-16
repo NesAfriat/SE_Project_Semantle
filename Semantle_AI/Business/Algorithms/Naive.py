@@ -1,3 +1,6 @@
-class Naive:
+from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
+
+
+class Naive(Algorithm):
     def __init__(self):
-        pass
+        super().__init__()

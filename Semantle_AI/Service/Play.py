@@ -24,22 +24,50 @@ class Play:
 
     # this option only in offline
     def choose_host_model(self):
-        ip = input("\n b to back \n Choose model: \n 1. word2vec")
+        ip = input("\n b to back \n Choose model: \n 1. word2vec\n")
         if ip == 'b':
             self.start_menu()
         elif ip == '1':
             self.game_manager.set_host_word2vec_model()
+            self.human_or_AI_game()
 
-    def choose_agent(self):
-        ip = input("\n b to back \n Choose model: \n 1. agent1")
+    def human_or_AI_game(self):
+        ip = input("\n 1.cmd online game \n 2.against agent game\n")
         if ip == 'b':
             self.choose_host_model()
         elif ip == '1':
+            self.start_commandline_game()
+        elif ip == '2':
+            self.choose_agent()
+
+    def choose_agent(self):
+        ip = input("\n b to back \n Choose model: \n 1. agent1 \n 2. agent2 \n")
+        if ip == 'b':
+            self.choose_host_model()
+        elif ip == '1':
+            self.game_manager.set_agent1()
             self.game_manager.create_agent1()
-        self.start_commandline_game()
+        elif ip == '2':
+            self.choose_agent()
+
+
 
     def start_commandline_game(self):
         self.game_manager.start_human_game(input, lambda m: print(m))
+
+
+    def choose_model(self):
+        ip = input("\n b to back \n Choose model: \n 1. word2vec\n")
+        if ip == 'b':
+            self.choose_agent()
+
+        # need to initiate model on agent.
+        if ip == '1':
+            None
+
+
+
+
 """
  def start_play_with_host_offline(self, trained):
         try:

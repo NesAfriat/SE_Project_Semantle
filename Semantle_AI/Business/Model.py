@@ -11,3 +11,6 @@ class Model:
 
     def get_most_similar(self, word):
         return self.model.most_similar(word)
+
+    def get_vocab(self):
+        return list(self.model.key_to_index)

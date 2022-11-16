@@ -1,4 +1,4 @@
-from random import random
+from random import choice
 
 from Semantle_AI.Business.Model import Model
 
@@ -18,7 +18,7 @@ class OfflineHost:
         self.vocabulary = voc
 
     def select_word(self):
-        word = random.choice(self.vocabulary)
+        word = choice(self.vocabulary)
         self.secret_word = word
 
     def check_word(self, word):
@@ -33,11 +33,9 @@ class OfflineHost:
     def in_vocab(self, neww, trained):
         # keyed vector model type
         if trained:
-            anss = type(self.vocabulary)
             ans = neww in self.vocabulary
             return ans
         else:
-            anss = type(self.vocabulary)
             ans = neww in self.vocabulary
             return ans
 

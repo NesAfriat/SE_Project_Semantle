@@ -4,6 +4,5 @@ from Semantle_AI.Business.Agents.Agent import Agent
 
 
 class Agent3(Agent):
-
-    def guess_word(self):
-        pass
+    def __init__(self):
+        super().__init__()
