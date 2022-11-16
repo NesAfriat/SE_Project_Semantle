@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from Business.Agent import Agent
+from Semantle_AI.Business.Agents.Agent import Agent
 
 
 class Agent3(Agent):

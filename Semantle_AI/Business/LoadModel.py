@@ -24,7 +24,7 @@ def load_trained_model(name):
     return my_model, vocab, True
 
 
-def load_from_file(trained, name):
+def load_from_file(name):
     try:
         print("\n\n======================  loading existing model  ======================")
         if existing_model(name):
@@ -44,4 +44,4 @@ def load_from_file(trained, name):
     except ValueError as e:
         print(f"Error while trying download to model.\n{str(e)}")
         return None, None, None
-    return my_model, vocab, False
+    return my_model, vocab

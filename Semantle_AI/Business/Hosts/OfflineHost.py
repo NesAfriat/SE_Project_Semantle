@@ -1,20 +1,23 @@
-import random
+from random import random
 
 from Semantle_AI.Business.Model import Model
 
 
-class GameHost:
-    model = None
-    vocabulary = None
-    secret_word = ""
+class OfflineHost:
 
-    def __init__(self, my_model):
-        self.model = Model(my_model)
-        self.vocabulary = list(my_model.index_to_key)
+    def __init__(self):
+        self.model = None
+        self.vocabulary = None
         self.secret_word = None
 
-    def select_Word(self):
-        range = len(self.vocabulary)
+    def get_model(self):
+        return self.model
+
+    def set_model(self, model,voc):
+        self.model = model
+        self.vocabulary = voc
+
+    def select_word(self):
         word = random.choice(self.vocabulary)
         self.secret_word = word
 
@@ -24,8 +27,8 @@ class GameHost:
         else:
             return self.model.get_distance_of_word(word, self.secret_word)
 
-    def setWord(self, neww):
-        self.secret_word = neww
+    def set_word(self, new_word):
+        self.secret_word = new_word
 
     def in_vocab(self, neww, trained):
         # keyed vector model type
@@ -37,6 +40,6 @@ class GameHost:
             anss = type(self.vocabulary)
             ans = neww in self.vocabulary
             return ans
-    def most_similar(self):
 
+    def most_similar(self):
         return self.model.get_most_similar(self.secret_word)

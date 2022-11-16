@@ -1,21 +1,47 @@
 import os.path
 from pathlib import Path
 
-from Semantle_AI.Business.GameHost import GameHost
 import Semantle_AI.Business.LoadModel as LM
+from Semantle_AI.Business.GameManager import GameManager
 
 
 class Play:
     pca = None
 
-    def __init__(self, model=None, vocabulary=None):
-        self.model = model
-        self.vocabulary = vocabulary
+    def __init__(self):
+        self.game_manager: GameManager = None
 
     def load_model(self):
         return LM.load_from_file()
 
-    def start_play_with_host_offline(self, trained):
+    def start_menu(self):
+        self.game_manager = GameManager()
+        off_on = input(
+            "\n==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
+        if off_on == '1':
+            self.game_manager.create_offline_host()
+            self.choose_host_model()
+
+    # this option only in offline
+    def choose_host_model(self):
+        ip = input("\n b to back \n Choose model: \n 1. word2vec")
+        if ip == 'b':
+            self.start_menu()
+        elif ip == '1':
+            self.game_manager.set_host_word2vec_model()
+
+    def choose_agent(self):
+        ip = input("\n b to back \n Choose model: \n 1. agent1")
+        if ip == 'b':
+            self.choose_host_model()
+        elif ip == '1':
+            self.game_manager.create_agent1()
+        self.start_commandline_game()
+
+    def start_commandline_game(self):
+        self.game_manager.start_human_game(input, lambda m: print(m))
+"""
+ def start_play_with_host_offline(self, trained):
         try:
             if self.model is None:
                 self.model, self.vocabulary = self.load_model()
@@ -68,3 +94,6 @@ class Play:
                 path_trains = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Trains"
                 print(f"Train file not found. \nplease add the file in the path: {path_trains}")
                 return
+
+
+"""

@@ -9,10 +9,13 @@
 
 # Press the green button in the gutter to run the script.
 from Menu import Menu
+from Semantle_AI.Service.Play import Play
 
 if __name__ == '__main__':
-    menu = Menu()
-    menu.start_menu()
+    #menu = Menu()
+    #menu.start_menu()
+    play = Play()
+    play.start_menu()
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
