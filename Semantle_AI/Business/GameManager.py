@@ -19,6 +19,7 @@ class GameManager:
 
     def create_offline_host(self):
         self.host = OfflineHost()
+        self.agent.set_host(self.host)
 
     def create_online_host(self):
         pass
@@ -48,14 +49,7 @@ class GameManager:
 
     def start_human_game(self, inp, out):
         self.host.select_word()
-        out("==================================================\nTry to Guess a word,\npress 0 to exit: ")
-        score = -1
-        while score != 1:
-            word = inp("-please guess a word: \n")
-            score = self.host.check_word(word)
-            if score < 1:
-                out("similarity is:" + str(score))
-        out("you won!!")
+        self.agent.start_play(inp, out)
 
     def start_AI_game(self):
         pass
