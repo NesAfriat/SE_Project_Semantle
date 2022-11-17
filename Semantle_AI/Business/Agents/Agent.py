@@ -23,11 +23,11 @@ class Agent(ABC):
         self.host = host
 
     @abstractmethod
-    def start_play(self, inp, out):
+    def start_play(self, out):
         out("==================================================\nTry to Guess a word,\npress 0 to exit: ")
         score = -1
         while score != 1:
-            word = inp("-please guess a word: \n")
+            word = self.guess_word()
             score = self.host.check_word(word)
             if score < 1:
                 out("similarity is:" + str(score))
