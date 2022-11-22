@@ -4,8 +4,9 @@ from pathlib import Path
 
 import Semantle_AI.Business.ModerFactory as MF
 from Semantle_AI.Business.Agents.Agent1 import Agent1
+from Semantle_AI.Business.Agents.Agent2 import Agent2
 from Semantle_AI.Business.Hosts.OfflineHost import OfflineHost
-from Semantle_AI.Business.Model import Model
+from Semantle_AI.Business.Hosts.OnlineHost import OnlineHost
 
 
 class GameManager:
@@ -22,11 +23,15 @@ class GameManager:
 
 
     def create_online_host(self):
-        pass
+        self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
         model, vocabulary = MF.load_from_file(self.WORD2VEC)
         self.host.set_model(model, vocabulary)
+
+    def set_gent_word2vec_model(self):
+        model, vocabulary = MF.load_from_file(self.WORD2VEC)
+        self.agent.set_model(model, vocabulary)
 
     def delete_host(self):
         self.host = None
@@ -39,40 +44,42 @@ class GameManager:
         pass
 
     def create_agent1(self):
+        self.agent = Agent1()
         self.agent.set_host(self.host)
         self.agent.set_model(self.host.get_model())
+
+    def create_agent2(self):
+        self.agent = Agent2()
+        self.agent.set_host(self.host)
+
+    def setup_agent_model(self, model):
+        self.agent = Agent2()
+        self.agent.set_host(self.host)
+        self.agent.set_model(model)
+
 
     def set_agent_algorithm(self):
         self.agent.set_algorithm()
 
     def select_word(self):
-        self.host.select_word()
+        self.host.select_word_and_start_game()
 
     def start_human_game(self, inp, out):
-        self.host.select_word()
+        self.host.select_word_and_start_game()
         out("==================================================\nTry to Guess a word,\npress 0 to exit: ")
         score = -1
         while score != 1:
-            word = inp("-please guess a word: \n")
+            word = inp("please guess a word: \n")
             score = self.host.check_word(word)
             if score < 1:
-                out("similarity is:" + str(score))
+                out("similarity is: \n" + str(score))
         out("you won!!")
 
     def start_agent_game(self, out):
-        self.host.select_word()
+        self.host.select_word_and_start_game()
         self.agent.start_play(out)
 
     def start_AI_game(self):
-        pass
-
-    def set_agent1(self):
-        pass
-
-    def set_agent2(self):
-        pass
-
-    def set_agent3(self):
         pass
 
     def set_agent_model(self):

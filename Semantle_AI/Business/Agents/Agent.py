@@ -22,9 +22,8 @@ class Agent(ABC):
     def set_host(self, host):
         self.host = host
 
-    @abstractmethod
+    # only guess word should be abstract.
     def start_play(self, out):
-        out("==================================================\nTry to Guess a word,\npress 0 to exit: ")
         score = -1
         while score != 1:
             word = self.guess_word()

@@ -1,14 +1,14 @@
-from abc import ABC
-
-from Semantle_AI.Business.Hosts.Host import Host
+from abc import ABC, abstractmethod
 
 
-class OnlineHost(Host):
+class Host(ABC):
 
     ## check if the guess word is match
+    @abstractmethod
     def check_word(self, word):
-        return 1
+        pass
 
     ## select word and start game
+    @abstractmethod
     def select_word_and_start_game(self):
-        print("need start game here")
+        pass

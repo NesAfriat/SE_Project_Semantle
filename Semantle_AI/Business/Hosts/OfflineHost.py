@@ -1,9 +1,9 @@
 from random import choice
 
-from Semantle_AI.Business.Model import Model
+from Semantle_AI.Business.Hosts.Host import Host
 
 
-class OfflineHost:
+class OfflineHost(Host):
 
     def __init__(self):
         self.model = None
@@ -17,7 +17,7 @@ class OfflineHost:
         self.model = model
         self.vocabulary = voc
 
-    def select_word(self):
+    def select_word_and_start_game(self):
         word = choice(self.vocabulary)
         self.secret_word = word
 
