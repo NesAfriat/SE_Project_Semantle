@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
-from Semantle_AI.Business.Agents.Agent import Agent
-from Semantle_AI.Business.Algorithms.Naive import Naive
+from Business.Agents.Agent import Agent
+
 
 
 class Agent1(Agent):

@@ -1,4 +1,4 @@
-from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
+from Business.Algorithms.Algorithm import Algorithm
 
 
 class Naive(Algorithm):

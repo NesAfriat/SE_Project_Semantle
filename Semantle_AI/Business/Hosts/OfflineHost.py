@@ -1,6 +1,6 @@
 from random import choice
 
-from Semantle_AI.Business.Hosts.Host import Host
+from Business.Hosts.Host import Host
 
 
 class OfflineHost(Host):

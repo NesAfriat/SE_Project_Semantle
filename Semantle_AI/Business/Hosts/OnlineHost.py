@@ -1,6 +1,5 @@
-from abc import ABC
 
-from Semantle_AI.Business.Hosts.Host import Host
+from Business.Hosts.Host import Host
 
 
 class OnlineHost(Host):

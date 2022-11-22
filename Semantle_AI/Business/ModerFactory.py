@@ -5,7 +5,7 @@ import gensim.downloader as api
 
 
 # load model from file
-from Semantle_AI.Business.Model.Model import Model
+from Business.Model.Model import Model
 
 
 def existing_model(name):

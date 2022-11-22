@@ -8,12 +8,10 @@
 
 
 # Press the green button in the gutter to run the script.
-from Semantle_AI.Service.Play import Play
+import Play as pl
 
 if __name__ == '__main__':
-    #menu = Menu()
-    #menu.start_menu()
-    play = Play()
+    play = pl.Play()
     play.start_menu()
 
 

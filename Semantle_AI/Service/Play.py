@@ -1,8 +1,8 @@
 import os.path
 from pathlib import Path
 
-import Semantle_AI.Business.ModerFactory as MF
-from Semantle_AI.Business.GameManager import GameManager
+import Business.ModerFactory as MF
+from Business.GameManager import GameManager
 
 
 class Play:

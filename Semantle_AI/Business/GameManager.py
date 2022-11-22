@@ -2,11 +2,11 @@ import random
 import os.path
 from pathlib import Path
 
-import Semantle_AI.Business.ModerFactory as MF
-from Semantle_AI.Business.Agents.Agent1 import Agent1
-from Semantle_AI.Business.Agents.Agent2 import Agent2
-from Semantle_AI.Business.Hosts.OfflineHost import OfflineHost
-from Semantle_AI.Business.Hosts.OnlineHost import OnlineHost
+import Business.ModerFactory as MF
+from Business.Agents.Agent1 import Agent1
+from Business.Agents.Agent2 import Agent2
+from Business.Hosts.OfflineHost import OfflineHost
+from Business.Hosts.OnlineHost import OnlineHost
 
 
 class GameManager:
