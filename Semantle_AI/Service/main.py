@@ -8,7 +8,6 @@
 
 
 # Press the green button in the gutter to run the script.
-from Menu import Menu
 from Semantle_AI.Service.Play import Play
 
 if __name__ == '__main__':

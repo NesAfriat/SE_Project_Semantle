@@ -19,7 +19,7 @@ class GameManager:
 
     def create_offline_host(self):
         self.host = OfflineHost()
-        self.agent.set_host(self.host)
+
 
     def create_online_host(self):
         pass
@@ -39,6 +39,7 @@ class GameManager:
         pass
 
     def create_agent1(self):
+        self.agent.set_host(self.host)
         self.agent.set_model(self.host.get_model())
 
     def set_agent_algorithm(self):

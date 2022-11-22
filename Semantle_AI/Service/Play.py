@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 
-import Semantle_AI.Business.LoadModel as LM
+import Semantle_AI.Business.ModerFactory as MF
 from Semantle_AI.Business.GameManager import GameManager
 
 
@@ -12,7 +12,7 @@ class Play:
         self.game_manager: GameManager = None
 
     def load_model(self):
-        return LM.load_from_file()
+        return MF.load_from_file()
 
     def start_menu(self):
         self.game_manager = GameManager()
@@ -32,7 +32,7 @@ class Play:
             self.human_or_AI_game()
 
     def human_or_AI_game(self):
-        ip = input("\n 1.cmd online game \n 2.against agent game\n")
+        ip = input("\n 1.play against the model \n 2.let the agent work!\n")
         if ip == 'b':
             self.choose_host_model()
         elif ip == '1':
