@@ -2,7 +2,16 @@ from random import choice
 
 from Business.Hosts.Host import Host
 
-
+#  let similarity = getCosSim(guessVec, secretVec) * 100.0;
+# function dot(f1, f2) {
+#     return f1.reduce(function(sum, a, idx) {
+#         return sum + a*f2[idx];
+#     }, 0);
+# }
+#
+# function getCosSim(f1, f2) {
+#     return dot(f1,f2)/(mag(f1)*mag(f2));
+# }
 class OfflineHost(Host):
 
     def __init__(self):

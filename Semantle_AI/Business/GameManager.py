@@ -73,6 +73,7 @@ class GameManager:
             score = self.host.check_word(word)
             if score < 1:
                 out("similarity is: \n" + str(score))
+        self.host.quit()
         out("you won!!")
 
     def start_agent_game(self, out):
