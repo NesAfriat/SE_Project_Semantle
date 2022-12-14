@@ -50,8 +50,22 @@ class Play:
             self.choose_host_model()
         elif ip == '1':
             self.game_manager.create_agent1()
+            self.choose_algo()
+
         elif ip == '2':
             self.game_manager.create_agent2()
+
+    def choose_algo(self):
+        ip = input("\n 1.Naive  \n")
+        if ip == 'b':
+            self.choose_agent()
+        elif ip == '1':
+            self.game_manager.set_agent_naive_algorithm()
+            self.click_ok_and_start()
+
+    def click_ok_and_start(self):
+        ip = input("\n enter to start...  \n")
+        self.game_manager.start_agent_game(lambda x: print(x))
 
 
     def choose_agent_model(self):

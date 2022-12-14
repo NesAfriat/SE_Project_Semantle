@@ -5,7 +5,12 @@ from pathlib import Path
 import Business.ModerFactory as MF
 from Business.Agents.Agent1 import Agent1
 from Business.Agents.Agent2 import Agent2
+from Business.Algorithms.BruteForce import BruteForce
+from Business.Algorithms.Naive import Naive
 from Business.Hosts.OfflineHost import OfflineHost
+
+
+# from Business.Hosts.OnlineHost import OnlineHost
 from Business.Hosts.OnlineHost import OnlineHost
 
 
@@ -21,24 +26,20 @@ class GameManager:
     def create_offline_host(self):
         self.host = OfflineHost()
 
-
     def create_online_host(self):
         self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
-        model, vocabulary = MF.load_from_file(self.WORD2VEC)
-        self.host.set_model(model, vocabulary)
+        model = MF.load_from_file(self.WORD2VEC)
+        self.host.set_model(model)
 
     def set_gent_word2vec_model(self):
-        model, vocabulary = MF.load_from_file(self.WORD2VEC)
-        self.agent.set_model(model, vocabulary)
+        model = MF.load_from_file(self.WORD2VEC)
+        self.agent.set_model(model)
 
     def delete_host(self):
         self.host = None
 
-    def create_word2vec_model(self):
-        model, vocabulary, trained = MF.load_from_file(self.WORD2VEC)
-        return model, vocabulary
 
     def create_glove_model(self):
         pass
@@ -57,9 +58,15 @@ class GameManager:
         self.agent.set_host(self.host)
         self.agent.set_model(model)
 
+    def set_agent_Brute_Force_algorithm(self):
+        x = lambda dic: (self.agent.set_remain_words(dic), self.agent.inc_num_of_guesses())
+        algo = BruteForce(x, self.agent.model.get_vocab(), lambda w1,w2: self.agent.model.get_distance_of_word(w1,w2))
+        self.agent.set_algorithm(algo)
 
-    def set_agent_algorithm(self):
-        self.agent.set_algorithm()
+    def set_agent_naive_algorithm(self):
+        x = lambda dic: (self.agent.set_remain_words(dic), self.agent.inc_num_of_guesses())
+        algo = Naive(x, self.agent.model.get_vocab())
+        self.agent.set_algorithm(algo)
 
     def select_word(self):
         self.host.select_word_and_start_game()
@@ -79,9 +86,3 @@ class GameManager:
     def start_agent_game(self, out):
         self.host.select_word_and_start_game()
         self.agent.start_play(out)
-
-    def start_AI_game(self):
-        pass
-
-    def set_agent_model(self):
-        pass

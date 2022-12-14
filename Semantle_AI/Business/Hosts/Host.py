@@ -11,7 +11,7 @@ class Host(ABC):
     ## select word and start game
     @abstractmethod
     def select_word_and_start_game(self):
-
+        pass
 
     ## select word and start game
     @abstractmethod

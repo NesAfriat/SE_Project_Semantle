@@ -46,4 +46,4 @@ def load_from_file(name):
     except ValueError as e:
         print(f"Error while trying download to model.\n{str(e)}")
         return None, None, None
-    return my_model, vocab
+    return my_model
