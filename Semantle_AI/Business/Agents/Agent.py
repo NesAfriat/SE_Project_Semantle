@@ -39,7 +39,7 @@ class Agent(ABC):
         self.last_score = 0
         data = self.init_algo_data()
         while self.last_score != 1:
-            word = self.guess_word(data)
+            word = self.guess_word()
             self.last_score = self.host.check_word(word)
             if self.last_score < 1:
                 out("similarity is:" + str(self.last_score))
