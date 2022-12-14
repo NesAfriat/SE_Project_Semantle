@@ -10,7 +10,7 @@ class BruteForce(Algorithm):
         self.dis_calculate = dis_calculate
         self.distance = None
 
-    def calculate(self):
+    def calculate(self,data=None):
         pass
 
     def set_dist(self,distance):

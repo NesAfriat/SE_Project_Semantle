@@ -12,9 +12,10 @@ class Agent(ABC):
         self.last_score = None
         self.remain_words = None
         self.num_og_guesses = 0
+        self.init_algo_data = lambda: None
 
     @abstractmethod
-    def guess_word(self):
+    def guess_word(self, data=None):
         pass
 
     def set_remain_words(self, remain_words):
@@ -30,12 +31,15 @@ class Agent(ABC):
     def set_host(self, host):
         self.host = host
 
+    def set_init_algo_data(self, x):
+        self.init_algo_data = x
+
     # only guess word should be abstract.
     def start_play(self, out):
         self.last_score = 0
-        self.algorithm.init_data()
+        data = self.init_algo_data()
         while self.last_score != 1:
-            word = self.guess_word()
+            word = self.guess_word(data)
             self.last_score = self.host.check_word(word)
             if self.last_score < 1:
                 out("similarity is:" + str(self.last_score))

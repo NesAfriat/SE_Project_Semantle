@@ -9,7 +9,6 @@ from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
 from Business.Hosts.OfflineHost import OfflineHost
 
-
 # from Business.Hosts.OnlineHost import OnlineHost
 from Business.Hosts.OnlineHost import OnlineHost
 
@@ -40,7 +39,6 @@ class GameManager:
     def delete_host(self):
         self.host = None
 
-
     def create_glove_model(self):
         pass
 
@@ -59,8 +57,20 @@ class GameManager:
         self.agent.set_model(model)
 
     def set_agent_Brute_Force_algorithm(self):
-        x = lambda dic: (self.agent.set_remain_words(dic), self.agent.inc_num_of_guesses())
-        algo = BruteForce(x, self.agent.model.get_vocab(), lambda w1,w2: self.agent.model.get_distance_of_word(w1,w2))
+        def help(dict):
+            self.agent.inc_num_of_guesses()
+            new_dict = dict & self.agent.remain_words
+            self.agent.set_remain_words(dict & self.agent.remain_words)
+            return new_dict
+        init_data = lambda x: self.host.guess_word()
+        self.agent.set_init_algo_data(init_data)
+
+
+        x = lambda dic: (self.agent.inc_num_of_guesses(), help)
+        algo = BruteForce(x, self.agent.model.get_vocab(), lambda w1, w2: self.agent.model.get_distance_of_word(w1, w2))
+
+        set_data_on_guess = lambda dist: algo.set_dist(dist)
+
         self.agent.set_algorithm(algo)
 
     def set_agent_naive_algorithm(self):
