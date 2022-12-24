@@ -13,7 +13,6 @@ class OnlineHost(Host):
         self.guesses={}
         self.legal_guesses= 0
     def check_word(self, word):
-        #sleep(2)
         guess = self.browser.find_element(By.ID, "guess")
         guess.send_keys(word)
         guess_btn = self.browser.find_element(By.ID, value='guess-btn')
@@ -29,12 +28,13 @@ class OnlineHost(Host):
             self.legal_guesses += 1
             guess_similarity = [tuple(row.split())[2] for row in postTable]
             self.guesses[word] = float(guess_similarity[0])
+        sleep(2)
         return self.guesses[word]
 
 
     ## select word and start game
     def select_word_and_start_game(self,out):
-        out("===========LOADING============")
+        out("===========LOADING ONLINE SERVER============")
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
         options.add_argument("disable-gpu")

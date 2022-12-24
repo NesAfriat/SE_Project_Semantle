@@ -2,7 +2,7 @@ import random
 import os.path
 from pathlib import Path
 
-import Business.ModerFactory as MF
+import Business.ModelFactory as MF
 from Business.Agents.Agent1 import Agent1
 from Business.Agents.Agent2 import Agent2
 from Business.Algorithms.BruteForce import BruteForce
@@ -21,20 +21,21 @@ class GameManager:
         self.trained = None
         self.host = None
         self.agent = None
-
+        self.model= None
     def create_offline_host(self):
         self.host = OfflineHost()
 
     def create_online_host(self):
+        self.model= MF.load_from_file(self.WORD2VEC)
         self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
-        model = MF.load_from_file(self.WORD2VEC)
-        self.host.set_model(model)
+        self.model = MF.load_from_file(self.WORD2VEC)
+        self.host.set_model(self.model)
 
     def set_gent_word2vec_model(self):
-        model = MF.load_from_file(self.WORD2VEC)
-        self.agent.set_model(model)
+        self.model = MF.load_from_file(self.WORD2VEC)
+        self.agent.set_model(self.model)
 
     def delete_host(self):
         self.host = None
@@ -45,7 +46,7 @@ class GameManager:
     def create_agent1(self):
         self.agent = Agent1()
         self.agent.set_host(self.host)
-        self.agent.set_model(self.host.get_model())
+        self.agent.set_model(self.model)
 
     def create_agent2(self):
         self.agent = Agent2()
@@ -82,7 +83,7 @@ class GameManager:
         self.host.select_word_and_start_game()
 
     def start_human_game(self, inp, out):
-        self.host.select_word_and_start_game(out)
+        self.host.select_word_and_start_game()
         out("==================================================\nTry to Guess a word!")
         score = -1
         quit=False
@@ -100,5 +101,5 @@ class GameManager:
         self.host.quitGame()
 
     def start_agent_game(self, out):
-        self.host.select_word_and_start_game()
+        self.host.select_word_and_start_game(out)
         self.agent.start_play(out)

@@ -1,7 +1,7 @@
 import os.path
 from pathlib import Path
 
-import Business.ModerFactory as MF
+import Business.ModelFactory as MF
 from Business.GameManager import GameManager
 
 

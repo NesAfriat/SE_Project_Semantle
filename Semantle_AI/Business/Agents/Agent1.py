@@ -10,7 +10,7 @@ class Agent1(Agent):
         self.last_guess = None
     def guess_word(self):
         self.last_guess = self.algorithm.calculate(self.last_guess)
-        print("word is -> " + self.last_guess + "and the len is of remain is: "+ str(len(self.remain_words)) + "and the len of vocab is: " + str(len(self.model.get_vocab())) + "\n")
+        print("word is -> " + self.last_guess + "and the len is of remain is: "+ str(len(self.remain_words)) + " and the len of vocab is: " + str(len(self.model.get_vocab())) + "\n")
         return self.last_guess
 
 
