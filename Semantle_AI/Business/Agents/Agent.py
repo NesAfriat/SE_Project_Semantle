@@ -38,11 +38,10 @@ class Agent(ABC):
     def start_play(self, out):
         self.last_score = 0
         data = self.init_algo_data()
-        while self.last_score != 1:
+        while self.last_score != 100:
             word = self.guess_word()
             self.last_score = self.host.check_word(word)
-            if self.last_score < 1:
-                out("similarity is:" + str(self.last_score))
+            out("similarity is:" + str(self.last_score))
         out("you won!!")
 
     def inc_num_of_guesses(self):

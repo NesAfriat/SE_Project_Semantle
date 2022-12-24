@@ -82,16 +82,22 @@ class GameManager:
         self.host.select_word_and_start_game()
 
     def start_human_game(self, inp, out):
-        self.host.select_word_and_start_game()
-        out("==================================================\nTry to Guess a word,\npress 0 to exit: ")
+        self.host.select_word_and_start_game(out)
+        out("==================================================\nTry to Guess a word!")
         score = -1
-        while score != 1:
-            word = inp("please guess a word: \n")
-            score = self.host.check_word(word)
-            if score < 1:
-                out("similarity is: \n" + str(score))
-        self.host.quit()
-        out("you won!!")
+        quit=False
+        while score != 100 and not quit:
+            word = inp("Enter your next word or 0 to return:\n")
+            if word!='0':
+                score = self.host.check_word(word)
+                out("similarity is: \n"+ str(score))
+            else:
+                quit=True
+        if not quit:
+            out("you won!!")
+        else:
+            out("see you next time!!")
+        self.host.quitGame()
 
     def start_agent_game(self, out):
         self.host.select_word_and_start_game()

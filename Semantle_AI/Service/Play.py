@@ -15,15 +15,20 @@ class Play:
         return MF.load_from_file()
 
     def start_menu(self):
-        self.game_manager = GameManager()
-        off_on = input(
-            "\n==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
-        if off_on == '1':
-            self.game_manager.create_offline_host()
-            self.choose_host_model()
-        if off_on == '2':
-            self.game_manager.create_online_host()
-            self.human_or_AI_game()
+        finished=False
+        while not finished:
+            self.game_manager = GameManager()
+            off_on = input(
+                "\n==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
+            if off_on == '1':
+                self.game_manager.create_offline_host()
+                self.choose_host_model()
+            elif off_on == '2':
+                self.game_manager.create_online_host()
+                self.human_or_AI_game()
+            else:
+                finished=True
+
 
     # if option 1:
     # this option only in offline
