@@ -36,6 +36,7 @@ class Agent(ABC):
 
     # only guess word should be abstract.
     def start_play(self, out):
+
         self.last_score = 0
         data = self.init_algo_data()
         while self.last_score != 100:

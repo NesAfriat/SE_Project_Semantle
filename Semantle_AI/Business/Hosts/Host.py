@@ -10,7 +10,7 @@ class Host(ABC):
 
     ## select word and start game
     @abstractmethod
-    def select_word_and_start_game(self):
+    def select_word_and_start_game(self,out):
         pass
 
     ## select word and start game

@@ -1,6 +1,7 @@
 import random
 import os.path
 from pathlib import Path
+import copy
 
 import Business.ModelFactory as MF
 from Business.Agents.Agent1 import Agent1
@@ -21,36 +22,38 @@ class GameManager:
         self.trained = None
         self.host = None
         self.agent = None
-        self.model= None
+        self.agent_model = None
+        self.host_model = None
+
     def create_offline_host(self):
         self.host = OfflineHost()
 
     def create_online_host(self):
-        self.model= MF.load_from_file(self.WORD2VEC)
         self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
-        self.model = MF.load_from_file(self.WORD2VEC)
-        self.host.set_model(self.model)
+        self.host_model = MF.load_from_file(self.WORD2VEC)
+        self.host.set_model(self.host_model)
 
-    def set_gent_word2vec_model(self):
-        self.model = MF.load_from_file(self.WORD2VEC)
-        self.agent.set_model(self.model)
+    def create_agent_word2vec_model(self):
+        self.agent_model = MF.load_from_file(self.WORD2VEC)
+        self.agent.set_model(self.agent_model)
 
-    def delete_host(self):
-        self.host = None
+    def set_agent_host_model(self):
+        self.agent_model = copy.deepcopy(self.host_model)
+        self.agent.set_model(self.agent_model)
 
-    def create_glove_model(self):
-        pass
+    def set_gent_model(self):
+        self.agent.set_model(self.agent_model)
 
     def create_agent1(self):
         self.agent = Agent1()
         self.agent.set_host(self.host)
-        self.agent.set_model(self.model)
 
     def create_agent2(self):
         self.agent = Agent2()
         self.agent.set_host(self.host)
+
 
     def setup_agent_model(self, model):
         self.agent = Agent2()
@@ -63,9 +66,9 @@ class GameManager:
             new_dict = dict & self.agent.remain_words
             self.agent.set_remain_words(dict & self.agent.remain_words)
             return new_dict
+
         init_data = lambda x: self.host.guess_word()
         self.agent.set_init_algo_data(init_data)
-
 
         x = lambda dic: (self.agent.inc_num_of_guesses(), help)
         algo = BruteForce(x, self.agent.model.get_vocab(), lambda w1, w2: self.agent.model.get_distance_of_word(w1, w2))
@@ -83,17 +86,17 @@ class GameManager:
         self.host.select_word_and_start_game()
 
     def start_human_game(self, inp, out):
-        self.host.select_word_and_start_game()
+        self.host.select_word_and_start_game(out)
         out("==================================================\nTry to Guess a word!")
         score = -1
-        quit=False
+        quit = False
         while score != 100 and not quit:
             word = inp("Enter your next word or 0 to return:\n")
-            if word!='0':
+            if word != '0':
                 score = self.host.check_word(word)
-                out("similarity is: \n"+ str(score))
+                out("similarity is: \n" + str(score))
             else:
-                quit=True
+                quit = True
         if not quit:
             out("you won!!")
         else:
