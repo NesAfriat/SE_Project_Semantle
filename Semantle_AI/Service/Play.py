@@ -50,7 +50,7 @@ class Play:
     # choose if u want to play or the agent work..
     def human_or_AI_game(self):
         ip = self.busy_choose(
-            "Play against computer or let the agent do the job", "play Manually","let the agent work")
+            "Play against computer or let the agent do the job", "play Manually", "let the agent work")
         if ip == 'b':
             self.choose_host_model()
         elif ip == '1':
@@ -70,6 +70,8 @@ class Play:
                 self.game_manager.create_agent1()
                 self.game_manager.create_agent_word2vec_model()
                 self.choose_algo()
+            elif ip == 'e':
+                self.finished = True
 
         ip = self.busy_choose(
             "Choose Agent", "agent1", "agent2")
@@ -89,12 +91,17 @@ class Play:
             self.finished = True
 
     def choose_algo(self):
-        ip = self.busy_choose("Choose Algorithm", "Naive")
+        ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce")
         if ip == 'b':
             self.choose_agent()
         elif ip == '1':
             self.game_manager.set_agent_naive_algorithm()
             self.click_ok_and_start()
+        elif ip == '2':
+            self.game_manager.set_agent_Brute_Force_algorithm()
+            self.click_ok_and_start()
+        elif ip == 'e':
+            self.finished = True
 
     def busy_choose(self, to_write, *args):
         acc = ""

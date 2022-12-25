@@ -1,17 +1,19 @@
 from abc import ABC, abstractmethod
 import random
+
 from Business.Algorithms.Algorithm import Algorithm
 
 
 class BruteForce(Algorithm):
-    def __init__(self, on_guess, dict, dis_calculate):
+    def __init__(self, on_guess, vocab: set, dist_formula):
         super().__init__(on_guess)
-        self.dict = set(dict)
-        self.dis_calculate = dis_calculate
-        self.distance = None
+        self.vocab = vocab
+        self.dist_formula = dist_formula
 
-    def calculate(self,data=None):
-        pass
+    def calculate(self, *args):
+        dist = args[1]/100
+        self.vocab = [x for x in filter(lambda x: self.dist_formula(x, args[0]) == dist, self.vocab)]
+        return random.choice(self.vocab)
 
-    def set_dist(self,distance):
+    def set_dist(self, distance):
         self.distance = distance

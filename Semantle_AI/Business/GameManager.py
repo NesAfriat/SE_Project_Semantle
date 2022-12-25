@@ -54,27 +54,14 @@ class GameManager:
         self.agent = Agent2()
         self.agent.set_host(self.host)
 
-
     def setup_agent_model(self, model):
         self.agent = Agent2()
         self.agent.set_host(self.host)
         self.agent.set_model(model)
 
     def set_agent_Brute_Force_algorithm(self):
-        def help(dict):
-            self.agent.inc_num_of_guesses()
-            new_dict = dict & self.agent.remain_words
-            self.agent.set_remain_words(dict & self.agent.remain_words)
-            return new_dict
-
-        init_data = lambda x: self.host.guess_word()
-        self.agent.set_init_algo_data(init_data)
-
-        x = lambda dic: (self.agent.inc_num_of_guesses(), help)
-        algo = BruteForce(x, self.agent.model.get_vocab(), lambda w1, w2: self.agent.model.get_distance_of_word(w1, w2))
-
-        set_data_on_guess = lambda dist: algo.set_dist(dist)
-
+        algo = BruteForce(lambda words: (self.agent.set_remain_words(words)), self.agent.remain_words,
+                          lambda w1, w2: self.agent_model.get_distance_of_word(w1, w2))
         self.agent.set_algorithm(algo)
 
     def set_agent_naive_algorithm(self):

@@ -18,7 +18,10 @@ class OnlineHost(Host):
         guess_btn = self.browser.find_element(By.ID, value='guess-btn')
         guess_btn.click()
         sleep(2)
-        table=  self.browser.find_element(By.XPATH, value='//*[@id="guesses"]/tbody')
+        try:
+            table =  self.browser.find_element(By.XPATH, value='//*[@id="guesses"]/tbody')
+        except:
+            return -2
         postTable = table.text.split("\n")[1:-1:2]
         if self.legal_guesses == len(postTable):
             if word not in self.guesses.keys():
