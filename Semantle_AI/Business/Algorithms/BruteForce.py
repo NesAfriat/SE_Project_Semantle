@@ -12,7 +12,8 @@ class BruteForce(Algorithm):
 
     def calculate(self, *args):
         dist = args[1]/100
-        self.vocab = [x for x in filter(lambda x: self.dist_formula(x, args[0]) == dist, self.vocab)]
+        self.vocab = [x for x in filter( lambda x:  abs(self.dist_formula(x, args[0]) - dist) <= 0.01, self.vocab)]
+        self.on_guess(self.vocab)
         return random.choice(self.vocab)
 
     def set_dist(self, distance):

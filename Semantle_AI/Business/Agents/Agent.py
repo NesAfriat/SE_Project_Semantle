@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
 
-from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
+
+
+def add_to_list(last_word):
+
+    pass
 
 
 class Agent(ABC):
@@ -40,10 +44,12 @@ class Agent(ABC):
         self.last_score = 0
         # for brute force
         self.guess_random_word()
-
-        while self.last_score != 100:
+        while self.last_score != 100.0:
             word = self.guess_word(self.last_word, self.last_score)
             self.last_score = self.host.check_word(word)
+            if(self.last_score == -2 ):
+                add_to_list(self.last_word)
+                self.guess_random_word()
             out("similarity is:" + str(self.last_score))
         out("you won!!")
 
@@ -55,6 +61,7 @@ class Agent(ABC):
         dist = -2
         alog = Naive(lambda x: self.set_remain_words(x), self.model.vocab)
         while dist == -2:
+            add_to_list(self.last_word)
             guess = alog.calculate()
             dist = self.host.check_word(guess)
         self.last_word = guess
