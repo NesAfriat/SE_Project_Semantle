@@ -31,7 +31,7 @@ class Agent(ABC):
 
     def set_model(self, model, vocab):
         self.model = model
-        self.remain_words = set(vocab)
+        self.remain_words = vocab
 
     def set_host(self, host):
         self.host = host
@@ -41,16 +41,21 @@ class Agent(ABC):
 
     # only guess word should be abstract.
     def start_play(self, out):
+
         self.last_score = 0
         # for brute force
         self.guess_random_word()
         while self.last_score != 1.0:
-            word = self.guess_word(self.last_word, self.last_score)
-            self.last_score = self.host.check_word(word)
-            if self.last_score == -2:
-                add_to_list(self.last_word)
-                self.guess_random_word()
-            out("similarity is:" + str(round(self.last_score*100, 2)))
+            try:
+                word = self.guess_word(self.last_word, self.last_score)
+                self.last_score = self.host.check_word(word)
+                if self.last_score == -2:
+                    add_to_list(self.last_word)
+                    self.guess_random_word()
+                out("similarity is:" + str(round(self.last_score*100, 2)))
+            except ValueError as e:
+                out(e)
+                return
         out("you won!!")
 
     def set_last_score(self, score):
@@ -59,9 +64,10 @@ class Agent(ABC):
     def guess_random_word(self):
         guess = ""
         dist = -2
-        alog = Naive(lambda x: self.set_remain_words(x), self.model.vocab)
+        alog = Naive(lambda x: self.set_remain_words(x), self.remain_words)
         while dist == -2:
-            add_to_list(self.last_word)
+            if self.last_word != None:
+                add_to_list(self.last_word)
             guess = alog.calculate()
             dist = self.host.check_word(guess)
         self.last_word = guess

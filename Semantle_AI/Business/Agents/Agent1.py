@@ -11,5 +11,4 @@ class Agent1(Agent):
 
     def guess_word(self, *args):
         self.last_word = self.algorithm.calculate(*args)
-        print("word is -> " + self.last_word)
         return self.last_word

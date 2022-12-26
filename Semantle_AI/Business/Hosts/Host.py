@@ -17,3 +17,19 @@ class Host(ABC):
     @abstractmethod
     def quitGame(self):
         pass
+
+    @abstractmethod
+    def getWord(self):
+        pass
+
+    @abstractmethod
+    def getWordVec(self, word):
+        pass
+
+    @abstractmethod
+    def getScore(self, word):
+        pass
+
+    @abstractmethod
+    def setWord(self, word):
+        pass

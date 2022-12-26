@@ -71,8 +71,7 @@ class Play:
             elif ip == 'e':
                 self.finished = True
 
-        ip = self.busy_choose(
-            "Choose Agent", "agent1", "agent2")
+        ip = self.busy_choose("Choose Agent", "agent1", "agent2")
         if ip == 'b':
             self.human_or_AI_game()
         elif ip == '1':

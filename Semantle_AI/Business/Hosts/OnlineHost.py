@@ -9,9 +9,9 @@ URL= "https://semantle.com/"
 class OnlineHost(Host):
         ## check if the guess word is match
     def __init__(self):
-        self.browser= None
-        self.guesses={}
-        self.legal_guesses= 0
+        self.browser = None
+        self.guesses = {}
+        self.legal_guesses = 0
 
     def check_word(self, word):
         word = str.lower(word)
@@ -35,7 +35,7 @@ class OnlineHost(Host):
             guess_similarity = [tuple(row.split())[2] for row in postTable]
             self.guesses[word] = float(guess_similarity[0])
         sleep(2)
-        return float(self.guesses[word])
+        return float(self.guesses[word])/100
 
 
     ## select word and start game
@@ -53,3 +53,13 @@ class OnlineHost(Host):
 
     def quitGame(self):
         self.browser.quit()
+
+    def setWord(self, word):
+        pass
+
+    def getWord(self):
+        pass
+    def getWordVec(self,word):
+        pass
+    def getScore(self):
+        pass
