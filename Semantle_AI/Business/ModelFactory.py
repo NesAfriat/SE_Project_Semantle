@@ -1,32 +1,26 @@
 import os
 from pathlib import Path
 from gensim.models import KeyedVectors
-import gensim.downloader as api
-
-
-# load model from file
 from Business.Model.Model import Model
 
 
 def existing_model(path):
     return os.path.isfile(path)
 
-
-# def load_trained_model(name):
-#     print("======================  loading existing model from file  ======================")
-#     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
-#     my_model = Model(KeyedVectors.load(path, mmap='r'))
-#     print(">>model loaded successfully!")
-#     print(">>loading vocabulary!")
-#     # getting the vocabulary
-#     vocab = my_model.get_vocab()
-#     print(">>vocabulary is loaded")
-#     print(f">> vocab size is: {len(vocab)} words.")
-#     print(">>done!")
-#     return my_model, vocab
+def filter_vocab(vocab, word_list):
+    try:
+        path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + word_list
+        file = open(path, "r")
+        words = (file.read()).split("\n")
+        voc = [x for x in vocab if (x in words)]
+        return voc
+    except ValueError as e:
+        raise e
 
 
-def load_from_file(name):
+
+
+def load_from_file(name, word_list):
 
     print("\n\n======================  loading Model  ======================")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
@@ -37,9 +31,10 @@ def load_from_file(name):
         print(">>Loading model.")
         my_model = Model(KeyedVectors.load_word2vec_format(path, binary=True))
         print(">>model loaded successfully!")
-        print(">>loading vocabulary!")
+        print(">>loading vocabulary")
         # getting the vocabulary
         vocab = my_model.get_vocab()
+        vocab = filter_vocab(vocab, word_list)
         print(f">>vocabulary is loaded, The number of words is: {len(vocab)} ")
         print(">>done!")
     return my_model,vocab

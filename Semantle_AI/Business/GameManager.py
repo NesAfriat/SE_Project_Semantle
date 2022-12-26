@@ -16,6 +16,7 @@ from Business.Hosts.OnlineHost import OnlineHost
 
 class GameManager:
     WORD2VEC = "Google_Word2Vec.bin"
+    WORDS_LIST = "words.txt"
 
     def __init__(self):
         self.vocabulary = None
@@ -32,11 +33,11 @@ class GameManager:
         self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
-        self.host_model,vocab = MF.load_from_file(self.WORD2VEC)
+        self.host_model,vocab = MF.load_from_file(self.WORD2VEC,self.WORDS_LIST)
         self.host.set_model(self.host_model,vocab)
 
     def create_agent_word2vec_model(self):
-        self.agent_model,vocab = MF.load_from_file(self.WORD2VEC)
+        self.agent_model,vocab = MF.load_from_file(self.WORD2VEC,self.WORDS_LIST)
         self.agent.set_model(self.agent_model, vocab)
 
     def set_agent_host_model(self):
