@@ -13,13 +13,11 @@ class Play:
         self.finished = False
         self.offline_playing = False
 
-    def load_model(self):
-        return MF.load_from_file()
-
     # starting the menu
     def start_menu(self):
         while not self.finished:
-            self.game_manager = GameManager()
+            if self.game_manager == None:
+                self.game_manager = GameManager()
             print("menu starting...\n press on 'e' to exit menu any time.\n")
             off_on = self.busy_choose(
                 "Choose offline or online Host", "offline.", "online")
@@ -110,7 +108,6 @@ class Play:
             acc = acc + str(num) + ". " + option + "\n"
             num += 1
         num -= 1
-        print(num)
         while True:
             ip = input("===================" + to_write + "===================\n\n" + acc)
             if ip == 'e' or ip == 'b' or 0 < int(ip) <= num:

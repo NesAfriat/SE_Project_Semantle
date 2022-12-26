@@ -14,7 +14,7 @@ class OnlineHost(Host):
         self.legal_guesses= 0
 
     def check_word(self, word):
-        word= str.lower(word)
+        word = str.lower(word)
         guess = self.browser.find_element(By.ID, "guess")
         guess.clear()
         guess.send_keys(word)
@@ -22,7 +22,7 @@ class OnlineHost(Host):
         guess_btn.click()
         sleep(2)
         try:
-            table =  self.browser.find_element(By.XPATH, value='//*[@id="guesses"]/tbody')
+            table = self.browser.find_element(By.XPATH, value='//*[@id="guesses"]/tbody')
         except:
             return -2
         postTable = table.text.split("\n")[1:-1:2]

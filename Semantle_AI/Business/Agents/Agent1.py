@@ -11,6 +11,5 @@ class Agent1(Agent):
 
     def guess_word(self, *args):
         self.last_word = self.algorithm.calculate(*args)
-        print("word is -> " + self.last_word )#+ "and the len is of remain is: " + str(
-          #  len(self.remain_words)) + " and the len of vocab is: " + str(len(self.model.get_vocab())) + "\n")
+        print("word is -> " + self.last_word)
         return self.last_word

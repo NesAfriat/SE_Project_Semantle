@@ -8,42 +8,38 @@ import gensim.downloader as api
 from Business.Model.Model import Model
 
 
-def existing_model(name):
-    return os.path.isfile(os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name)
+def existing_model(path):
+    return os.path.isfile(path)
 
 
-def load_trained_model(name):
-    print("======================  loading existing model from file  ======================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
-    my_model = Model(KeyedVectors.load(path, mmap='r'))
-    print(">>model loaded successfully!")
-    print(">>loading vocabulary!")
-    # getting the vocabulary
-    vocab = my_model.get_vocab()
-    print(">>vocabulary is loaded")
-    print(f">> vocab size is: {len(vocab)} words.")
-    print(">>done!")
-    return my_model, vocab
+# def load_trained_model(name):
+#     print("======================  loading existing model from file  ======================")
+#     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
+#     my_model = Model(KeyedVectors.load(path, mmap='r'))
+#     print(">>model loaded successfully!")
+#     print(">>loading vocabulary!")
+#     # getting the vocabulary
+#     vocab = my_model.get_vocab()
+#     print(">>vocabulary is loaded")
+#     print(f">> vocab size is: {len(vocab)} words.")
+#     print(">>done!")
+#     return my_model, vocab
 
 
 def load_from_file(name):
-    try:
-        print("\n\n======================  loading existing model  ======================")
-        if existing_model(name):
-            return load_trained_model(name)
-        print(
-            f"file not fount in dir : {Path(os.curdir).parent.absolute()}/Model/" + name + ",\nDownloading from gensim "
-                                                                                        "models...")
-        print(">>Downloading gensim model, please make sure you have an active internet connection.")
-        my_model = Model(api.load("word2vec-google-news-300"))
+
+    print("\n\n======================  loading Model  ======================")
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Model/" + name
+    if not existing_model(path):
+        raise ValueError(f"file not fount in dir : {path}" +
+                   ",\n Please make sure the model exists in folder before starting the program...")
+    else:
+        print(">>Loading model.")
+        my_model = Model(KeyedVectors.load_word2vec_format(path, binary=True))
         print(">>model loaded successfully!")
         print(">>loading vocabulary!")
         # getting the vocabulary
         vocab = my_model.get_vocab()
-        print(">>vocabulary is loaded")
-        print(f">> vocab size is: {len(vocab)} words.")
+        print(f">>vocabulary is loaded, The number of words is: {len(vocab)} ")
         print(">>done!")
-    except ValueError as e:
-        print(f"Error while trying download to model.\n{str(e)}")
-        return None, None, None
-    return my_model
+    return my_model,vocab

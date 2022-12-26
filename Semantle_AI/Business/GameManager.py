@@ -15,7 +15,7 @@ from Business.Hosts.OnlineHost import OnlineHost
 
 
 class GameManager:
-    WORD2VEC = "word2vec.wordvectors"
+    WORD2VEC = "Google_Word2Vec.bin"
 
     def __init__(self):
         self.vocabulary = None
@@ -32,12 +32,12 @@ class GameManager:
         self.host = OnlineHost()
 
     def set_host_word2vec_model(self):
-        self.host_model = MF.load_from_file(self.WORD2VEC)
-        self.host.set_model(self.host_model)
+        self.host_model,vocab = MF.load_from_file(self.WORD2VEC)
+        self.host.set_model(self.host_model,vocab)
 
     def create_agent_word2vec_model(self):
-        self.agent_model = MF.load_from_file(self.WORD2VEC)
-        self.agent.set_model(self.agent_model)
+        self.agent_model,vocab = MF.load_from_file(self.WORD2VEC)
+        self.agent.set_model(self.agent_model, vocab)
 
     def set_agent_host_model(self):
         self.agent_model = copy.deepcopy(self.host_model)
@@ -81,7 +81,7 @@ class GameManager:
             word = inp("Enter your next word or 0 to return:\n")
             if word != '0':
                 score = self.host.check_word(word)
-                out("similarity is: \n" + str(score))
+                out("similarity is: \n" + str(round(score*100, 2)))
             else:
                 quit = True
         if not quit:

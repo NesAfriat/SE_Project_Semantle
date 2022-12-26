@@ -29,9 +29,9 @@ class Agent(ABC):
     def set_algorithm(self, algorithm):
         self.algorithm = algorithm
 
-    def set_model(self, model):
+    def set_model(self, model, vocab):
         self.model = model
-        self.remain_words = set(model.get_vocab())
+        self.remain_words = set(vocab)
 
     def set_host(self, host):
         self.host = host
@@ -44,13 +44,13 @@ class Agent(ABC):
         self.last_score = 0
         # for brute force
         self.guess_random_word()
-        while self.last_score != 100.0:
+        while self.last_score != 1.0:
             word = self.guess_word(self.last_word, self.last_score)
             self.last_score = self.host.check_word(word)
-            if(self.last_score == -2 ):
+            if self.last_score == -2:
                 add_to_list(self.last_word)
                 self.guess_random_word()
-            out("similarity is:" + str(self.last_score))
+            out("similarity is:" + str(round(self.last_score*100, 2)))
         out("you won!!")
 
     def set_last_score(self, score):

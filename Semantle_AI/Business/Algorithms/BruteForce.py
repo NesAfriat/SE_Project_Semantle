@@ -11,9 +11,11 @@ class BruteForce(Algorithm):
         self.dist_formula = dist_formula
 
     def calculate(self, *args):
-        dist = args[1]/100
+        dist = args[1]
         self.vocab = [x for x in filter( lambda x:  abs(self.dist_formula(x, args[0]) - dist) <= 0.01, self.vocab)]
         self.on_guess(self.vocab)
+        if len(self.vocab) == 0:
+            raise ValueError("error occurred, there are no words left to guess.")
         return random.choice(self.vocab)
 
     def set_dist(self, distance):

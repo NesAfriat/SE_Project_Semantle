@@ -26,16 +26,16 @@ class OfflineHost(Host):
     def get_model(self):
         return self.model
 
-    def set_model(self, model):
+    def set_model(self, model,vocab):
         self.model = model
-        self.vocabulary = set(self.model.get_vocab())
+        self.vocabulary = set(vocab)
 
     def select_word_and_start_game(self,out):
         word = choice(list(self.vocabulary))
         self.secret_word = word
 
     def check_word(self, word):
-        ans = 100*self.model.get_distance_of_word(word, self.secret_word)
+        ans = self.model.get_distance_of_word(word, self.secret_word)
         return ans
 
     def set_word(self, new_word):
