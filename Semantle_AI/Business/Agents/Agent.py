@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
 from Business.Algorithms.Naive import Naive
+from Business.Data import Data
 
 
 def add_to_list(last_word):
-
     pass
 
 
@@ -18,6 +18,7 @@ class Agent(ABC):
         self.remain_words = None
         self.num_og_guesses = 0
         self.init_algo_data = lambda: None
+        self.data = Data()
 
     @abstractmethod
     def guess_word(self, *args):
@@ -36,12 +37,8 @@ class Agent(ABC):
     def set_host(self, host):
         self.host = host
 
-    def set_init_algo_data(self, x):
-        self.init_algo_data = x
-
     # only guess word should be abstract.
     def start_play(self, out):
-
         self.last_score = 0
         # for brute force
         self.guess_random_word()
@@ -52,7 +49,7 @@ class Agent(ABC):
                 if self.last_score == -2:
                     add_to_list(self.last_word)
                     self.guess_random_word()
-                out(f"similarity for the word  {self.last_word} is:  {str(round(self.last_score*100, 2))}" )
+                out(f"similarity for the word  {self.last_word} is:  {str(round(self.last_score * 100, 2))}")
             except ValueError as e:
                 out(e)
                 return
@@ -72,6 +69,11 @@ class Agent(ABC):
             dist = self.host.check_word(guess)
         self.last_word = guess
         self.last_score = dist
+        self.data.add_to_dict(guess, dist)
+
+    def guess_n_random_word(self, n):
+        for i in range(n):
+            self.guess_random_word()
 
     def inc_num_of_guesses(self):
         self.num_og_guesses = self.num_og_guesses + 1

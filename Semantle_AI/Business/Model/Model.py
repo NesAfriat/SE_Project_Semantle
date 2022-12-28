@@ -1,11 +1,11 @@
+import gensim
+from gensim.models import KeyedVectors
 
 
 class Model:
-    def __init__(self, model):
+    def __init__(self, model:KeyedVectors,vocab):
         self.model = model
-        self.vocab = list(self.model.key_to_index)
-        self.vocab = filter((lambda x: x.isalpha()), self.vocab)
-        self.vocab = [x for x in self.vocab]
+        self.vocab = vocab
 
     def get_distance_of_word(self, word1, word2):
         ans = self.model.similarity(word1, word2)

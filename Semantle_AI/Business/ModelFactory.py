@@ -38,4 +38,4 @@ def load_from_file(name, word_list):
         vocab = filter_vocab(vocab, word_list)
         print(f">>vocabulary is loaded, The number of words is: {len(vocab)} ")
         print(">>done!")
-    return my_model, vocab
+    return Model(my_model, vocab)
