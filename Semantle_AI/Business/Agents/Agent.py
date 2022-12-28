@@ -52,7 +52,7 @@ class Agent(ABC):
                 if self.last_score == -2:
                     add_to_list(self.last_word)
                     self.guess_random_word()
-                out("similarity is:" + str(round(self.last_score*100, 2)))
+                out(f"similarity for the word  {self.last_word} is:  {str(round(self.last_score*100, 2))}" )
             except ValueError as e:
                 out(e)
                 return
