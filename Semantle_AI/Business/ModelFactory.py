@@ -10,6 +10,8 @@ def existing_model(path):
 
 
 def filter_vocab(vocab, word_list):
+    if word_list is None:
+        return vocab
     try:
         path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + word_list
         file = open(path, "r")
@@ -20,7 +22,7 @@ def filter_vocab(vocab, word_list):
         raise e
 
 
-def load_from_file(name, word_list):
+def load_from_file(name, word_list=None):
     print("\n\n======================  loading Model  ======================")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
     if not existing_model(path):
@@ -34,6 +36,7 @@ def load_from_file(name, word_list):
         # getting the vocabulary
         vocab = set(my_model.key_to_index)
         print(">>filtering words")
+        ##filter only if given path to words
         model_vocab = filter_vocab(vocab, word_list)
         print(f">>vocabulary is loaded, The number of words is: {len(vocab)} ")
         print(">>done!")
