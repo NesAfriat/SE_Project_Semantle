@@ -17,5 +17,8 @@ class Model:
     def get_most_similar(self, word):
         return self.model.most_similar(word)
 
+    def get_word_vec(self,word):
+        return self.model[word]
+
     def get_vocab(self):
         return self.vocab
