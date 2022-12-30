@@ -56,7 +56,7 @@ class Agent(ABC):
             except ValueError as e:
                 out(e)
                 return
-        out("you won!! the word was: "+ self.host.secret_word)
+        out("you won!!")
 
     def set_last_score(self, score):
         self.data.last_score = score

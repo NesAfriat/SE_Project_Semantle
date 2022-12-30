@@ -30,6 +30,8 @@ class GameManager:
         self.host = OfflineHost()
 
     def create_online_host(self):
+        #online on cosine distance
+        self.end_score = 1
         self.host = OnlineHost()
 
         ##set host word2vec model
