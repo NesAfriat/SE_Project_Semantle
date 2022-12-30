@@ -41,10 +41,19 @@ class Agent(ABC):
     def start_play(self, out):
         self.last_score = 0
         # for brute force
-        self.guess_n_random_word(1)
-        while self.last_score != 1.0:
+        self.guess_n_random_word(301)
+        while self.last_score != 0:
             try:
                 word = self.guess_word(self.last_word, self.last_score, self.data)
+
+                print(word)
+                host_secret = self.host.secret_word
+                host_secret_word_vec = self.model.get_word_vec(self.host.secret_word)
+                print(host_secret)
+                print(host_secret_word_vec)
+                word = self.model.get_most_similar_by_vec(word)
+                print(word)
+                i = input()
                 self.last_score = self.host.check_word(word)
                 if self.last_score == -2:
                     add_to_list(self.last_word)

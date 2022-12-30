@@ -29,5 +29,4 @@ class Trilateration(Algorithm):
                 sum += (c1 - c2)
             b = b + [sum]
         point_location = np.linalg.solve(A, b)
-        print(point_location)
         return point_location

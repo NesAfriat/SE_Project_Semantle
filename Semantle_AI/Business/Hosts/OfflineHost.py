@@ -25,7 +25,7 @@ class OfflineHost(Host):
         self.secret_word = word
 
     def check_word(self, word):
-        return self.getScore(word)
+        return self.get_sqrt_dis(word)
 
     def set_word(self, new_word):
         self.secret_word = new_word
@@ -56,3 +56,9 @@ class OfflineHost(Host):
 
     def dot(self, f1, f2):
         return sum(a * f2[idx] for idx, a in enumerate(f1))
+
+    def get_sqrt_dis(self, w):
+        v1 = self.model.get_word_vec(w)
+        v2 = self.model.get_word_vec(self.secret_word)
+        ans = sum([(xi - yi) ** 2 for xi, yi in zip(v1, v2)])
+        return math.sqrt(ans)

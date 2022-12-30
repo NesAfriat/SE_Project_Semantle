@@ -15,7 +15,7 @@ class Model:
         pass
 
     def get_most_similar_by_vec(self, vec):
-        return self.model.most_similar(positive = vec,topn=3)
+        return self.model.most_similar(positive = vec,topn=1)
 
     def get_word_vec(self,word):
         return self.model[word]
