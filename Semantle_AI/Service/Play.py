@@ -82,7 +82,7 @@ class Play:
             else:
                 choose_agent_model()
         elif ip == '2':
-            self.game_manager.create_agent2()
+            self.game_manager.create_agent1()
             choose_agent_model()
         elif ip == 'e':
             self.finished = True

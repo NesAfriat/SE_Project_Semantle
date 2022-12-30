@@ -1,7 +1,6 @@
 import copy
 import Business.ModelFactory as MF
 from Business.Agents.Agent1 import Agent1
-from Business.Agents.Agent2 import Agent2
 from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
 from Business.Algorithms.Trilateration import Trilateration
@@ -52,9 +51,6 @@ class GameManager:
         self.agent = Agent1()
         self.agent.set_host(self.host)
 
-    def create_agent2(self):
-        self.agent = Agent2()
-        self.agent.set_host(self.host)
 
     def set_agent_Brute_Force_algorithm(self):
         algo = BruteForce(lambda words: (self.agent.set_remain_words(words)), self.agent.remain_words,
