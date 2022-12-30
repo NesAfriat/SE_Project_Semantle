@@ -4,12 +4,12 @@ import random
 
 
 class Naive(Algorithm):
-    def __init__(self, on_guess, vocab):
-        super().__init__(on_guess)
-        self.vocab = vocab
+    def __init__(self):
+        super().__init__()
 
     def calculate(self, *args):
-        el = random.sample(self.vocab, 1)[0]
-        self.vocab.remove(el)
-        self.on_guess(self.vocab)
+        words = self.data.remain_words
+        el = random.sample(words, 1)[0]
+        words.remove(el)
+        self.data.remain_words = words
         return el

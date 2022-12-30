@@ -1,5 +1,6 @@
 import copy
 import Business.ModelFactory as MF
+from Business import MethodDistances
 from Business.Agents.Agent1 import Agent1
 from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
@@ -22,6 +23,8 @@ class GameManager:
         self.agent = None
         self.agent_model: Model = None
         self.host_model: Model = None
+        self.dist_formula = None
+        self.end_score = None
 
     def create_offline_host(self):
         self.host = OfflineHost()
@@ -35,36 +38,45 @@ class GameManager:
         self.host_model, self.vocabulary = MF.load_from_file(self.WORD2VEC, self.WORDS_LIST)
         self.host.set_model(self.host_model, self.vocabulary)
 
-        # create word2vec for egent
+        # create word2vec for agent only online
 
-    def create_agent_word2vec_model(self):
+    def create_agent_word2vec_model_online(self):
         self.agent_model, self.vocabulary = MF.load_from_file(self.WORD2VEC, self.WORDS_LIST)
-        self.agent.set_model(self.agent_model, self.vocabulary)
+        self.agent.set_model(self.agent_model)
+        self.agent_model.set_dist_function(MethodDistances.cosine_function())
 
         ##set to the agent the same model as the host
 
     def set_agent_host_model(self):
         self.agent_model = self.host_model
-        self.agent.set_model(self.agent_model, copy.copy(self.vocabulary))
+        self.agent.set_model(self.agent_model)
 
     def create_agent1(self):
         self.agent = Agent1()
         self.agent.set_host(self.host)
+        self.agent.set_end_score(self.end_score)
 
+    def set_euclid_func(self):
+        self.dist_formula = MethodDistances.euclid_function()
+        self.host_model.set_dist_function(MethodDistances.euclid_function())
+        self.end_score = 0
+
+    def set_cosine_function(self):
+        self.dist_formula = MethodDistances.cosine_function()
+        self.host_model.set_dist_function(MethodDistances.cosine_function())
+        self.end_score = 1
 
     def set_agent_Brute_Force_algorithm(self):
-        algo = BruteForce(lambda words: (self.agent.set_remain_words(words)), self.agent.remain_words,
-                          lambda w1, w2: getScore(self.agent_model.get_word_vec(w1), self.agent_model.get_word_vec(w2)))
-        self.agent.set_algorithm(algo)
+        algo = BruteForce(self.agent_model.dist_func)
+        self.agent.set_algorithm(algo, lambda: self.agent.guess_n_random_word(1))
 
     def set_agent_naive_algorithm(self):
-        x = lambda dic: (self.agent.set_remain_words(dic), self.agent.inc_num_of_guesses())
-        algo = Naive(x, self.agent.remain_words)
-        self.agent.set_algorithm(algo)
+        algo = Naive()
+        self.agent.set_algorithm(algo, lambda: None)
 
     def set_agent_trilateration_algorithm(self):
-        algo = Trilateration(lambda: None, self.agent.remain_words)
-        self.agent.set_algorithm(algo)
+        algo = Trilateration()
+        self.agent.set_algorithm(algo, lambda: self.agent.guess_n_random_word(self.agent_model.get_number_of_dim() + 1))
 
     def start_human_game(self, inp, out):
         self.host.select_word_and_start_game(out)
@@ -77,7 +89,6 @@ class GameManager:
             if spl[0] == '@':
                 self.host.setWord(spl[1])
             elif word != '0':
-                score = None
                 if self.host is OnlineHost:
                     score = self.host.check_word(word)
                 else:

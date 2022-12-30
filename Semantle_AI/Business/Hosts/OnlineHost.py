@@ -61,5 +61,3 @@ class OnlineHost(Host):
         pass
     def getWordVec(self,word):
         pass
-    def getScore(self):
-        pass

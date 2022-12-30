@@ -25,7 +25,7 @@ class OfflineHost(Host):
         self.secret_word = word
 
     def check_word(self, word):
-        return self.get_sqrt_dis(word)
+        return self.model.get_distance_of_word(self.secret_word, word)
 
     def set_word(self, new_word):
         self.secret_word = new_word
@@ -42,23 +42,3 @@ class OfflineHost(Host):
 
     def getWordVec(self, word):
         return self.model.get_word_vec(word)
-
-    def getScore(self, word):
-        v1 = list(self.getWordVec(word))
-        v2 = list(self.getWordVec(self.secret_word))
-        return self.getCosSim(v1, v2)
-
-    def getCosSim(self, v1, v2):
-        return self.dot(v1, v2) / (self.mag(v1) * self.mag(v2))
-
-    def mag(self, a):
-        return math.sqrt(sum(val ** 2 for val in a))
-
-    def dot(self, f1, f2):
-        return sum(a * f2[idx] for idx, a in enumerate(f1))
-
-    def get_sqrt_dis(self, w):
-        v1 = self.model.get_word_vec(w)
-        v2 = self.model.get_word_vec(self.secret_word)
-        ans = sum([(xi - yi) ** 2 for xi, yi in zip(v1, v2)])
-        return math.sqrt(ans)

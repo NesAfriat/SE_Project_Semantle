@@ -27,9 +27,5 @@ class Host(ABC):
         pass
 
     @abstractmethod
-    def getScore(self, word):
-        pass
-
-    @abstractmethod
     def setWord(self, word):
         pass

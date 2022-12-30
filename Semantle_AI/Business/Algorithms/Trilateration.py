@@ -3,14 +3,12 @@ import numpy as np
 
 
 class Trilateration(Algorithm):
-    def __init__(self, on_guess, vocab):
-        super().__init__(on_guess)
-        self.vocab = vocab
+    def __init__(self):
+        super().__init__()
 
     def calculate(self, *args):
-        data = args[2]
-        point = self.trilateration(data.get_points(), data.get_distances())
-        return point
+        point = self.trilateration(self.data.get_points(), self.data.get_distances())
+        return self.data.get_most_similar(point)[0][0]
 
     def trilateration(self, points, dists):
         point_sub = points[len(points) - 1]

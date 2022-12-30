@@ -8,11 +8,12 @@
 
 
 # Press the green button in the gutter to run the script.
-import Play as pl
-
+from Service.Menu import Menu
 if __name__ == '__main__':
-    play = pl.Play()
-    play.start_menu()
+    menu = Menu()
+    menu.start_menu()
+
+
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

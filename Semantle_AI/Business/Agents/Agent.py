@@ -4,81 +4,70 @@ from Business.Algorithms.Naive import Naive
 from Business.Data import Data
 
 
-def add_to_list(last_word):
-    pass
-
-
 class Agent(ABC):
     def __init__(self):
-        self.model = None
         self.algorithm = None
         self.host = None
-        self.last_score = None
-        self.last_word = None
-        self.remain_words = None
         self.num_og_guesses = 0
         self.init_algo_data = lambda: None
         self.data = Data()
+        self.end_score = None
+        self.init = None
 
     @abstractmethod
     def guess_word(self, *args):
         pass
 
-    def set_remain_words(self, remain_words):
-        self.remain_words = remain_words
+    def set_end_score(self, end_score):
+        self.end_score = end_score
 
-    def set_algorithm(self, algorithm):
+    def set_algorithm(self, algorithm, init_func):
         self.algorithm = algorithm
+        self.algorithm.set_data(self.data)
+        self.init = init_func
 
-    def set_model(self, model, vocab):
-        self.model = model
-        self.remain_words = vocab
+    def set_model(self, model):
+        self.data.set_model(model)
 
     def set_host(self, host):
         self.host = host
 
     # only guess word should be abstract.
     def start_play(self, out):
-        self.last_score = 0
-        # for brute force
-        self.guess_n_random_word(301)
-        while self.last_score != 0:
-            try:
-                word = self.guess_word(self.last_word, self.last_score, self.data)
+        self.data.last_score = -1
 
-                print(word)
-                host_secret = self.host.secret_word
-                host_secret_word_vec = self.model.get_word_vec(self.host.secret_word)
-                print(host_secret)
-                print(host_secret_word_vec)
-                word = self.model.get_most_similar_by_vec(word)
-                print(word)
-                i = input()
-                self.last_score = self.host.check_word(word)
-                if self.last_score == -2:
-                    add_to_list(self.last_word)
+        # for brute force
+        self.init()
+        while abs(self.data.last_score - self.end_score) > 0.0001:
+            try:
+                word = self.guess_word(self.data.last_word, self.data.last_score, self.data)
+
+                self.data.last_score = self.host.check_word(word)
+                self.data.last_word = word
+
+                if self.data.last_score == -2:
+                    add_to_list(self.data.last_word)
                     self.guess_random_word()
-                out(f"similarity for the word  {self.last_word} is:  {str(round(self.last_score * 100, 2))}")
+                out(f"similarity for the word  {self.data.last_word} is:  {str(round(self.data.last_score * 100, 2))}")
             except ValueError as e:
                 out(e)
                 return
-        out("you won!!")
+        out("you won!! the word was: "+ self.host.secret_word)
 
     def set_last_score(self, score):
-        self.last_score = score
+        self.data.last_score = score
 
     def guess_random_word(self):
         guess = ""
         dist = -2
-        alog = Naive(lambda x: self.set_remain_words(x), self.remain_words)
+        algo = Naive()
+        algo.set_data(self.data)
         while dist == -2:
-            if self.last_word != None:
-                add_to_list(self.last_word)
-            guess = alog.calculate()
+            if self.data.last_word is not None:
+                add_to_list(self.data.last_word)
+            guess = algo.calculate()
             dist = self.host.check_word(guess)
-        self.last_word = guess
-        self.last_score = dist
-        self.data.add_to_dict(guess, dist,self.model.get_word_vec(guess))
+        self.data.add_to_dict(guess, dist, self.data.model.get_word_vec(guess))
 
     def guess_n_random_word(self, n):
         for i in range(n):

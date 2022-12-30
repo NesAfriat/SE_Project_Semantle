@@ -1,89 +1,139 @@
-# import Semantle_AI.Business.ModerFactory as MF
-# import Semantle_AI.Business.ModelTrainer as WE
-# from Play import Play
-#
-#
-# class Menu:
-#     model = None
-#     vocabulary = None
-#     trained = False
-#     Exit_Menu = 0
-#     trained_model_name = "word2vec.wordvectors"
-#
-#     def play_with_host_only(self):
-#         off_on = input(
-#             "\n==================================================\n1.Play offline.\n2.Play online.\n3.exit\n")
-#         done = False
-#         while not done:
-#             if off_on == '1':
-#                 if self.model is None:
-#                     self.model, self.vocabulary,self.trained = MF.load_from_file(self.trained_model_name)
-#                 play = Play(self.model, self.vocabulary)
-#                 play.start_play_with_host_offline(self.trained)
-#                 done = True
-#             elif off_on == '2':
-#                 print("Not possible yet...")
-#             elif off_on == '3':
-#                 done = True
-#                 return
-#             else:
-#                 print("Illegal input, please try again.")
-#
-#     def train_again(self):
-#         if len(self.model) == 0:
-#             print("Model not exists")
-#         self.model, self.vocabulary = WE.train_existing_model(model=self.model)
-#
-#     def admin_menu(self):
-#         print("\n==================================================\nPlease choose and option:\n1.Create new model."
-#               "\n2.load pre-trained model.\n4.retrain your model. \n3.Back to previous menu.")
-#         is_good = False
-#         while not is_good:
-#             option = input()
-#             if option == '1':
-#                 self.model, self.vocabulary = WE.train_new_model()
-#                 self.trained = True
-#                 is_good = True
-#             elif option == '2':
-#                 self.model, self.vocabulary,self.trained = MF.load_from_file(self.trained,self.trained_model_name)
-#                 is_good = True
-#             elif option == '3':
-#                 if not self.trained:
-#                     print("model cannot be trained because it is downloaded as keyed vector format.\n in order to "
-#                           "retrain model, you need to create it.")
-#                     continue
-#                 self.train_again()
-#                 is_good = True
-#             elif option == '3':
-#                 is_good = True
-#             else:
-#                 option = input("Illegal input, please try again.")
-#                 is_good = True
-#
-#     def check_option(self, value):
-#         Exit_Menu = 0
-#         while not Exit_Menu:
-#             if value == '1':
-#                 self.play_with_host_only()
-#                 return
-#             elif value == '2':
-#                 self.admin_menu()
-#                 return
-#             elif value == '3':
-#                 Exit_Menu = 1
-#             else:
-#                 print("Illegal input, please try again ")
-#
-#     def start_menu(self):
-#         # switch cases here:
-#         options = "1.Play semantle. \n2.Admin menu \n3.exit\nAnswer: "
-#         options_num = 2
-#         while self.Exit_Menu != '0':
-#             value = input(
-#                 f"\n\n\n\n\n==================================================\n Hello,  \nChoose an option from the menu:\n{options}")
-#             try:
-#                 while (not value.isnumeric()) and (value > (options_num + 1) or value == 0):
-#                     value = input("Illegal option. please try again: \n")
-#                 self.check_option(value)
-#             except ValueError:
-#                 print(ValueError)
+import os.path
+from pathlib import Path
+
+import Business.ModelFactory as MF
+from Business.GameManager import GameManager
+
+class Menu:
+    pca = None
+
+    def __init__(self):
+        self.game_manager: GameManager = None
+        self.finished = False
+        self.offline_playing = False
+
+    # starting the menu
+    def start_menu(self):
+        while not self.finished:
+            if self.game_manager == None:
+                self.game_manager = GameManager()
+            print("menu starting...\n press on 'e' to exit menu any time.\n")
+            off_on = self.busy_choose(
+                "Choose offline or online Host", "offline.", "online")
+            if off_on == '1':
+                self.offline_playing = True
+                self.game_manager.create_offline_host()
+                self.choose_host_model()
+            elif off_on == '2':
+                self.offline_playing = False
+                self.game_manager.create_online_host()
+                self.human_or_AI_game()
+            elif off_on == 'e':
+                self.finished = True
+            else:
+                print("please choose a valid option")
+
+    # if the choose was for online
+    def choose_host_model(self):
+        ip = self.busy_choose("Choose Model", "word2vec")
+        if ip == 'b':
+            self.start_menu()
+        elif ip == '1':
+            self.game_manager.set_host_word2vec_model()
+            self.choose_dist_formula()
+        elif ip == 'e':
+            self.finished = True
+
+    def choose_dist_formula(self):
+        ip = self.busy_choose("Choose the semantic distance method", "Euclid", "Cosine")
+        if ip == 'b':
+            self.start_menu()
+        elif ip == '1':
+            self.game_manager.set_euclid_func()
+            self.human_or_AI_game()
+        elif ip == '2':
+            self.game_manager.set_cosine_function()
+            self.human_or_AI_game()
+        elif ip == 'e':
+            self.finished = True
+
+
+
+    # choose if u want to play or the agent work..
+    def human_or_AI_game(self):
+        ip = self.busy_choose(
+            "Play against computer or let the agent do the job", "play Manually", "let the agent work")
+        if ip == 'b':
+            self.choose_host_model()
+        elif ip == '1':
+            self.start_commandline_game()
+        elif ip == '2':
+            self.choose_agent()
+        elif ip == 'e':
+            self.finished = True
+
+    def choose_agent(self):
+        def choose_agent_model():
+            ip = self.busy_choose(
+                "Choose Agent Model", "Word2Vec")
+            if ip == 'b':
+                self.choose_agent()
+            elif ip == '1':
+                self.game_manager.create_agent1()
+                self.game_manager.create_agent_word2vec_model_online()
+                self.choose_algo()
+            elif ip == 'e':
+                self.finished = True
+
+        ip = self.busy_choose("Choose Agent", "agent1", "agent2")
+        if ip == 'b':
+            self.human_or_AI_game()
+        elif ip == '1':
+            if self.offline_playing:
+                self.game_manager.create_agent1()
+                self.game_manager.set_agent_host_model()
+                self.choose_algo()
+            else:
+                choose_agent_model()
+        elif ip == '2':
+            self.game_manager.create_agent1()
+            choose_agent_model()
+        elif ip == 'e':
+            self.finished = True
+
+    def choose_algo(self):
+        ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce", "Trilateraion")
+        if ip == 'b':
+            self.choose_agent()
+        elif ip == '1':
+            self.game_manager.set_agent_naive_algorithm()
+            self.click_ok_and_start()
+        elif ip == '2':
+            self.game_manager.set_agent_Brute_Force_algorithm()
+            self.click_ok_and_start()
+        elif ip == '3':
+            self.game_manager.set_agent_trilateration_algorithm()
+            self.click_ok_and_start()
+        elif ip == 'e':
+            self.finished = True
+
+    def busy_choose(self, to_write, *args):
+        acc = ""
+        num = 1
+        for option in args:
+            acc = acc + str(num) + ". " + option + "\n"
+            num += 1
+        num -= 1
+        while True:
+            ip = input("===================" + to_write + "===================\n\n" + acc)
+            if ip == 'e' or ip == 'b' or (ip.isnumeric() and 0 < int(ip) <= num):
+                return ip
+            else:
+                print("\nplease choose valid option please")
+
+    def click_ok_and_start(self):
+        ip = input("\npress enter to start...  \n")
+        self.game_manager.start_agent_game(lambda *args: print(*args))
+
+    def start_commandline_game(self):
+        self.game_manager.start_human_game(input, lambda m: print(m))
