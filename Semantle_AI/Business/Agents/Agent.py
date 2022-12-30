@@ -4,6 +4,10 @@ from Business.Algorithms.Naive import Naive
 from Business.Data import Data
 
 
+def add_to_list(last_word):
+    pass
+
+
 class Agent(ABC):
     def __init__(self):
         self.algorithm = None
