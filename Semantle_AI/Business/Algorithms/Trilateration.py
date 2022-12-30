@@ -8,8 +8,9 @@ class Trilateration(Algorithm):
         self.vocab = vocab
 
     def calculate(self, *args):
-        data = args[3]
+        data = args[2]
         point = self.trilateration(data.get_points(), data.get_distances())
+        return point
 
     def trilateration(self, points, dists):
         point_sub = points[len(points) - 1]

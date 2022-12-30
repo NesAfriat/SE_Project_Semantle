@@ -9,6 +9,8 @@ from Business.Hosts.OfflineHost import OfflineHost
 from Business.Hosts.OnlineHost import OnlineHost
 import math
 
+from Business.Model.Model import Model
+
 
 class GameManager:
     WORD2VEC = "Google_Word2Vec.bin"
@@ -19,8 +21,8 @@ class GameManager:
         self.trained = None
         self.host = None
         self.agent = None
-        self.agent_model = None
-        self.host_model = None
+        self.agent_model: Model = None
+        self.host_model: Model = None
 
     def create_offline_host(self):
         self.host = OfflineHost()
@@ -43,8 +45,8 @@ class GameManager:
         ##set to the agent the same model as the host
 
     def set_agent_host_model(self):
-        self.agent_model = copy.deepcopy(self.host_model)
-        self.agent.set_model(self.agent_model, self.vocabulary)
+        self.agent_model = self.host_model
+        self.agent.set_model(self.agent_model, copy.copy(self.vocabulary))
 
     def create_agent1(self):
         self.agent = Agent1()
@@ -56,7 +58,7 @@ class GameManager:
 
     def set_agent_Brute_Force_algorithm(self):
         algo = BruteForce(lambda words: (self.agent.set_remain_words(words)), self.agent.remain_words,
-                          lambda w1, w2: getScore(self.agent_model[w1], self.agent_model[w2]))
+                          lambda w1, w2: getScore(self.agent_model.get_word_vec(w1), self.agent_model.get_word_vec(w2)))
         self.agent.set_algorithm(algo)
 
     def set_agent_naive_algorithm(self):
@@ -65,9 +67,8 @@ class GameManager:
         self.agent.set_algorithm(algo)
 
     def set_agent_trilateration_algorithm(self):
-        algo = Trilateration(lambda : None ,self.agent.remain_words)
+        algo = Trilateration(lambda: None, self.agent.remain_words)
         self.agent.set_algorithm(algo)
-
 
     def start_human_game(self, inp, out):
         self.host.select_word_and_start_game(out)

@@ -88,7 +88,7 @@ class Play:
             self.finished = True
 
     def choose_algo(self):
-        ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce")
+        ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce", "Trilateraion")
         if ip == 'b':
             self.choose_agent()
         elif ip == '1':
@@ -96,6 +96,9 @@ class Play:
             self.click_ok_and_start()
         elif ip == '2':
             self.game_manager.set_agent_Brute_Force_algorithm()
+            self.click_ok_and_start()
+        elif ip == '3':
+            self.game_manager.set_agent_trilateration_algorithm()
             self.click_ok_and_start()
         elif ip == 'e':
             self.finished = True
@@ -109,7 +112,7 @@ class Play:
         num -= 1
         while True:
             ip = input("===================" + to_write + "===================\n\n" + acc)
-            if ip == 'e' or ip == 'b' or 0 < int(ip) <= num:
+            if  ip == 'e' or ip == 'b' or (ip.isnumeric() and 0 < int(ip) <= num):
                 return ip
             else:
                 print("\nplease choose valid option please")

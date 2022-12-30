@@ -8,7 +8,6 @@ class Agent1(Agent):
     def __init__(self):
         super().__init__()
 
-
     def guess_word(self, *args):
         self.last_word = self.algorithm.calculate(*args)
         return self.last_word
