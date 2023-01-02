@@ -44,19 +44,19 @@ class Agent(ABC):
         self.init()
         while abs(self.data.last_score - self.end_score) > 0.0001:
             try:
-                word = self.guess_word(self.data.last_word, self.data.last_score, self.data)
-
-                self.data.last_score = self.host.check_word(word)
-                self.data.last_word = word
-
                 if self.data.last_score == -2:
                     add_to_list(self.data.last_word)
                     self.guess_random_word()
-                out(f"similarity for the word  {self.data.last_word} is:  {str(round(self.data.last_score * 100, 2))}")
+                else:
+                    out(f"similarity for the word  \'{self.data.last_word}\' is:  {str(round(self.data.last_score * 100, 2))}")
+                word = self.guess_word(self.data.last_word, self.data.last_score, self.data)
+                self.data.last_score = self.host.check_word(word)
+                self.data.last_word = word
             except ValueError as e:
                 out(e)
                 return
-        out("you won!!")
+        out(f"\nGame over."
+            f"you won!! \nThe secret word is \' {self.data.last_word} \' \n\n\n\n")
 
     def set_last_score(self, score):
         self.data.last_score = score

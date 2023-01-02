@@ -82,7 +82,7 @@ class GameManager:
 
     def start_human_game(self, inp, out):
         self.host.select_word_and_start_game(out)
-        out("==================================================\nTry to Guess a word!")
+        out("Try to Guess a word!")
         score = -1
         quit = False
         while score != 1.0 and not quit:
@@ -91,10 +91,7 @@ class GameManager:
             if spl[0] == '@':
                 self.host.setWord(spl[1])
             elif word != '0':
-                if self.host is OnlineHost:
-                    score = self.host.check_word(word)
-                else:
-                    score = self.host.getScore(word)
+                score = self.host.check_word(word)
                 if self.host is OnlineHost:
                     score = score * 100
                 out(f"Guessed word is: {str(word)}.\t Similarity is: {str(round(score * 100, 2))} \n")

@@ -50,6 +50,9 @@ class OnlineHost(Host):
         sleep(2)
         rules_btn = self.browser.find_element(By.ID, value='rules-close')
         rules_btn.click()
+        out(">> Finished loading.\n"
+            ">> Starting the game ")
+        out("================ Online game===============")
 
     def quitGame(self):
         self.browser.quit()

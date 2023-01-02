@@ -23,7 +23,7 @@ def filter_vocab(vocab, word_list):
 
 
 def load_from_file(name, word_list=None):
-    print("\n\n======================  loading Model  ======================")
+    print("\n\n======================  Model loading ======================")
     path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
@@ -38,6 +38,6 @@ def load_from_file(name, word_list=None):
         print(">>filtering words")
         ##filter only if given path to words
         model_vocab = filter_vocab(vocab, word_list)
-        print(f">>vocabulary is loaded, The number of words is: {len(vocab)} ")
+        print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
         print(">>done!")
     return Model(my_model, model_vocab), copy.copy(model_vocab)
