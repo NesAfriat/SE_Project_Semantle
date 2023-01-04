@@ -86,15 +86,16 @@ class GameManager:
         score = -1
         quit = False
         while score != 1.0 and not quit:
-            word = inp("Enter your next word or 0 to return:\n")
+            word = inp("-Enter your next word or 0 to return:\n")
             spl = str.split(word, "$")
             if spl[0] == '@':
                 self.host.setWord(spl[1])
             elif word != '0':
                 score = self.host.check_word(word)
-                if self.host is OnlineHost:
-                    score = score * 100
-                out(f"Guessed word is: {str(word)}.\t Similarity is: {str(round(score * 100, 2))} \n")
+                if score == -2:
+                    out("Word is not in the vocabulary, Please try another one.\n")
+                else:
+                    out(f"Guessed word is: {str(word)}.\t Similarity is: {str(round(score * 100, 2))} \n")
             else:
                 quit = True
         if not quit:

@@ -48,15 +48,16 @@ class Agent(ABC):
                     add_to_list(self.data.last_word)
                     self.guess_random_word()
                 else:
-                    out(f"similarity for the word  \'{self.data.last_word}\' is:  {str(round(self.data.last_score * 100, 2))}")
+                    out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 word = self.guess_word(self.data.last_word, self.data.last_score, self.data)
                 self.data.last_score = self.host.check_word(word)
                 self.data.last_word = word
             except ValueError as e:
                 out(e)
                 return
-        out(f"\nGame over."
-            f"you won!! \nThe secret word is \' {self.data.last_word} \' \n\n\n\n")
+        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.")
+        out(f"\nGame over.\n"
+            f"you won!!\n\n\n\n")
 
     def set_last_score(self, score):
         self.data.last_score = score
