@@ -8,7 +8,7 @@ class Data:
         self.remain_words = None
         self.last_score = None
         self.last_word = None
-        self.last_point = None
+        self.statistics = dict()
 
     def add_to_dict(self, word, distance, point):
         if word not in self.guesses:
@@ -40,3 +40,14 @@ class Data:
 
     def execute_data(self):
         pass
+
+    def reset(self):
+        self.guesses = dict()
+        self.last_score = None
+        self.last_word = None
+
+    def reset_vocab(self, vocabulary):
+        self.remain_words = copy(vocabulary)
+
+    def get_statistics(self):
+        return self.statistics

@@ -41,7 +41,6 @@ class OfflineHost(Host):
 
     def setWord(self, word):
         self.secret_word = word
-        print(f"new word is {word}")
 
     def getWordVec(self, word):
         return self.model.get_word_vec(word)

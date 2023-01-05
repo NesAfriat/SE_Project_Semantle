@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
+from Business.Hosts.OfflineHost import OfflineHost
 
 
 def add_to_list(last_word):
@@ -25,7 +26,7 @@ class Agent(ABC):
     def set_end_score(self, end_score):
         self.end_score = end_score
 
-    def set_algorithm(self, algorithm, init_func):
+    def set_algorithm(self, algorithm: object, init_func: object) -> object:
         self.algorithm = algorithm
         self.algorithm.set_data(self.data)
         self.init = init_func
@@ -80,3 +81,20 @@ class Agent(ABC):
 
     def inc_num_of_guesses(self):
         self.num_og_guesses = self.num_og_guesses + 1
+
+    def get_model(self):
+        return self.data.model
+
+    def get_vocab(self):
+        return self.data.remain_words;
+
+    def set_secret_word(self, word):
+        if self.host is OfflineHost:
+            self.host.setWord(word)
+
+    def reset_data(self, vocabulary):
+        self.data.reset_vocab(vocabulary)
+        self.data.reset()
+
+    def get_statistics(self):
+        return self.data.get_statistics()
