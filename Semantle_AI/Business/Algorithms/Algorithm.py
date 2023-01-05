@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from Business.Data import Data
+from Business.Agents.Data import Data
 
 
 class Algorithm(ABC):

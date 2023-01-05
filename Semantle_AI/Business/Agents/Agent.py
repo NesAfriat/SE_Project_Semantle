@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from Business.Algorithms.Naive import Naive
-from Business.Data import Data
+from Business.Agents.Data import Data
 
 
 def add_to_list(last_word):
