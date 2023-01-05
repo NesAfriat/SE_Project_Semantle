@@ -1,0 +1,3 @@
+game_No,agent_model_name,host_model_name,algorithm
+1,google,google,s-lateration
+2,nana10,google,n-lateration
