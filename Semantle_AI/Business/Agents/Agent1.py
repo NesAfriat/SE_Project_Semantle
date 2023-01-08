@@ -11,3 +11,5 @@ class Agent1(Agent):
     def guess_word(self, *args):
         self.last_word = self.algorithm.calculate(*args)
         return self.last_word
+    def set_host_model(self):
+        self.set_model(self.host.model)

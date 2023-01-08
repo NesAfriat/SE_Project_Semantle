@@ -3,74 +3,42 @@ from pathlib import Path
 
 import Business.ModelFactory as MF
 from Business.GameManager import GameManager
+from Service.AgentMenu.Agent1Builder import Agent1Builder
+from Service.AgentMenu.ManualAgentBuilder import ManualAgentBuilder
+
 
 class Menu:
     pca = None
 
     def __init__(self):
-        self.game_manager: GameManager = None
+        self.concrete_agent_builder = None
         self.finished = False
-        self.offline_playing = False
+        self.out = lambda *args: print(*args)
 
-    # starting the menu
     def start_menu(self):
-        while not self.finished:
-            if self.game_manager == None:
-                self.game_manager = GameManager()
-            print("menu starting...\n press on 'e' to exit menu any time.\n")
-            off_on = self.busy_choose(
-                "Choose offline or online Host", "offline.", "online")
-            if off_on == '1':
-                self.offline_playing = True
-                self.game_manager.create_offline_host()
-                self.choose_host_model()
-            elif off_on == '2':
-                self.offline_playing = False
-                self.game_manager.create_online_host()
-                self.human_or_AI_game()
-            elif off_on == 'e':
-                self.finished = True
-            else:
-                print("please choose a valid option")
+        done_loop = False
+        while not self.finished and not done_loop:
+            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual")
+            if choose == '1':
+                self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
+                self.concrete_agent_builder.start_menu()
+                self.loop_times()
+                done_loop = True
+            elif choose == '2':
+                self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
+                self.concrete_agent_builder.start_menu()
+                self.loop_times()
+                done_loop = True
+            elif choose == '3':
+                self.concrete_agent_builder = ManualAgentBuilder(self.out, input, self.finished)
+                self.concrete_agent_builder.start_menu()
+                self.loop_times()
+                done_loop = True
+            elif choose == 'e':
+                done_loop = True
 
-    # if the choose was for online
-    def choose_host_model(self):
-        ip = self.busy_choose("Choose Model", "word2vec")
-        if ip == 'b':
-            self.start_menu()
-        elif ip == '1':
-            self.game_manager.set_host_word2vec_model()
-            self.choose_dist_formula()
-        elif ip == 'e':
-            self.finished = True
-
-    def choose_dist_formula(self):
-        ip = self.busy_choose("Choose the semantic distance method", "Euclid", "Cosine")
-        if ip == 'b':
-            self.start_menu()
-        elif ip == '1':
-            self.game_manager.set_euclid_func()
-            self.human_or_AI_game()
-        elif ip == '2':
-            self.game_manager.set_cosine_function()
-            self.human_or_AI_game()
-        elif ip == 'e':
-            self.finished = True
-
-
-
-    # choose if u want to play or the agent work..
-    def human_or_AI_game(self):
-        ip = self.busy_choose(
-            "Play against computer or let the agent do the job", "play Manually", "let the agent work")
-        if ip == 'b':
-            self.choose_host_model()
-        elif ip == '1':
-            self.start_commandline_game()
-        elif ip == '2':
-            self.choose_agent()
-        elif ip == 'e':
-            self.finished = True
+    def loop_times(self):
+        self.concrete_agent_builder.get_result().start_play(self.out)
 
     def choose_agent(self):
         def choose_agent_model():
@@ -101,22 +69,6 @@ class Menu:
         elif ip == 'e':
             self.finished = True
 
-    def choose_algo(self):
-        ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce", "Trilateraion")
-        if ip == 'b':
-            self.choose_agent()
-        elif ip == '1':
-            self.game_manager.set_agent_naive_algorithm()
-            self.click_ok_and_start()
-        elif ip == '2':
-            self.game_manager.set_agent_Brute_Force_algorithm()
-            self.click_ok_and_start()
-        elif ip == '3':
-            self.game_manager.set_agent_trilateration_algorithm()
-            self.click_ok_and_start()
-        elif ip == 'e':
-            self.finished = True
-
     def busy_choose(self, to_write, *args):
         acc = ""
         num = 1
@@ -133,7 +85,7 @@ class Menu:
 
     def click_ok_and_start(self):
         ip = input("\npress enter to start...  \n")
-        self.game_manager.start_agent_game(lambda *args: print(*args))
+        self.concrete_agent_builder.get_result().start()
 
     def start_commandline_game(self):
         self.game_manager.start_human_game(input, lambda m: print(m))

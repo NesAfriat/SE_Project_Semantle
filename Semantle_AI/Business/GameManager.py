@@ -26,59 +26,22 @@ class GameManager:
         self.dist_formula = None
         self.end_score = None
 
-    def create_offline_host(self):
-        self.host = OfflineHost()
-
-    def create_online_host(self):
-        #online on cosine distance
-        self.end_score = 1
-        self.host = OnlineHost()
 
         ##set host word2vec model
 
-    def set_host_word2vec_model(self):
-        self.host_model, self.vocabulary = MF.load_from_file(self.WORD2VEC, self.WORDS_LIST)
-        self.host.set_model(self.host_model, self.vocabulary)
+
 
         # create word2vec for agent only online
 
-    def create_agent_word2vec_model_online(self):
-        self.agent_model, self.vocabulary = MF.load_from_file(self.WORD2VEC, self.WORDS_LIST)
-        self.agent.set_model(self.agent_model)
-        self.agent_model.set_dist_function(MethodDistances.cosine_function())
+
 
         ##set to the agent the same model as the host
 
-    def set_agent_host_model(self):
-        self.agent_model = self.host_model
-        self.agent.set_model(self.agent_model)
 
-    def create_agent1(self):
-        self.agent = Agent1()
-        self.agent.set_host(self.host)
-        self.agent.set_end_score(self.end_score)
 
-    def set_euclid_func(self):
-        self.dist_formula = MethodDistances.euclid_function()
-        self.host_model.set_dist_function(MethodDistances.euclid_function())
-        self.end_score = 0
 
-    def set_cosine_function(self):
-        self.dist_formula = MethodDistances.cosine_function()
-        self.host_model.set_dist_function(MethodDistances.cosine_function())
-        self.end_score = 1
 
-    def set_agent_Brute_Force_algorithm(self):
-        algo = BruteForce(self.agent_model.dist_func)
-        self.agent.set_algorithm(algo, lambda: self.agent.guess_n_random_word(1))
 
-    def set_agent_naive_algorithm(self):
-        algo = Naive()
-        self.agent.set_algorithm(algo, lambda: None)
-
-    def set_agent_trilateration_algorithm(self):
-        algo = Trilateration()
-        self.agent.set_algorithm(algo, lambda: self.agent.guess_n_random_word(self.agent_model.get_number_of_dim() + 1))
 
     def start_human_game(self, inp, out):
         self.host.select_word_and_start_game(out)

@@ -1,8 +1,9 @@
 from random import choice
 import math
 from Business.Hosts.Host import Host
-
-
+import Business.ModelFactory as MF
+WORD2VEC = "Google_Word2Vec.bin"
+WORDS_LIST = "words.txt"
 class OfflineHost(Host):
 
     def quitGame(self):
@@ -12,6 +13,10 @@ class OfflineHost(Host):
         self.model = None
         self.vocabulary = None
         self.secret_word = None
+
+    def set_host_word2vec_model(self):
+        host_model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
+        self.set_model(host_model, vocabulary)
 
     def get_model(self):
         return self.model
@@ -28,7 +33,7 @@ class OfflineHost(Host):
     def check_word(self, word):
         if word in self.vocabulary:
             return self.model.get_distance_of_word(self.secret_word, word)
-        return -2;
+        return -2
 
     def set_word(self, new_word):
         self.secret_word = new_word

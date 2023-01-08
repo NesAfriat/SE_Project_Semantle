@@ -1,9 +1,15 @@
 from abc import ABC, abstractmethod
 
+from Business import MethodDistances
+from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
-from Business.Hosts.OfflineHost import OfflineHost
+from Business.Algorithms.Trilateration import Trilateration
+import Business.ModelFactory as MF
 
+
+WORD2VEC = "Google_Word2Vec.bin"
+WORDS_LIST = "words.txt"
 
 def add_to_list(last_word):
     pass
@@ -23,10 +29,23 @@ class Agent(ABC):
     def guess_word(self, *args):
         pass
 
+    def set_agent_Brute_Force_algorithm(self):
+        algo = BruteForce(self.data.model.dist_func)
+        self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
+
+
+    def set_agent_naive_algorithm(self):
+        algo = Naive()
+        self.set_algorithm(algo, lambda: None)
+
+    def set_agent_trilateration_algorithm(self):
+        algo = Trilateration()
+        self.set_algorithm(algo, lambda: self.guess_n_random_word(self.data.model.get_number_of_dim() + 1))
+
     def set_end_score(self, end_score):
         self.end_score = end_score
 
-    def set_algorithm(self, algorithm: object, init_func: object) -> object:
+    def set_algorithm(self, algorithm, init_func):
         self.algorithm = algorithm
         self.algorithm.set_data(self.data)
         self.init = init_func
@@ -37,13 +56,19 @@ class Agent(ABC):
     def set_host(self, host):
         self.host = host
 
+    def set_agent_word2vec_model_online(self):
+        model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
+        self.set_model(model)
+        self.data.model.set_dist_function(MethodDistances.cosine_function())
+
     # only guess word should be abstract.
     def start_play(self, out):
+        self.host.select_word_and_start_game(out)
         self.data.last_score = -1
 
         # for brute force
         self.init()
-        while abs(self.data.last_score - self.end_score) > 0.0001:
+        while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
                 if self.data.last_score == -2:
                     add_to_list(self.data.last_word)

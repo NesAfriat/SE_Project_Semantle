@@ -6,7 +6,7 @@ class Data:
         self.guesses = dict()
         self.model = None
         self.remain_words = None
-        self.last_score = None
+        self.last_score = -1
         self.last_word = None
         self.statistics = dict()
 
