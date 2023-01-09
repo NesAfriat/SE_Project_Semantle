@@ -29,12 +29,16 @@ class AgentBuilder(ABC):
         host.start_menu()
         self.agent.set_host(host.get_result())
 
+    def create_offline_loop_host(self):
+        host = OfflineHostBuilder(self.out, self.inp, self.finished)
+        host.start_loop_game()
+        self.agent.set_host(host.get_result())
+
     def create_online_host(self):
         # online on cosine distance
         host = OnlineHostBuilder(self.out, self.inp, self.finished)
         host.start_menu()
         self.agent.set_host(host.get_result())
-
 
     def busy_choose(self, to_write, *args):
         acc = ""

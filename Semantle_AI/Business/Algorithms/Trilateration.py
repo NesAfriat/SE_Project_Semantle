@@ -7,10 +7,16 @@ class Trilateration(Algorithm):
         super().__init__()
 
     def calculate(self, *args):
-        point = self.trilateration(self.data.get_points(), self.data.get_distances())
-        return self.data.get_most_similar(point)[0][0]
+        n = self.data.model.get_number_of_dim() + 1
+        points = self.data.get_points()[-n:]
+        distances = self.data.get_distances()[-n:]
+        point = self.trilateration(points, distances)
+        ret = self.data.get_most_similar(point)
+        return ret[0][0]
+
 
     def trilateration(self, points, dists):
+
         point_sub = points[len(points) - 1]
         A = []
         b = []
@@ -21,7 +27,6 @@ class Trilateration(Algorithm):
             pointi_sub_power_2 = list(map(lambda x: x ** 2, points[i]))
             zipped1 = list(zip(pointi_sub_power_2, point_sub_power_2))
             di = dists[i] ** 2
-
             sum = dist_last_power - di
             for c1, c2 in zipped1:
                 sum += (c1 - c2)

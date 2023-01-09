@@ -17,6 +17,11 @@ class OfflineHostBuilder(HostBuilder):
     def start_menu(self):
         self.step_A()
 
+    def start_loop_game(self):
+        self.host.set_host_word2vec_model()
+        dist_formula = MethodDistances.euclid_function()
+        self.host.model.set_dist_function(dist_formula)
+
     def step_A(self):
 
         def choose_host_model():

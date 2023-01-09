@@ -1,0 +1,4 @@
+game_No,agent_model_name,host_model_name,algorithm
+1,Google_Word2Vec.bin,Google_Word2Vec.bin,Naive
+2,Google_Word2Vec.bin,Google_Word2Vec.bin,Brute_force
+3,Google_Word2Vec.bin,Google_Word2Vec.bin,Trilateration

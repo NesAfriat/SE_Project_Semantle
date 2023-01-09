@@ -1,8 +1,4 @@
-import os.path
-from pathlib import Path
-
-import Business.ModelFactory as MF
-from Business.GameManager import GameManager
+from Reports.GraphCalculator import calculate_graph
 from Service.AgentMenu.Agent1Builder import Agent1Builder
 from Service.AgentMenu.ManualAgentBuilder import ManualAgentBuilder
 
@@ -18,39 +14,52 @@ class Menu:
     def start_menu(self):
         done_loop = False
         while not self.finished and not done_loop:
-            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual")
+            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual", "Export algorithms graph", "Exit")
             if choose == '1':
                 self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
-                self.loop_times()
-                done_loop = True
+                self.start()
             elif choose == '2':
                 self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
-                self.loop_times()
-                done_loop = True
+                self.start()
             elif choose == '3':
                 self.concrete_agent_builder = ManualAgentBuilder(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
+                self.start()
+            elif choose == '4':
                 self.loop_times()
+            elif choose == '5':
+                done_loop = True
+
+    def start(self):
+        self.concrete_agent_builder.get_result().start_play(self.out)
+
+    def loop_times(self):
+        done_loop = False
+        while not done_loop:
+            choose = input("Please type number of executions for each algorithm, to exit press \'e\'.\n")
+            if choose.isnumeric():
+                self.concrete_agent_builder = Agent1Builder()
+                self.concrete_agent_builder.start_loop_menu()
+                calculate_graph(int(choose), self.concrete_agent_builder.get_result())
                 done_loop = True
             elif choose == 'e':
                 done_loop = True
-
-    def loop_times(self):
-        self.concrete_agent_builder.get_result().start_play(self.out)
+            else:
+                print("Please choose a valid option")
 
     def choose_agent(self):
         def choose_agent_model():
-            ip = self.busy_choose(
+            choose = self.busy_choose(
                 "Choose Agent Model", "Word2Vec")
-            if ip == 'b':
+            if choose == 'b':
                 self.choose_agent()
-            elif ip == '1':
+            elif choose == '1':
                 self.game_manager.create_agent1()
                 self.game_manager.create_agent_word2vec_model_online()
                 self.choose_algo()
-            elif ip == 'e':
+            elif choose == 'e':
                 self.finished = True
 
         ip = self.busy_choose("Choose Agent", "agent1", "agent2")
@@ -84,7 +93,7 @@ class Menu:
                 print("\nplease choose valid option please")
 
     def click_ok_and_start(self):
-        ip = input("\npress enter to start...  \n")
+        input("\npress enter to start...  \n")
         self.concrete_agent_builder.get_result().start()
 
     def start_commandline_game(self):

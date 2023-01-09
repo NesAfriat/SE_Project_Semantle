@@ -2,6 +2,7 @@ import copy
 import Business.ModelFactory as MF
 from Business import MethodDistances
 from Business.Agents.Agent1 import Agent1
+from Business.Agents.Data import Data
 from Business.Algorithms.BruteForce import BruteForce
 from Business.Algorithms.Naive import Naive
 from Business.Algorithms.Trilateration import Trilateration
@@ -26,46 +27,43 @@ class GameManager:
         self.dist_formula = None
         self.end_score = None
 
-
         ##set host word2vec model
-
-
 
         # create word2vec for agent only online
 
-
-
         ##set to the agent the same model as the host
 
-
-
-
-
-
-
     def start_human_game(self, inp, out):
-        self.host.select_word_and_start_game(out)
-        out("Try to Guess a word!")
-        score = -1
-        quit = False
-        while score != 1.0 and not quit:
-            word = inp("-Enter your next word or 0 to return:\n")
-            spl = str.split(word, "$")
-            if spl[0] == '@':
-                self.host.setWord(spl[1])
-            elif word != '0':
-                score = self.host.check_word(word)
-                if score == -2:
-                    out("Word is not in the vocabulary, Please try another one.\n")
-                else:
-                    out(f"Guessed word is: {str(word)}.\t Similarity is: {str(round(score * 100, 2))} \n")
-            else:
-                quit = True
-        if not quit:
-            out("you won!!")
-        else:
-            out("see you next time!!")
-        self.host.quitGame()
+        self.agent.start_play(inp, out)
+        # data = Data()
+        # self.host.select_word_and_start_game(out)
+        # out("Try to Guess a word!")
+        # score = -1
+        # quit = False
+        # data.last_score = -1
+        # data.remain_words = copy.copy(self.vocabulary)
+        # data.update_statistic()
+        # while score != 1.0 and not quit:
+        #     word = self.agent.guess_word()
+        #     spl = str.split(word, "$")
+        #     if spl[0] == '@':
+        #         self.host.setWord(spl[1])
+        #     elif word != '0':
+        #         score = self.host.check_word(word)
+        #         if score == -2:
+        #             out("Word is not in the vocabulary, Please try another one.\n")
+        #         else:
+        #             data.last_score = self.host.check_word(word)
+        #             data.last_word = word
+        #             data.update_statistic()
+        #             out(f"Guessed word is: {str(word)}.\t Similarity is: {str(round(score * 100, 2))} \n")
+        #     else:
+        #         quit = True
+        # if not quit:
+        #     out("you won!!")
+        # else:
+        #     out("see you next time!!")
+        # self.host.quitGame()
 
     def start_agent_game(self, out):
         self.host.select_word_and_start_game(out)

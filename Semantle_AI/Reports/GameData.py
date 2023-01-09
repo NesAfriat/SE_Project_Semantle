@@ -1,8 +1,7 @@
-
-class GameData():
-    def __init__(self ,agent_model,host_model,algorithm,distance_method):
-        self.agent_model= agent_model
-        self.host_model= host_model
+class GameData:
+    def __init__(self, agent_model, host_model, algorithm, distance_method):
+        self.agent_model = agent_model
+        self.host_model = host_model
         self.algorithm = algorithm
         self.distance_method = distance_method
 
