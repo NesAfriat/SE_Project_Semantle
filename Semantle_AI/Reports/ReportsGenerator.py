@@ -1,7 +1,10 @@
+import errno
+
 from Reports.GuessData import GuessData
 from Reports.GameData import GameData
 import os
 from pathlib import Path
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import csv
@@ -10,8 +13,9 @@ from datetime import datetime
 game_guesses = {}  # guesses by game numbers
 games_data = {}
 
-    # game_extension - duration,is_won,is_online, number_total_guesses,num_random_guesses,duration
-    # guess extension - semantic_distance,duration_from_last,vocab_words_remain
+
+# game_extension - duration,is_won,is_online, number_total_guesses,num_random_guesses,duration
+# guess extension - semantic_distance,duration_from_last,vocab_words_remain
 
 def save_guess_data(game_number, guess_num, next_guess_num_options):
     guess = GuessData(guess_num, next_guess_num_options)
@@ -19,9 +23,11 @@ def save_guess_data(game_number, guess_num, next_guess_num_options):
         game_guesses[game_number] = list()
     game_guesses[game_number].append(guess)
 
-def save_game_data( game_number, agent_model_name, host_model_name, algorithm_name, distance_method):
+
+def save_game_data(game_number, agent_model_name, host_model_name, algorithm_name, distance_method):
     game = GameData(agent_model_name, host_model_name, algorithm_name, distance_method)
     games_data[game_number] = game
+
 
 def generate_name():
     # datetime object containing current date and time
@@ -29,13 +35,20 @@ def generate_name():
     dt_string = now.strftime("%d-%m-%Y_%H%M")
     return "reports_" + dt_string
 
+
 def create_directory():
     # Directory
     directory = generate_name()
-    Path(directory).mkdir(parents=True, exist_ok=True)
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Reports_output/" + directory
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+        os.makedirs(path, mode=0o7777)
+        print("Directory '% s' created" % path)
+    except IOError as e:
+        pass
+    return path
 
-    print("Directory '% s' created" % directory)
-    return directory
 
 def generate_data_files():
     dir_name = create_directory()
@@ -67,6 +80,7 @@ def generate_data_files():
             writer.writerow([game_num, amodel, hmmodel, algo])
     return dir_name
 
+
 def generate_algo_guesses_from_csv():
     dir_name = generate_data_files()
     # Read in the guesses CSV file
@@ -78,26 +92,50 @@ def generate_algo_guesses_from_csv():
     # Group the data by algorithm and get the mean number of remaining words for each algorithm
     grouped_df = df.groupby("algorithm")
 
-    # Get the names of the algorithms
-    def extract_values(group):
-        return [(row['algorithm'], row['guess_No'], row['remaining_guesses']) for _, row in group.iterrows()]
+    try:
+        # Get the names of the algorithms
+        def extract_values(group):
+            return [(row['algorithm'], row['guess_No'], row['remaining_guesses']) for _, row in group.iterrows()]
 
-    algo_results = [extract_values(group) for _, group in grouped_df]
+        algo_results = [extract_values(group) for _, group in grouped_df]
 
-    # Extract the guesses_No and remained_words coordinates and for each algorithm
-    x1, y1 = zip(*[(x, y) for (algo, x, y) in algo_results[0]])
-    algo1 = algo_results[0][0][0]
-    x2, y2 = zip(*[(x, y) for (algo, x, y) in algo_results[1]])
-    algo2 = algo_results[1][0][0]
-    x3, y3 = zip(*[(x, y) for (algo, x, y) in algo_results[2]])
-    algo3 = algo_results[2][0][0]
-    # Create a figure and a subplot
-    fig, ax = plt.subplots()
-    # Plot the points for each list on the subplot
-    ax.plot(x1, y1, 'o-', color='orange', label=algo1, linewidth=0.5)
-    ax.plot(x2, y2, 'o-', color='blue', label=algo2, linewidth=0.5)
-    ax.plot(x3, y3, 'o-', color='red', label=algo3, linewidth=0.5)
+        # Extract the guesses_No and remained_words coordinates and for each algorithm
+        x1, y1 = zip(*[(x, y) for (algo, x, y) in algo_results[0]])
+        algo1 = algo_results[0][0][0]
+        x2, y2 = zip(*[(x, y) for (algo, x, y) in algo_results[1]])
+        algo2 = algo_results[1][0][0]
+        x3, y3 = zip(*[(x, y) for (algo, x, y) in algo_results[2]])
+        algo3 = algo_results[2][0][0]
+        # Create a figure and a subplot
+        fig, ax = plt.subplots()
+        n = max(len(x1), len(x2), len(x3))
+        thickness = n/300
+        # Plot the points for each list on the subplot
+        ax.plot(x1, y1, 'o-', color='orange', label=algo1, linewidth=thickness, markersize=thickness)
+        ax.plot(x2, y2, 'o-', color='blue', label=algo2, linewidth=thickness, markersize=thickness)
+        ax.plot(x3, y3, 'o-', color='red', label=algo3, linewidth=thickness, markersize=thickness)
+        pts_x = n
+        pts_y = n
+        # resizing the plot by number of points
+        set_size(pts_x/200, pts_y/200, ax)
+        plt.xticks(fontsize=thickness*2)
+        plt.yticks(fontsize=thickness*2)
+        # Add a legend and show the plot
+        ax.legend()
+        plt.show()
+    except IOError as e:
+        if e.errno == errno.EPIPE:
+            print("There was pipe error. please try again.")
+            pass
 
-    # Add a legend and show the plot
-    ax.legend()
-    plt.show()
+
+def set_size(w, h, ax=None):
+    """ w, h: width, height in inches """
+    if not ax: ax = plt.gca()
+    l = ax.figure.subplotpars.left
+    r = ax.figure.subplotpars.right
+    t = ax.figure.subplotpars.top
+    b = ax.figure.subplotpars.bottom
+    figw = float(w) / (r - l)
+    figh = float(h) / (t - b)
+    ax.figure.set_size_inches(figw, figh)
