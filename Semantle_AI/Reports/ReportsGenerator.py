@@ -85,19 +85,19 @@ def generate_algo_guesses_from_csv():
     algo_results = [extract_values(group) for _, group in grouped_df]
 
     # Extract the guesses_No and remained_words coordinates and for each algorithm
-    guesses_No, remained_gusses = zip(*[(x, y) for (algo, x, y) in algo_results[0]])
+    x1, y1 = zip(*[(x, y) for (algo, x, y) in algo_results[0]])
     algo1 = algo_results[0][0][0]
     x2, y2 = zip(*[(x, y) for (algo, x, y) in algo_results[1]])
     algo2 = algo_results[1][0][0]
     x3, y3 = zip(*[(x, y) for (algo, x, y) in algo_results[2]])
     algo3 = algo_results[2][0][0]
-
     # Create a figure and a subplot
     fig, ax = plt.subplots()
     # Plot the points for each list on the subplot
-    ax.plot(guesses_No, remained_gusses, 'o-', color='orange', label=algo1, linewidth=0.5)
+    ax.plot(x1, y1, 'o-', color='orange', label=algo1, linewidth=0.5)
     ax.plot(x2, y2, 'o-', color='blue', label=algo2, linewidth=0.5)
     ax.plot(x3, y3, 'o-', color='red', label=algo3, linewidth=0.5)
+
     # Add a legend and show the plot
     ax.legend()
     plt.show()

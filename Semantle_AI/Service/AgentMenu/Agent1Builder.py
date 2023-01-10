@@ -50,9 +50,9 @@ class Agent1Builder(AgentBuilder):
             prev_menu = False
             while not self.finished and not prev_menu:
                 if self.is_offline:
-                    ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce", "Trilateration")
+                    ip = self.busy_choose("Choose Algorithm", "BruteForce", "Multi-Lateration", "Trilateration")
                 else:
-                    ip = self.busy_choose("Choose Algorithm", "Naive", "BruteForce")
+                    ip = self.busy_choose("Choose Algorithm", "BruteForce", "Multi-Lateration")
                 if ip == 'b':
                     prev_menu = True
                 elif ip == '1':
