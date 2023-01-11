@@ -1,12 +1,13 @@
 import errno
 
+from matplotlib import pyplot as plt
+
 from Reports.GuessData import GuessData
 from Reports.GameData import GameData
 import os
 from pathlib import Path
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib
 import csv
 from datetime import datetime
 

@@ -7,6 +7,7 @@ WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
 
 
+
 class HostBuilder(ABC):
     def __init__(self, out, inp, finished):
         self.finished = finished

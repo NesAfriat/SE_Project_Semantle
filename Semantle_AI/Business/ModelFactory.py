@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from gensim.models import KeyedVectors
 from Business.Model.Model import Model
+import gensim.downloader as api
 
 
 def existing_model(path):
@@ -20,6 +21,22 @@ def filter_vocab(vocab, word_list):
         return voc
     except ValueError as e:
         raise e
+
+
+def load_from_gensim(name, word_list=None):
+    print("\n\n======================  Model loading ======================")
+    print(">>Loading model.")
+    my_model = api.load(name)
+    print(">>model loaded successfully!")
+    print(">>loading vocabulary")
+    # getting the vocabulary
+    vocab = set(my_model.key_to_index)
+    print(">>filtering words")
+    ##filter only if given path to words
+    model_vocab = filter_vocab(vocab, word_list)
+    print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
+    print(">>done!")
+    return Model(my_model, model_vocab), copy.copy(model_vocab)
 
 
 def load_from_file(name, word_list=None):

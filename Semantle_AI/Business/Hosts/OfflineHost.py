@@ -2,8 +2,12 @@ from random import choice
 import math
 from Business.Hosts.Host import Host
 import Business.ModelFactory as MF
+
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
+
+
+
 class OfflineHost(Host):
 
     def quitGame(self):
@@ -16,6 +20,10 @@ class OfflineHost(Host):
 
     def set_host_word2vec_model(self):
         host_model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
+        self.set_model(host_model, vocabulary)
+
+    def set_host_model_from_url(self, name):
+        host_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
         self.set_model(host_model, vocabulary)
 
     def get_model(self):

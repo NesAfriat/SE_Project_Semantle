@@ -3,7 +3,10 @@ from Business.Hosts.OfflineHost import OfflineHost
 from Service.HostMenu.HostBuilder import HostBuilder
 import Business.ModelFactory as MF
 from Business.Agents.Agent1 import Agent1
-
+FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
+GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
+WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB
+WORD2VEC_GOOGLE = "word2vec-google-news-300"  # 1.662GB
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
 
@@ -27,15 +30,27 @@ class OfflineHostBuilder(HostBuilder):
         def choose_host_model():
             return_prev = False
             while not return_prev and not self.finished:
-                ip = self.busy_choose("Choose Model", "word2vec")
-                if ip == 'b':
-                    return_prev = True
-                elif ip == '1':
+                ip = self.busy_choose("Choose Model", "word2vec", FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+                                      WORD2VEC_GOOGLE)
+                if ip == '1':
                     self.host.set_host_word2vec_model()
                     self.step_B()
-                    return_prev = True
+                elif ip == '2':
+                    self.host.set_host_model_from_url(FASTTESXT_WIKI)
+                    self.step_B()
+                elif ip == '3':
+                    self.host.set_host_model_from_url(GLOVE_WIKI)
+                    self.step_B()
+                elif ip == '4':
+                    self.host.set_host_model_from_url(WORD2VEC_RUSCORPORA)
+                    self.step_B()
+                elif ip == '5':
+                    self.host.set_host_model_from_url(WORD2VEC_GOOGLE)
+                    self.step_B()
                 elif ip == 'e':
                     self.finished = True
+                # pressed b
+                return_prev = True
 
         return choose_host_model()
 
