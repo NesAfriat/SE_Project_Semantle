@@ -1,6 +1,5 @@
 import copy
 import os
-from pathlib import Path
 from gensim.models import KeyedVectors
 from Business.Model.Model import Model
 import gensim.downloader as api
@@ -14,7 +13,7 @@ def filter_vocab(vocab, word_list):
     if word_list is None:
         return vocab
     try:
-        path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + word_list
+        path =  "./Business/Model/" + word_list
         file = open(path, "r")
         words_set = set((file.read()).split("\n"))
         voc = words_set & vocab
@@ -41,7 +40,7 @@ def load_from_gensim(name, word_list=None):
 
 def load_from_file(name, word_list=None):
     print("\n\n======================  Model loading ======================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
+    path =  "./Business/Model/" + name
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")

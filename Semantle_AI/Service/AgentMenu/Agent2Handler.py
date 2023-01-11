@@ -9,8 +9,9 @@ class Agent2Handler(AgentHandler):
 
     def start_menu(self):
         self.choose_agent_model()
-        self.choose_algo()
         self.choose_host()
+        self.choose_algo()
+
 
     def on_offline_mode(self):
         pass
