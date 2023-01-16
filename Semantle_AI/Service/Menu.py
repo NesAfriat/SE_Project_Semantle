@@ -1,7 +1,7 @@
-from Reports.GraphCalculator import calculate_graph
-from Service.AgentMenu.Agent1Handler import Agent1Handler
-from Service.AgentMenu.Agent2Handler import Agent2Handler
-from Service.AgentMenu.ManualAgentHandler import ManualAgentHandler
+from Business.Reports.GraphCalculator import calculate_graph
+from Service.AgentHandlers.Agent1Handler import Agent1Handler
+from Service.AgentHandlers.Agent2Handler import Agent2Handler
+from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
 
 
 class Menu:

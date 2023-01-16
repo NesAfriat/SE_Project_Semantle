@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from Business.Agents import Agent
 import Business.ModelFactory as MF
 from Business.Agents.Agent1 import Agent1
-from Service.HostMenu.OfflineHostBuilder import OfflineHostBuilder
-from Service.HostMenu.OnlineHostBuilder import OnlineHostBuilder
+from Service.HostHandlers.OfflineHostHandler import OfflineHostBuilder
+from Service.HostHandlers.OnlineHostBuilder import OnlineHostBuilder
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
 WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB

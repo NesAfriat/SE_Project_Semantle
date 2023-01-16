@@ -1,5 +1,5 @@
 from Business.Agents.Agent1 import Agent1
-from Service.AgentMenu.AgentHandler import AgentHandler
+from Service.AgentHandlers.AgentHandler import AgentHandler
 
 
 class Agent1Handler(AgentHandler):
