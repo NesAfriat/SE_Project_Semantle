@@ -29,3 +29,8 @@ class Model:
 
     def get_number_of_dim(self):
         return self.model.vector_size
+
+    def models_vocab_intersection(self, model2: Model) -> set:
+        vocab1 = self.get_vocab()
+        vocab2 = model2.get_vocab()
+        return vocab1 & vocab2

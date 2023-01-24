@@ -1,8 +1,9 @@
 import copy
 import os
-from pathlib import Path
 from gensim.models import KeyedVectors
 from Business.Model.Model import Model
+import gensim.downloader as api
+import Path
 
 
 def existing_model(path):
@@ -22,9 +23,25 @@ def filter_vocab(vocab, word_list):
         raise e
 
 
+def load_from_gensim(name, word_list=None):
+    print("\n\n======================  Model loading ======================")
+    print(">>Loading model.")
+    my_model = api.load(name)
+    print(">>model loaded successfully!")
+    print(">>loading vocabulary")
+    # getting the vocabulary
+    vocab = set(my_model.key_to_index)
+    print(">>filtering words")
+    ##filter only if given path to words
+    model_vocab = filter_vocab(vocab, word_list)
+    print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
+    print(">>done!")
+    return Model(my_model, model_vocab), copy.copy(model_vocab)
+
+
 def load_from_file(name, word_list=None):
     print("\n\n======================  Model loading ======================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
+    path = "./Business/Model/" + name
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")

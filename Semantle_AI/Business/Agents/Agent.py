@@ -6,6 +6,7 @@ from Business.Agents.Data import Data
 from Business.Algorithms.Trilateration import Trilateration
 import Business.ModelFactory as MF
 from Business.Hosts.OfflineHost import OfflineHost
+from Business.Model.Model import Model
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
