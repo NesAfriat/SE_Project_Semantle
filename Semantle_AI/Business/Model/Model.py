@@ -26,11 +26,13 @@ class Model:
 
     def get_vocab(self):
         return self.vocab
+    def get_model(self):
+        return self.model
 
     def get_number_of_dim(self):
         return self.model.vector_size
 
     def models_vocab_intersection(self, model2) -> set:
-        vocab1 = self.get_vocab()
-        vocab2 = model2.get_vocab()
+        vocab1 = set(self.model.key_to_index)
+        vocab2 = set(model2.get_model.key_to_index)
         return vocab1 & vocab2
