@@ -1,6 +1,7 @@
-from Reports.GraphCalculator import calculate_graph
-from Service.AgentMenu.Agent1Builder import Agent1Builder
-from Service.AgentMenu.ManualAgentBuilder import ManualAgentBuilder
+from Business.Reports.GraphCalculator import calculate_graph
+from Service.AgentHandlers.Agent1Handler import Agent1Handler
+from Service.AgentHandlers.Agent2Handler import Agent2Handler
+from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
 
 
 class Menu:
@@ -16,15 +17,15 @@ class Menu:
         while not self.finished and not done_loop:
             choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual", "Export algorithms graph", "Exit")
             if choose == '1':
-                self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
+                self.concrete_agent_builder = Agent1Handler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
                 self.start()
             elif choose == '2':
-                self.concrete_agent_builder = Agent1Builder(self.out, input, self.finished)
+                self.concrete_agent_builder = Agent2Handler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
                 self.start()
             elif choose == '3':
-                self.concrete_agent_builder = ManualAgentBuilder(self.out, input, self.finished)
+                self.concrete_agent_builder = ManualAgentHandler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
                 self.start()
             elif choose == '4':
@@ -40,7 +41,7 @@ class Menu:
         while not done_loop:
             choose = input("Please type number of executions for each algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
-                self.concrete_agent_builder = Agent1Builder()
+                self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu()
                 calculate_graph(int(choose), self.concrete_agent_builder.get_result())
                 done_loop = True
@@ -48,35 +49,6 @@ class Menu:
                 done_loop = True
             else:
                 print("Please choose a valid option")
-
-    def choose_agent(self):
-        def choose_agent_model():
-            choose = self.busy_choose(
-                "Choose Agent Model", "Word2Vec")
-            if choose == 'b':
-                self.choose_agent()
-            elif choose == '1':
-                self.game_manager.create_agent1()
-                self.game_manager.create_agent_word2vec_model_online()
-                self.choose_algo()
-            elif choose == 'e':
-                self.finished = True
-
-        ip = self.busy_choose("Choose Agent", "agent1", "agent2")
-        if ip == 'b':
-            self.human_or_AI_game()
-        elif ip == '1':
-            if self.offline_playing:
-                self.game_manager.create_agent1()
-                self.game_manager.set_agent_host_model()
-                self.choose_algo()
-            else:
-                choose_agent_model()
-        elif ip == '2':
-            self.game_manager.create_agent1()
-            choose_agent_model()
-        elif ip == 'e':
-            self.finished = True
 
     def busy_choose(self, to_write, *args):
         acc = ""

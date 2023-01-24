@@ -29,7 +29,7 @@ class Agent(ABC):
     def set_agent_Brute_Force_algorithm(self):
         algo = BruteForce(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
-        self.host
+
 
 
     def set_agent_naive_algorithm(self):
@@ -60,6 +60,10 @@ class Agent(ABC):
         model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
         self.set_model(model)
         self.data.model.set_dist_function(MethodDistances.cosine_function())
+
+    def set_agent_model_from_url(self, name):
+        agent_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
+        self.set_model(agent_model)
 
     def set_agent_word2vec_model(self):
         model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)

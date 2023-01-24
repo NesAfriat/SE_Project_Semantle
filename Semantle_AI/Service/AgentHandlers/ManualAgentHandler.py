@@ -1,8 +1,8 @@
 from Business.Agents.ManualAgent import ManualAgent
-from Service.AgentMenu.AgentBuilder import AgentBuilder
+from Service.AgentHandlers.AgentHandler import AgentHandler
 
 
-class ManualAgentBuilder(AgentBuilder):
+class ManualAgentHandler(AgentHandler):
     def start_menu(self):
         self.agent.set_agent_word2vec_model()
 

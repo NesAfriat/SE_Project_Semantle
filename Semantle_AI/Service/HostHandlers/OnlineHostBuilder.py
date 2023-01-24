@@ -1,5 +1,5 @@
 from Business.Hosts.OnlineHost import OnlineHost
-from Service.HostMenu.HostBuilder import HostBuilder
+from Service.HostHandlers.HostHandler import HostBuilder
 
 
 class OnlineHostBuilder(HostBuilder):

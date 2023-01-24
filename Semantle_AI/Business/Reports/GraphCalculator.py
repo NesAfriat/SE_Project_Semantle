@@ -1,12 +1,9 @@
 import copy
-import Reports.ReportsGenerator as reporter
-import Business.Model
-import random
+import Business.Reports.ReportsGenerator as reporter
 import Business.Algorithms as alg
 from Business import MethodDistances
 from Business.Agents.Agent import Agent
-from Business.Model.Model import Model
-from Reports.Calculator import Calculator
+from Business.Reports.Calculator import Calculator
 
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"

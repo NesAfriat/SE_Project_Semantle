@@ -1,12 +1,9 @@
 import errno
-
-from Reports.GuessData import GuessData
-from Reports.GameData import GameData
+from matplotlib import pyplot as plt
+from Business.Reports.GuessData import GuessData
+from Business.Reports.GameData import GameData
 import os
-from pathlib import Path
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import csv
 from datetime import datetime
 
@@ -39,7 +36,7 @@ def generate_name():
 def create_directory():
     # Directory
     directory = generate_name()
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Reports_output/" + directory
+    path = "./Reports_output/" + directory
     try:
         if os.path.exists(path):
             os.remove(path)
