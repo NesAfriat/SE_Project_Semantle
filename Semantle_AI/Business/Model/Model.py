@@ -33,6 +33,6 @@ class Model:
         return self.model.vector_size
 
     def models_vocab_intersection(self, model2) -> set:
-        vocab1 = set(self.model.key_to_index)
-        vocab2 = set(model2.get_model.key_to_index)
+        vocab1 = self.vocab
+        vocab2 = model2
         return vocab1 & vocab2
