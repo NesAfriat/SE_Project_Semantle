@@ -22,7 +22,7 @@ class Agent1Handler(AgentHandler):
     def start_loop_menu(self):
         self.create_offline_loop_host()
         self.agent.set_host_model()
-        self.agent.set_agent_Brute_Force_algorithm()
+        self.agent.set_agent_MultiLateration_algorithm()
 
     def __init__(self, out, inp, finished):
         super().__init__(out, inp, finished)

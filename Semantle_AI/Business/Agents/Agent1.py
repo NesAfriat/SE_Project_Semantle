@@ -9,8 +9,8 @@ class Agent1(Agent):
         super().__init__()
         self.last_word = None
 
-    def guess_word(self, *args):
-        self.last_word = self.algorithm.calculate(*args)
+    def guess_word(self):
+        self.last_word = self.algorithm.calculate()
         return self.last_word
 
     def set_host_model(self):

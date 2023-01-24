@@ -7,7 +7,7 @@ class Naive(Algorithm):
     def __init__(self):
         super().__init__()
 
-    def calculate(self, *args):
+    def calculate(self):
         words = self.data.remain_words
         el = random.sample(words, 1)[0]
         words.remove(el)

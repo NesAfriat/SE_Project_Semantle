@@ -22,8 +22,8 @@ def calculate_graph(runs_number, agent: Agent):
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = select_words(runs_number, agent.get_vocab())
     algo_dict = dict({"Brute_force": alg.Naive.Naive(),
-                      "Multi-Lateration ": alg.BruteForce.BruteForce(MethodDistances.euclid_function()),
-                      "Trilateration": alg.Trilateration.Trilateration()})
+                      "Multi-Lateration ": alg.MultiLateration.MultiLateration(MethodDistances.euclid_function()),
+                      "Trilateration": alg.NLateration.Trilateration()})
     vocabulary = copy.copy(agent.get_vocab())
     # init the result
     # for each algo, run all words.
@@ -32,11 +32,11 @@ def calculate_graph(runs_number, agent: Agent):
         counter = counter + 1
         # get the algo class
         algorithm = algo_dict[algo_name]
-        if type(algorithm) is alg.BruteForce.BruteForce:
-            agent.set_agent_Brute_Force_algorithm()
+        if type(algorithm) is alg.MultiLateration.MultiLateration:
+            agent.set_agent_MultiLateration_algorithm()
         elif type(algorithm) is alg.Naive.Naive:
             agent.set_agent_naive_algorithm()
-        elif type(algorithm) is alg.Trilateration.Trilateration:
+        elif type(algorithm) is alg.NLateration.Trilateration:
             agent.set_agent_trilateration_algorithm()
         # init the statistics result for the algorithm
         calculator = Calculator(runs_number)

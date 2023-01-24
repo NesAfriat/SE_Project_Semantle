@@ -83,7 +83,7 @@ class AgentHandler(ABC):
             if ip == '1':
                 self.agent.set_agent_naive_algorithm()
             elif ip == '2':
-                self.agent.set_agent_Brute_Force_algorithm()
+                self.agent.set_agent_MultiLateration_algorithm()
             elif ip == '3':
                 self.agent.set_agent_trilateration_algorithm()
             elif ip == 'e':
@@ -120,25 +120,4 @@ class AgentHandler(ABC):
     def on_offline_mode(self):
         pass
 
-    # def step_B(self):
-    #     def choose_algo():
-    #         prev_menu = False
-    #         while not self.finished and not prev_menu:
-    #             if self.is_offline:
-    #                 ip = self.busy_choose("Choose Algorithm", "BruteForce", "Multi-Lateration", "Trilateration")
-    #             else:
-    #                 ip = self.busy_choose("Choose Algorithm", "BruteForce", "Multi-Lateration")
-    #             if ip == 'b':
-    #                 prev_menu = True
-    #             elif ip == '1':
-    #                 self.agent.set_agent_naive_algorithm()
-    #                 prev_menu = True
-    #             elif ip == '2':
-    #                 self.agent.set_agent_Brute_Force_algorithm()
-    #                 prev_menu = True
-    #             elif self.is_offline and ip == '3':
-    #                 self.agent.set_agent_trilateration_algorithm()
-    #                 prev_menu = True
-    #             elif ip == 'e':
-    #                 self.finished = True
-    #     choose_algo()
+

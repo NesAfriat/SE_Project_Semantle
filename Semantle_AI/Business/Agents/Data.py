@@ -11,6 +11,7 @@ class Data:
         self.last_word = None
         self.statistics = OrderedDict()
         self.copy_vocab = None
+        self.error=0
 
     def add_to_dict(self, word, distance):
         if word not in self.guesses:
@@ -43,6 +44,9 @@ class Data:
 
     def execute_data(self):
         pass
+
+    def set_error(self,error):
+        self.error=error
 
     def reset(self):
         self.guesses = dict()
