@@ -39,8 +39,8 @@ class Model:
         vocab2 = set(model2.get_model.key_to_index)
         return vocab1 & vocab2
 
-    def get_models_error(self, moedel2):
-        vocab= self.models_vocab_intersection(moedel2)
+    def get_models_error(self, model2):
+        vocab= self.models_vocab_intersection(model2)
         errors_sum= 0
         error_count=0
         while error_count<len(vocab):
@@ -49,7 +49,7 @@ class Model:
             while word1==word2:
                 word2= random.choice(vocab)
             dis1= self.get_distance_of_word(word1,word2)
-            dis2= moedel2.get_distance_of_word(word1,word2)
+            dis2= model2.get_distance_of_word(word1,word2)
             error= abs(dis1-dis2)
             print("error num -",error_count, " is ",error)
             errors_sum+=error
