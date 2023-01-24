@@ -1,11 +1,8 @@
 import errno
-
 from matplotlib import pyplot as plt
-
 from Business.Reports.GuessData import GuessData
 from Business.Reports.GameData import GameData
 import os
-from pathlib import Path
 import pandas as pd
 import csv
 from datetime import datetime
@@ -39,7 +36,7 @@ def generate_name():
 def create_directory():
     # Directory
     directory = generate_name()
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Reports_output/" + directory
+    path = "./Reports_output/" + directory
     try:
         if os.path.exists(path):
             os.remove(path)
