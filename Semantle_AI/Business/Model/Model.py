@@ -1,3 +1,5 @@
+import random
+
 import gensim
 from gensim.models import KeyedVectors
 
@@ -36,3 +38,21 @@ class Model:
         vocab1 = self.vocab
         vocab2 = model2
         return vocab1 & vocab2
+
+    def get_models_error(self, moedel2):
+        vocab= self.models_vocab_intersection(moedel2)
+        errors_sum= 0
+        error_count=0
+        while error_count<len(vocab):
+            word1= random.choice(vocab)
+            word2= random.choice(vocab)
+            while word1==word2:
+                word2= random.choice(vocab)
+            dis1= self.get_distance_of_word(word1,word2)
+            dis2= moedel2.get_distance_of_word(word1,word2)
+            error= abs(dis1-dis2)
+            print("error num -",error_count, " is ",error)
+            errors_sum+=error
+            error_count+=1
+        return errors_sum/error_count
+
