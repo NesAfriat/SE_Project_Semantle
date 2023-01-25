@@ -14,7 +14,7 @@ def filter_vocab(vocab, word_list):
     if word_list is None:
         return vocab
     try:
-        path =  "./Business/Model/" + word_list
+        path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + word_list
         file = open(path, "r")
         words_set = set((file.read()).split("\n"))
         voc = words_set & vocab
@@ -25,7 +25,7 @@ def filter_vocab(vocab, word_list):
 
 def load_from_file(name, word_list=None):
     print("\n\n======================  Model loading ======================")
-    path =  "./Business/Model/" + name
+    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")

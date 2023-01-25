@@ -64,11 +64,12 @@ class Agent(ABC):
     def set_agent_model_from_url(self, name):
         agent_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
         self.set_model(agent_model)
+        self.data.model.set_dist_function(self.host.model.dist_func)
 
     def set_agent_word2vec_model(self):
         model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
         self.set_model(model)
-        self.data.model.set_dist_function(MethodDistances.euclid_function())
+        self.data.model.set_dist_function(self.host.model.dist_func)
 
     # only guess word should be abstract.
     def start_play(self, out):
