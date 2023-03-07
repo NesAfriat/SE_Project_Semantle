@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 
 from Business.Agents import Agent
-import Business.ModelFactory as MF
-from Business.Agents.Agent1 import Agent1
 from Service.HostHandlers.OfflineHostHandler import OfflineHostBuilder
 from Service.HostHandlers.OnlineHostBuilder import OnlineHostBuilder
+from Service.ModelComperator import ModelComperator
+
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
-WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB
 WORD2VEC_GOOGLE = "word2vec-google-news-300"  # 1.662GB
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -95,8 +94,8 @@ class AgentHandler(ABC):
     def choose_agent_model(self):
         return_prev = False
         while not return_prev and not self.finished:
-            ip = self.busy_choose("Choose Agent Model", "word2vec", FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
-                                  WORD2VEC_GOOGLE)
+            ip = self.busy_choose("Choose Agent Model, to compare models press 5", "word2vec", FASTTESXT_WIKI, GLOVE_WIKI,
+                                  WORD2VEC_GOOGLE, 'Compare models vocabs')
             if ip == '1':
                 self.agent.set_agent_word2vec_model()
             elif ip == '2':
@@ -104,9 +103,10 @@ class AgentHandler(ABC):
             elif ip == '3':
                 self.agent.set_agent_model_from_url(GLOVE_WIKI)
             elif ip == '4':
-                self.agent.set_agent_model_from_url(WORD2VEC_RUSCORPORA)
-            elif ip == '5':
                 self.agent.set_agent_model_from_url(WORD2VEC_GOOGLE)
+            elif ip == '5':
+                comperator = ModelComperator()
+                comperator.compare_models()
             elif ip == 'e':
                 self.finished = True
             # pressed b

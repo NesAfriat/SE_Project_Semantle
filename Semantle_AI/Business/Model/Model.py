@@ -37,6 +37,7 @@ class Model:
     def models_vocab_intersection(self, model2) -> set:
         vocab1 = set(self.model.key_to_index)
         vocab2 = set(model2.model.key_to_index)
+
         return vocab1 & vocab2
 
     def get_models_error(self, model2,n):

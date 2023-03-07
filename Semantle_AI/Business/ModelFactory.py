@@ -43,6 +43,7 @@ def load_from_file(name, word_list=None):
         print(">>done!")
     return Model(my_model, model_vocab), copy.copy(model_vocab)
 
+
 def load_from_gensim(name, word_list=None):
     print("\n\n======================  Model loading ======================")
     print(">>Loading model.")
@@ -57,3 +58,4 @@ def load_from_gensim(name, word_list=None):
     print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
     print(">>done!")
     return Model(my_model, model_vocab), model_vocab
+
