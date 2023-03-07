@@ -6,6 +6,8 @@ import os
 import pandas as pd
 import csv
 from datetime import datetime
+from collections import Counter
+from typing import Set
 
 game_guesses = {}  # guesses by game numbers
 games_data = {}
@@ -117,6 +119,13 @@ def generate_algo_guesses_from_csv():
         set_size(pts_x/200, pts_y/200, ax)
         plt.xticks(fontsize=thickness*2)
         plt.yticks(fontsize=thickness*2)
+
+        # set the axis titles
+        # Add a title and axis labels to the chart
+        plt.title("Algorithms compare graph")
+        plt.ylabel("Remain words")
+        plt.xlabel("Number of guesses")
+
         # Add a legend and show the plot
         ax.legend()
         plt.show()
@@ -124,6 +133,53 @@ def generate_algo_guesses_from_csv():
         if e.errno == errno.EPIPE:
             print("There was pipe error. please try again.")
             pass
+
+
+def generate_graph(filtered_keys: Set[str], algo_name: str):
+    # Count the frequency of each value in the filtered keys
+    value_counts = Counter(filtered_keys)
+    total = sum(value_counts.values())
+
+    # Calculate the percentage of each value and sort by value
+    percentages = {}
+    for k, v in value_counts.items():
+        percentages[k] = v / total * 100
+
+    # Convert the percentages to a list of (value, percentage) tuples
+    points = list(percentages.items())
+    points.sort(key=lambda x: x[0])
+
+    # Create the plot
+    fig, ax = plt.subplots()
+    ax.scatter([p[0] for p in points], [p[1] for p in points], s=50)
+
+    # Set the title and axis labels
+    ax.set_title(f"Algorithm {algo_name} Results")
+    ax.set_xlabel("Guess Value")
+    ax.set_ylabel("Percentage")
+
+    # Save plot points to csv file
+    dir_name = generate_data_files()
+    time = datetime.now().strftime('%Y-%m-%d')
+    dir_name = f"{dir_name}/{time}"
+    # Create directory if it does not exist
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    filename = f"{dir_name}/{algo_name}_loops_{time}.csv"
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Value", "Percentage"])
+        for p in points:
+            writer.writerow([p[0], p[1]])
+
+    # Save plot as png file
+    filename = f"{dir_name}/{algo_name}_guess_distribution_{time}.png"
+    plt.savefig(filename)
+
+    # Show plot
+    plt.show()
+
 
 
 def set_size(w, h, ax=None):

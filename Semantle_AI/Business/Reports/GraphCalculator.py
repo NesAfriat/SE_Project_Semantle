@@ -1,4 +1,6 @@
 import copy
+from collections import OrderedDict
+
 import Business.Reports.ReportsGenerator as reporter
 import Business.Algorithms as alg
 from Business import MethodDistances
@@ -24,7 +26,7 @@ def calculate_graph(runs_number, agent: Agent):
     algo_dict = dict({"Brute_force": alg.Naive.Naive(),
                       "Multi-Lateration ": alg.MultiLateration.MultiLateration(MethodDistances.euclid_function()),
                       "Trilateration": alg.NLateration.Trilateration()})
-    vocabulary = copy.copy(agent.get_vocab())
+
     # init the result
     # for each algo, run all words.
     counter = 0
@@ -44,7 +46,6 @@ def calculate_graph(runs_number, agent: Agent):
         for word in words_list:
             # setting the secret word in each session.
             agent.set_secret_word(word)
-            #agent.reset_data()
             agent.start_play(lambda args: args)
             # after run finished, collect the data.
             statistics = agent.get_statistics()
@@ -64,6 +65,51 @@ def calculate_graph(runs_number, agent: Agent):
     print(len(reporter.game_guesses))
     print(len(reporter.games_data))
     reporter.generate_algo_guesses_from_csv()
+
+
+
+def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
+    # select the 'runs_number' words that will be run on each algorithm.
+    words_list = select_words(runs_number, agent.get_vocab())
+    right_guesses = OrderedDict()
+    # init the result
+    # for each algo, run all words.
+    counter = 0
+    for algo_name in algos_list:
+        counter = counter + 1
+        # get the algo class
+        algorithm = algos_list[algo_name]
+        if type(algorithm) is alg.MultiLateration.MultiLateration:
+            agent.set_agent_MultiLateration_algorithm()
+        elif type(algorithm) is alg.Naive.Naive:
+            agent.set_agent_naive_algorithm()
+        elif type(algorithm) is alg.NLateration.Trilateration:
+            agent.set_agent_trilateration_algorithm()
+        # init the statistics result for the algorithm
+        calculator = Calculator(runs_number)
+        # iterate over each word and run the game
+        for word in words_list:
+            results = OrderedDict()
+            # setting the secret word in each session.
+            agent.set_secret_word(word)
+            agent.start_play(lambda args: args)
+            # after run finished, collect the data.
+            statistics = agent.get_statistics()
+            print("\n\n\nFinished run.")
+            for key in statistics.keys():
+                results[key] = statistics[key]
+            agent.reset_data()
+            max_val = calculator.get_highest_nonzero_key(results)
+            calculator.add_result(max_val, results[max_val])
+            # After creating average
+
+
+        print(f"\n\n\nAfter filtering. Number of results : {str(len(calculator.results))}\n")
+        for ke in calculator.results:
+            print(f"{str(ke)}")
+        # generates the graph points
+
+        reporter.generate_graph(calculator.results.keys(), algo_name)
 
 
 

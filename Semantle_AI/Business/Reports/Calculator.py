@@ -26,3 +26,12 @@ class Calculator:
         return ret
 
 
+    def get_highest_nonzero_key(self, od: OrderedDict) -> str:
+        """
+        Takes an OrderedDict and returns the highest key in the dictionary that has
+        a non-zero value.
+        """
+        for key in reversed(od.keys()):
+            if od[key] != 0:
+                return key
+        raise ValueError("All values in the dictionary are zero")
