@@ -4,7 +4,7 @@ from copy import copy
 
 class ManualAgent(Agent):
 
-    def guess_word(self, inp,  *args):
+    def guess_word(self, inp):
         word = input("-Enter your next word or 0 to return:\n")
 
     # def start_play(self, inp,  out):

@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from Business import MethodDistances
-from Business.Algorithms.BruteForce import BruteForce
+from Business.Algorithms.MultiLateration import MultiLateration
 from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
-from Business.Algorithms.Trilateration import Trilateration
+from Business.Algorithms.NLateration import Trilateration
 import Business.ModelFactory as MF
 from Business.Hosts.OfflineHost import OfflineHost
-from Business.Model.Model import Model
+
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -23,11 +23,11 @@ class Agent(ABC):
         self.init = None
 
     @abstractmethod
-    def guess_word(self, *args):
+    def guess_word(self):
         pass
 
-    def set_agent_Brute_Force_algorithm(self):
-        algo = BruteForce(self.data.model.dist_func)
+    def set_agent_MultiLateration_algorithm(self):
+        algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
 
 
@@ -64,11 +64,12 @@ class Agent(ABC):
     def set_agent_model_from_url(self, name):
         agent_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
         self.set_model(agent_model)
+        self.data.model.set_dist_function(self.host.model.dist_func)
 
     def set_agent_word2vec_model(self):
         model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
         self.set_model(model)
-        self.data.model.set_dist_function(MethodDistances.euclid_function())
+        self.data.model.set_dist_function(self.host.model.dist_func)
 
     # only guess word should be abstract.
     def start_play(self, out):
@@ -83,7 +84,7 @@ class Agent(ABC):
                 else:
                     out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 self.add_to_list(self.data.last_word, self.data.last_score)
-                word = self.guess_word(self.data.last_word, self.data.last_score, self.data)
+                word = self.guess_word()
                 self.data.last_score = self.host.check_word(word)
                 self.data.last_word = word
                 self.data.update_statistic()

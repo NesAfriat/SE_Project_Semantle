@@ -10,7 +10,7 @@ class Algorithm(ABC):
 
 
     @abstractmethod
-    def calculate(self, data=None):
+    def calculate(self):
         pass
 
     def set_data(self, data: Data):

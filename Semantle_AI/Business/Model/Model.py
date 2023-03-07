@@ -35,21 +35,22 @@ class Model:
         return self.model.vector_size
 
     def models_vocab_intersection(self, model2) -> set:
-        vocab1 = self.vocab
-        vocab2 = model2
+        vocab1 = set(self.model.key_to_index)
+        vocab2 = set(model2.model.key_to_index)
+
         return vocab1 & vocab2
 
-    def get_models_error(self, moedel2):
-        vocab= self.models_vocab_intersection(moedel2)
+    def get_models_error(self, model2,n):
+        vocab= self.models_vocab_intersection(model2)
         errors_sum= 0
         error_count=0
-        while error_count<len(vocab):
-            word1= random.choice(vocab)
-            word2= random.choice(vocab)
+        while error_count<n:
+            word1= random.sample(vocab, 1)[0]
+            word2= random.sample(vocab, 1)[0]
             while word1==word2:
-                word2= random.choice(vocab)
+                word2= random.sample(vocab, 1)[0]
             dis1= self.get_distance_of_word(word1,word2)
-            dis2= moedel2.get_distance_of_word(word1,word2)
+            dis2= model2.get_distance_of_word(word1,word2)
             error= abs(dis1-dis2)
             print("error num -",error_count, " is ",error)
             errors_sum+=error

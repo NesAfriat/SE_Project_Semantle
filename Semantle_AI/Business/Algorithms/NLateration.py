@@ -6,7 +6,7 @@ class Trilateration(Algorithm):
     def __init__(self):
         super().__init__()
 
-    def calculate(self, *args):
+    def calculate(self):
         n = self.data.model.get_number_of_dim() + 1
         points = self.data.get_points()[-n:]
         distances = self.data.get_distances()[-n:]

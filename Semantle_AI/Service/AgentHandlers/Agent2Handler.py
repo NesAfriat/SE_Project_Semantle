@@ -8,8 +8,8 @@ class Agent2Handler(AgentHandler):
         self.agent = Agent2()
 
     def start_menu(self):
-        self.choose_agent_model()
         self.choose_host()
+        self.choose_agent_model()
         self.choose_algo()
 
 
