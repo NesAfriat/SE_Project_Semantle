@@ -151,7 +151,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str):
 
     # Create the plot
     fig, ax = plt.subplots()
-    ax.scatter([p[0] for p in points], [p[1] for p in points], s=50)
+    ax.scatter([p[0] for p in points], [p[1] for p in points], s=5)
 
     # Set the title and axis labels
     ax.set_title(f"Algorithm {algo_name} Results")
