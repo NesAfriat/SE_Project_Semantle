@@ -6,7 +6,10 @@ import Business.Algorithms as alg
 from Business import MethodDistances
 from Business.Agents.Agent import Agent
 from Business.Reports.Calculator import Calculator
-
+import tkinter as tk
+import pandas as pd
+from tkinter import filedialog
+import matplotlib.pyplot as plt
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"
 
@@ -62,10 +65,8 @@ def calculate_graph(runs_number, agent: Agent):
                 reporter.save_guess_data(counter, key, res)
 
         reporter.save_game_data(counter, WORD2VEC, WORD2VEC, algo_name, DISTANCE_METHOD)
-    print(len(reporter.game_guesses))
-    print(len(reporter.games_data))
-    reporter.generate_algo_guesses_from_csv()
-
+    path = reporter.generate_data_files()
+    reporter.generate_algo_guesses_from_csv(path)
 
 
 def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
@@ -95,21 +96,20 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
             agent.start_play(lambda args: args)
             # after run finished, collect the data.
             statistics = agent.get_statistics()
-            print("\n\n\nFinished run.")
             for key in statistics.keys():
                 results[key] = statistics[key]
             agent.reset_data()
             max_val = calculator.get_highest_nonzero_key(results)
             calculator.add_result(max_val, results[max_val])
             # After creating average
+        reporter.generate_graph(calculator.results.keys(), algo_name, runs_number)
 
 
-        print(f"\n\n\nAfter filtering. Number of results : {str(len(calculator.results))}\n")
-        for ke in calculator.results:
-            print(f"{str(ke)}")
-        # generates the graph points
+def reload_graph_from_path(path):
+    reporter.generate_algo_guesses_from_csv(path)
 
-        reporter.generate_graph(calculator.results.keys(), algo_name)
-
-
-
+def show_png_file(file_path):
+    # Load the CSV file into a Pandas DataFrame
+    img = plt.imread(file_path)
+    plt.imshow(img)
+    plt.show()

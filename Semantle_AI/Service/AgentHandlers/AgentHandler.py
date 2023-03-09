@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from Business.Agents import Agent
 from Service.HostHandlers.OfflineHostHandler import OfflineHostBuilder
 from Service.HostHandlers.OnlineHostBuilder import OnlineHostBuilder
-from Service.ModelComperator import ModelComperator
+from Service.ModelComparator import ModelComparator
 
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
@@ -94,8 +94,8 @@ class AgentHandler(ABC):
     def choose_agent_model(self):
         return_prev = False
         while not return_prev and not self.finished:
-            ip = self.busy_choose("Choose Agent Model, to compare models press 5", "word2vec", FASTTESXT_WIKI, GLOVE_WIKI,
-                                  WORD2VEC_GOOGLE, 'Compare models vocabs')
+            ip = self.busy_choose("Choose Agent Model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI,
+                                  WORD2VEC_GOOGLE)
             if ip == '1':
                 self.agent.set_agent_word2vec_model()
             elif ip == '2':
@@ -104,9 +104,6 @@ class AgentHandler(ABC):
                 self.agent.set_agent_model_from_url(GLOVE_WIKI)
             elif ip == '4':
                 self.agent.set_agent_model_from_url(WORD2VEC_GOOGLE)
-            elif ip == '5':
-                comperator = ModelComperator()
-                comperator.compare_models()
             elif ip == 'e':
                 self.finished = True
             # pressed b

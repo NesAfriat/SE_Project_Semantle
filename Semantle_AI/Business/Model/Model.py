@@ -40,20 +40,20 @@ class Model:
 
         return vocab1 & vocab2
 
-    def get_models_error(self, model2,n):
-        vocab= self.models_vocab_intersection(model2)
-        errors_sum= 0
-        error_count=0
-        while error_count<n:
-            word1= random.sample(vocab, 1)[0]
-            word2= random.sample(vocab, 1)[0]
-            while word1==word2:
-                word2= random.sample(vocab, 1)[0]
-            dis1= self.get_distance_of_word(word1,word2)
-            dis2= model2.get_distance_of_word(word1,word2)
-            error= abs(dis1-dis2)
-            print("error num -",error_count, " is ",error)
-            errors_sum+=error
-            error_count+=1
+    def get_models_error(self, model2, n):
+        vocab = self.models_vocab_intersection(model2)
+        errors_sum = 0
+        error_count = 0
+        while error_count < n:
+            word1 = random.sample(vocab, 1)[0]
+            word2 = random.sample(vocab, 1)[0]
+            while word1 == word2:
+                word2 = random.sample(vocab, 1)[0]
+            dis1 = self.get_distance_of_word(word1, word2)
+            dis2 = model2.get_distance_of_word(word1, word2)
+            error = abs(dis1-dis2)
+            print("error num -", error_count, " is ", error)
+            errors_sum += error
+            error_count += 1
         return errors_sum/error_count
 

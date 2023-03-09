@@ -1,9 +1,21 @@
-from Business.Reports.GraphCalculator import calculate_graph, calculate_algorithm_graph
+import Business.Reports.GraphCalculator as calc
+import ModelComparator as mc
+from Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
 from Service.AgentHandlers.Agent1Handler import Agent1Handler
 from Service.AgentHandlers.Agent2Handler import Agent2Handler
 from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
 import Business.Algorithms as algo
 from Business import MethodDistances
+import os
+from datetime import datetime
+
+FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
+GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
+WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB
+WORD2VEC_GOOGLE = "word2vec-google-news-300"  # 1.662GB
+WORD2VEC = "Google_Word2Vec.bin"
+WORDS_LIST = "words.txt"
+
 
 class Menu:
     pca = None
@@ -16,7 +28,7 @@ class Menu:
     def start_menu(self):
         done_loop = False
         while not self.finished and not done_loop:
-            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual", "Export algorithms graph","Crate an algorithm graph", "Exit")
+            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual", "Generate a graph", "Exit")
             if choose == '1':
                 self.concrete_agent_builder = Agent1Handler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
@@ -30,14 +42,70 @@ class Menu:
                 self.concrete_agent_builder.start_menu()
                 self.start()
             elif choose == '4':
-                self.loop_times()
+                self.generate_graphs()
             elif choose == '5':
-                self.one_algo_loop()
-            elif choose == '6':
                 done_loop = True
 
     def start(self):
         self.concrete_agent_builder.get_result().start_play(self.out)
+
+    def generate_graphs(self):
+        done_loop = False
+        while not done_loop:
+            choose = self.busy_choose("Choose the graph you wand to create", "Export algorithms graph",
+                                      "Crate an algorithm graph", "Load graph from files",
+                                      "Compare two word models distances",
+                                      "Exit")
+            if choose == '1':
+                self.loop_times()
+                done_loop = True
+            elif choose == '2':
+                self.one_algo_loop()
+                done_loop = True
+            elif choose == '3':
+                legal_path = False
+                while not legal_path:
+                    path = input("Enter full file path. The go back type \'Exit\'\n")
+                    if path.lower() == 'exit':
+                        done_loop = True
+                    else:
+                        if os.path.exists(path):
+                            if "algorithms_compare" in path:
+                                generate_algo_guesses_from_csv(path)
+                            elif "algorithm_stat_" in path:
+                                name = input("Enter file name.\n")
+                                full_path = os.path.join(path, name)
+                                calc.show_png_file(full_path)
+                        else:
+                            print(f"The file path {path} does not exists.")
+                        done_loop = True
+            elif choose == '4':
+                self.compare_models()
+                done_loop = True
+            elif choose == '5':
+                done_loop = True
+
+    def compare_models(self):
+        models = (WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE)
+        model1 = self.busy_choose("Choose Model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+                                  WORD2VEC_GOOGLE)
+        model2 = self.busy_choose("Choose Model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+                                  WORD2VEC_GOOGLE)
+        comperator = mc.ModelComparator()
+        comperator.create_models_graph(models[int(model1)-1], models[int(model2)-1])
+
+
+    # def compare_models_with_semantle(self):
+    #     models = {WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE}
+    #     model1 = self.busy_choose("Choose Model",  FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+    #                               WORD2VEC_GOOGLE)
+    #     model2 = self.busy_choose("Choose Model", FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+    #                               WORD2VEC_GOOGLE)
+    #     comperator = mc.ModelComparator()
+    #     comperator.create_models_graph_with_semantle(models[int(model1)-1], models[int(model2)-1])
+    #
+
+
 
     def loop_times(self):
         done_loop = False
@@ -46,7 +114,7 @@ class Menu:
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu()
-                calculate_graph(int(choose), self.concrete_agent_builder.get_result())
+                calc.calculate_graph(int(choose), self.concrete_agent_builder.get_result())
                 done_loop = True
             elif choose == 'e':
                 done_loop = True
@@ -58,7 +126,8 @@ class Menu:
         done_loop2 = False
         algo_dict = dict()
         while not done_loop1:
-            algorithm = self.busy_choose("Choose an algorithm to run", "Brute_force", "Multi_Lateration ", "Trilateration",  "Exit")
+            algorithm = self.busy_choose("Choose an algorithm to run", "Brute_force", "Multi_Lateration ",
+                                         "Trilateration", "Exit")
             if algorithm == '1':
                 algo_dict["Brute_force"] = algo.Naive.Naive()
                 done_loop1 = True
@@ -78,13 +147,12 @@ class Menu:
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu()
-                calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
+                calc.calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
                 done_loop2 = True
             elif choose == 'e':
                 done_loop2 = True
             else:
                 print("Please choose a valid option")
-
 
     def busy_choose(self, to_write, *args):
         acc = ""

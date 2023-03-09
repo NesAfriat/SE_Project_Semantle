@@ -13,13 +13,9 @@ class Agent2(Agent):
         return self.last_word
 
     def calculatError(self):
-        error= self.get_model().get_models_error(self.host.model,2000)
+        error = self.get_model().get_models_error(self.host.model, 2000)
         self.data.set_error(error)
 
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.calculatError() and self.guess_n_random_word(1))
-
-
-
-

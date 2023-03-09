@@ -25,7 +25,6 @@ class Calculator:
             ret[key] = round(sum / length)
         return ret
 
-
     def get_highest_nonzero_key(self, od: OrderedDict) -> str:
         """
         Takes an OrderedDict and returns the highest key in the dictionary that has
