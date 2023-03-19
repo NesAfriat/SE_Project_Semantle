@@ -77,7 +77,6 @@ class Agent(ABC):
         self.host.select_word_and_start_game(out)
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
-        self.data.update_statistic()
         self.init()
         while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
