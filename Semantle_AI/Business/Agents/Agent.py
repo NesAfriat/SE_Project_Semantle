@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from Business import MethodDistances
+from Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 from Business.Algorithms.MultiLateration import MultiLateration
 from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
 from Business.Algorithms.NLateration import Trilateration
 import Business.ModelFactory as MF
 from Business.Hosts.OfflineHost import OfflineHost
-
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -30,6 +30,9 @@ class Agent(ABC):
         algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
 
+    def set_agent_smart_MultiLateration_algorithm(self):
+        algo = SmartMultiLateration(self.data.model.dist_func)
+        self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
 
 
     def set_agent_naive_algorithm(self):
@@ -54,8 +57,6 @@ class Agent(ABC):
     def set_host(self, host):
         self.host = host
 
-
-
     def set_agent_word2vec_model_online(self):
         model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
         self.set_model(model)
@@ -74,6 +75,7 @@ class Agent(ABC):
     # only guess word should be abstract.
     def start_play(self, out):
         self.host.select_word_and_start_game(out)
+        print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.data.update_statistic()
         self.init()
@@ -85,7 +87,7 @@ class Agent(ABC):
                     out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 self.add_to_list(self.data.last_word, self.data.last_score)
                 word = self.guess_word()
-                self.data.last_score = self.host.check_word(word)
+                self.data.last_score = round(self.host.check_word(word), 10)
                 self.data.last_word = word
                 self.data.update_statistic()
             except ValueError as e:
@@ -94,6 +96,30 @@ class Agent(ABC):
         out(f"Last guessed word is: {self.data.last_word}. This is the secret word.")
         out(f"\nGame over.\n"
             f"you won!!\n\n\n\n")
+
+    def start_play_with_priority(self, out):
+        self.host.select_word_and_start_game(out)
+        print(f"secret word is : {self.host.getWord()}")
+        self.data.last_score = -2
+        self.data.update_statistic()
+        self.init()
+        while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
+            try:
+                if self.data.last_score == -2:
+                    self.guess_top_word()
+                else:
+                    out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
+                self.add_to_list(self.data.last_word, self.data.last_score)
+                word = self.guess_word()
+                self.data.last_score = round(self.host.check_word(word), 10)
+                self.data.last_word = word
+                self.data.update_statistic()
+            except ValueError as e:
+                out(e)
+                return
+        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.\nYou took "
+            f"{len(self.data.statistics)} guesses")
+        out(f"you won!!\n\n\n\n")
 
     def add_to_list(self, last_word, dist):
         self.data.add_to_dict(last_word, dist)
@@ -110,6 +136,17 @@ class Agent(ABC):
             if guess is not None:
                 self.add_to_list(guess, self.data.last_score)
             guess = algo.calculate()
+            dist = self.host.check_word(guess)
+        self.data.add_to_dict(guess, dist)
+
+    def guess_top_word(self):
+        guess = None
+        dist = -2
+        while dist == -2:
+            if guess is not None:
+                self.add_to_list(guess, self.data.last_score)
+                self.data.remove_by_word(guess)
+            guess = self.data.heap_pop().word
             dist = self.host.check_word(guess)
         self.data.add_to_dict(guess, dist)
 
@@ -137,3 +174,4 @@ class Agent(ABC):
 
     def get_statistics(self):
         return self.data.get_statistics()
+

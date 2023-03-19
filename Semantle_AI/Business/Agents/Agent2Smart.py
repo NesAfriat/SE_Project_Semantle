@@ -11,7 +11,7 @@ class Agent2(Agent):
     def guess_word(self):
         self.last_word = self.algorithm.calculate()
         return self.last_word
-
+    
     def calculateError(self):
         error = self.get_model().get_models_error(self.host.model, 2000)
         self.data.set_error(error)

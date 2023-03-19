@@ -1,13 +1,14 @@
-import Business.Reports.GraphCalculator as calc
-import ModelComparator as mc
+import os
+
+import Business.Algorithms as Algo
+import Business.Reports.GraphCalculator as Calc
+import ModelComparator as Mc
+from Business import MethodDistances
 from Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
 from Service.AgentHandlers.Agent1Handler import Agent1Handler
 from Service.AgentHandlers.Agent2Handler import Agent2Handler
 from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
-import Business.Algorithms as algo
-from Business import MethodDistances
-import os
-from datetime import datetime
+from Service.AgentHandlers.SmartAgent2Handler import SmartAgent2Handler
 
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
@@ -28,7 +29,8 @@ class Menu:
     def start_menu(self):
         done_loop = False
         while not self.finished and not done_loop:
-            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Manual", "Generate a graph", "Exit")
+            choose = self.busy_choose("Choose agent", "Agent1", "Agent2", "Smart agent 2", "Manual", "Generate a graph",
+                                      "Exit")
             if choose == '1':
                 self.concrete_agent_builder = Agent1Handler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
@@ -38,22 +40,32 @@ class Menu:
                 self.concrete_agent_builder.start_menu()
                 self.start()
             elif choose == '3':
+                self.concrete_agent_builder = SmartAgent2Handler(self.out, input, self.finished)
+                self.concrete_agent_builder.start_menu()
+                self.start_smart_play()
+            elif choose == '4':
                 self.concrete_agent_builder = ManualAgentHandler(self.out, input, self.finished)
                 self.concrete_agent_builder.start_menu()
                 self.start()
-            elif choose == '4':
-                self.generate_graphs()
             elif choose == '5':
+                self.generate_graphs()
+            elif choose == '6':
                 done_loop = True
 
     def start(self):
         self.concrete_agent_builder.get_result().start_play(self.out)
 
+    def start_smart_play(self):
+        self.concrete_agent_builder.get_result().start_play_with_priority(self.out)
+
     def generate_graphs(self):
         done_loop = False
         while not done_loop:
-            choose = self.busy_choose("Choose the graph you wand to create", "Export algorithms graph",
-                                      "Crate an algorithm graph", "Load graph from files",
+            choose = self.busy_choose("Choose the graph you wand to create",
+                                      "Export algorithms graph",
+                                      "Crate an algorithm graph",
+                                      "Compare noise impact on the guesses number",
+                                      "Load graph from files",
                                       "Compare two word models distances",
                                       "Exit")
             if choose == '1':
@@ -63,6 +75,8 @@ class Menu:
                 self.one_algo_loop()
                 done_loop = True
             elif choose == '3':
+                self.noise_algo_loop()
+            elif choose == '4':
                 legal_path = False
                 while not legal_path:
                     path = input("Enter full file path. The go back type \'Exit\'\n")
@@ -75,14 +89,14 @@ class Menu:
                             elif "algorithm_stat_" in path:
                                 name = input("Enter file name.\n")
                                 full_path = os.path.join(path, name)
-                                calc.show_png_file(full_path)
+                                Calc.show_png_file(full_path)
                         else:
                             print(f"The file path {path} does not exists.")
                         done_loop = True
-            elif choose == '4':
+            elif choose == '5':
                 self.compare_models()
                 done_loop = True
-            elif choose == '5':
+            elif choose == '6':
                 done_loop = True
 
     def compare_models(self):
@@ -91,9 +105,8 @@ class Menu:
                                   WORD2VEC_GOOGLE)
         model2 = self.busy_choose("Choose Model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
                                   WORD2VEC_GOOGLE)
-        comperator = mc.ModelComparator()
-        comperator.create_models_graph(models[int(model1)-1], models[int(model2)-1])
-
+        comperator = Mc.ModelComparator()
+        comperator.create_models_graph(models[int(model1) - 1], models[int(model2) - 1])
 
     # def compare_models_with_semantle(self):
     #     models = {WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE}
@@ -105,8 +118,6 @@ class Menu:
     #     comperator.create_models_graph_with_semantle(models[int(model1)-1], models[int(model2)-1])
     #
 
-
-
     def loop_times(self):
         done_loop = False
         while not done_loop:
@@ -114,7 +125,26 @@ class Menu:
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu()
-                calc.calculate_graph(int(choose), self.concrete_agent_builder.get_result())
+                Calc.calculate_graph(int(choose), self.concrete_agent_builder.get_result())
+                done_loop = True
+            elif choose == 'e':
+                done_loop = True
+            else:
+                print("Please choose a valid option")
+
+    def noise_algo_loop(self):
+        # setting the algo to run. For now hard coded as multi-lateration only.
+        done_loop = False
+        algo_dict = dict()
+        algo_dict["Multi-Lateration"] = Algo.MultiLateration.MultiLateration(MethodDistances.euclid_function())
+
+        # getting the number of runs to compare for each noise
+        while not done_loop:
+            choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
+            if choose.isnumeric():
+                self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                self.concrete_agent_builder.start_loop_menu()
+                Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
                 done_loop = True
             elif choose == 'e':
                 done_loop = True
@@ -129,13 +159,13 @@ class Menu:
             algorithm = self.busy_choose("Choose an algorithm to run", "Brute_force", "Multi_Lateration ",
                                          "Trilateration", "Exit")
             if algorithm == '1':
-                algo_dict["Brute_force"] = algo.Naive.Naive()
+                algo_dict["Brute_force"] = Algo.Naive.Naive()
                 done_loop1 = True
             elif algorithm == '2':
-                algo_dict["Multi-Lateratio"] = algo.MultiLateration.MultiLateration(MethodDistances.euclid_function())
+                algo_dict["Multi-Lateration"] = Algo.MultiLateration.MultiLateration(MethodDistances.euclid_function())
                 done_loop1 = True
             elif algorithm == '3':
-                algo_dict["Trilateration"] = algo.NLateration.Trilateration()
+                algo_dict["Trilateration"] = Algo.NLateration.Trilateration()
                 done_loop1 = True
             elif algorithm == '4':
                 done_loop1 = True
@@ -147,7 +177,7 @@ class Menu:
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu()
-                calc.calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
+                Calc.calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
                 done_loop2 = True
             elif choose == 'e':
                 done_loop2 = True
@@ -171,6 +201,3 @@ class Menu:
     def click_ok_and_start(self):
         input("\npress enter to start...  \n")
         self.concrete_agent_builder.get_result().start()
-
-    def start_commandline_game(self):
-        self.game_manager.start_human_game(input, lambda m: print(m))

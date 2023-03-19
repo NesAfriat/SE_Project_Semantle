@@ -86,11 +86,10 @@ class ModelComparator:
 
         print("\n\n======================  Generating compare graph ======================\n\n")
 
-        print(f">>Choosing words samples. Amount : {sample_size}")
         # Take a random sample of words from each vocabulary
-        words1 = random.sample(w2v_vocabulary1, sample_size)
-        words2 = random.sample(w2v_vocabulary2, sample_size)
-
+        words1 = w2v_vocabulary1.intersection(w2v_vocabulary2)
+        words2 = words1.copy()
+        print(f">>Choosing words samples. Amount : {len(words1)}")
         # Create two empty lists to store the distances
         distances1 = []
         distances2 = []
@@ -99,7 +98,7 @@ class ModelComparator:
         # Calculate the distances between each pair of words
         for word1 in words1:
             for word2 in words2:
-                if word2 in w2v_vocabulary1 and word1 in w2v_vocabulary2:
+                if word2 != word1:
                     sim1 = w2v_model1.model.similarity(word1, word2)
                     sim2 = w2v_model2.model.similarity(word1, word2)
                     distances1.append(sim1)
@@ -112,7 +111,7 @@ class ModelComparator:
         plt.ylabel(f'Distances in Model {model2}')
         # Save the plot as a PNG file if a save path is provided
         dir_name = generate_models_compare_name()
-        file_name = f"{dir_name}/models_{model1}-{model2}_{sample_size}_points.png"
+        file_name = f"{dir_name}/models_{model1}-{model2}_{len(words1)}_points.png"
         print(">>Saving the graph as png file.")
         # Save the plot as a PNG file if a save path is provided
         if dir_name is not None:

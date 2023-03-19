@@ -3,9 +3,8 @@ from collections import OrderedDict
 
 class Calculator:
 
-    def __init__(self, num):
+    def __init__(self):
         self.results = OrderedDict()
-        self.num_of_runs = num
 
     def add_result(self, num_of_guess, remain_words):
         if num_of_guess in self.results:
@@ -18,11 +17,11 @@ class Calculator:
         ret = OrderedDict()
         for key in self.results.keys():
             # iterate over each pair and sum the result
-            sum = 0
+            guesses_sum = 0
             length = len(self.results[key])
             for res in self.results[key]:
-                sum = sum + res
-            ret[key] = round(sum / length)
+                guesses_sum = guesses_sum + res
+            ret[key] = round(guesses_sum / length)
         return ret
 
     def get_highest_nonzero_key(self, od: OrderedDict) -> str:

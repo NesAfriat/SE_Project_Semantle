@@ -26,9 +26,6 @@ class AgentHandler(ABC):
     def get_result(self):
         return self.agent
 
-
-
-
     def create_offline_loop_host(self):
         host = OfflineHostBuilder(self.out, self.inp, self.finished)
         host.start_loop_game()
@@ -90,6 +87,20 @@ class AgentHandler(ABC):
             # press on b
             prev_menu = True
 
+    def choose_agent_2_algo(self):
+        prev_menu = False
+        while not self.finished and not prev_menu:
+            ip = self.busy_choose("Choose Algorithm", "Naive", "Multi-Lateration", "n-Lateration")
+            if ip == '1':
+                self.agent.set_agent_naive_algorithm()
+            elif ip == '2':
+                self.agent.set_agent_smart_MultiLateration_algorithm()
+            elif ip == '3':
+                self.agent.set_agent_trilateration_algorithm()
+            elif ip == 'e':
+                self.finished = True
+            # press on b
+            prev_menu = True
 
     def choose_agent_model(self):
         return_prev = False
@@ -116,5 +127,3 @@ class AgentHandler(ABC):
     @abstractmethod
     def on_offline_mode(self):
         pass
-
-

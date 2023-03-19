@@ -1,4 +1,3 @@
-import errno
 from matplotlib import pyplot as plt
 from Business.Reports.GuessData import GuessData
 from Business.Reports.GameData import GameData
@@ -6,8 +5,10 @@ import os
 import csv
 from matplotlib.ticker import MultipleLocator
 from datetime import datetime
-from collections import Counter
+from collections import Counter, OrderedDict
 from typing import Set
+from scipy.spatial.distance import cdist
+import numpy as np
 
 game_guesses = {}  # guesses by game numbers
 games_data = {}
@@ -33,7 +34,7 @@ def generate_algorithms_compare_name():
             os.remove(path)
         os.makedirs(path, mode=0o7777)
         print("Directory '% s' created" % path)
-    except IOError as e:
+    except IOError:
         pass
     return path
 
@@ -41,7 +42,21 @@ def generate_algorithms_compare_name():
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f"./Reports_output/algorithm_stat_{algo_name}/{time}"
+    path = f"./Reports_output/algorithm_stat/{algo_name}/{time}"
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+        os.makedirs(path, mode=0o7777)
+        print("Directory '% s' created" % path)
+    except IOError as e:
+        pass
+    return path
+
+
+def generate_noise_compare_name(algo_name):
+    # datetime object containing current date and time
+    time = datetime.now().strftime('%Y-%m-%d_%H-%M')
+    path = f"./Reports_output/Noise_compare/{algo_name}/{time}"
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -126,6 +141,87 @@ def generate_algo_guesses_from_csv(path):
     plt.show()
 
 
+def generate_noises_graph(results: OrderedDict, algo_name: str, runs_number: int):
+    points = OrderedDict()
+
+    # iterate over the vals and check average for each noise value.
+    for noise in results.keys():
+        guesses_counter = 0
+        guesses_sum = 0
+
+        # pass each noise values and calculate the avg.
+        for guess_num in results[noise]:
+            guesses_counter += 1
+            guesses_sum += guess_num
+
+        # after finishing all summing. saving the point for the noise.
+        points[noise] = guesses_sum / guesses_counter
+
+    # after collecting all points values for every noise. starting to create the graph.
+    # Create the plot
+    fig, ax = plt.subplots()
+
+    # setting the pixels ( full hd = 1920 x 1080 in pixels = 19.2 x 10.8 in inches)
+    fig.set_size_inches(19.2, 10.8)
+    ax.scatter([round((err-1.0) * 100, 1) for err in points.keys()], [points[err] for err in points.keys()], s=30)
+
+    # getting the points x,y values.
+    x = []
+    y = []
+    pos = [10, -10]
+    loc = ['bottom', 'top']
+    count = 0
+    for key, value in points.items():
+        key2 = round((key-1.0) * 100, 1)
+        x.append(key2)
+        y.append(value)
+        ax.annotate(f"{key2}%", xy=(key2, value), xytext=(0, pos[count % 2]),
+                    textcoords="offset points",
+                    ha='center', va=loc[count % 2])
+        count += 1
+
+    # setting ticks for each axis
+    x_tick = generate_values(min(x), max(x))
+    plt.xticks(x_tick, fontsize=10)
+    plt.yticks(fontsize=10)
+
+    # adjusting the plot to the pixels size
+    plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
+
+    # getting the dir and file name.
+    dir_name = generate_noise_compare_name(algo_name)
+
+    # Create directory if it does not exist
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    # setting dir and file name, and saving the csv files.
+    filename = f"{dir_name}/{algo_name}_{runs_number}_NoiseCompare.csv"
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Noise", "GuessNumber"])
+        for key in points.keys():
+            key2 = round((key-1.0) * 100, 1)
+            writer.writerow([key2, points[key]])
+
+    # Save plot as png file
+    filename = f"{dir_name}/{algo_name}_{runs_number}_NoiseCompare.png"
+    plt.savefig(filename)
+
+    # Show plot
+    plt.show()
+    return None
+
+
+def generate_values(x, y):
+    values = []
+    current_value = x
+    while current_value <= y:
+        values.append(current_value)
+        current_value += 1.0
+    return values
+
+
 def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     # Count the frequency of each value in the filtered keys
     value_counts = Counter(filtered_keys)
@@ -170,15 +266,3 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     plt.savefig(filename)
     # Show plot
     plt.show()
-
-
-def set_size(w, h, ax=None):
-    """ w, h: width, height in inches """
-    if not ax: ax = plt.gca()
-    l = ax.figure.subplotpars.left
-    r = ax.figure.subplotpars.right
-    t = ax.figure.subplotpars.top
-    b = ax.figure.subplotpars.bottom
-    figw = float(w) / (r - l)
-    figh = float(h) / (t - b)
-    ax.figure.set_size_inches(figw, figh)
