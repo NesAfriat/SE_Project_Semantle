@@ -14,8 +14,8 @@ class Trilateration(Algorithm):
         ret = self.data.get_most_similar(point)
         return ret[0][0]
 
-
-    def trilateration(self, points, dists):
+    @staticmethod
+    def trilateration(points, dists):
 
         point_sub = points[len(points) - 1]
         A = []

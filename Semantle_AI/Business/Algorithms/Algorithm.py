@@ -7,8 +7,6 @@ class Algorithm(ABC):
     def __init__(self):
         self.data = None
 
-
-
     @abstractmethod
     def calculate(self):
         pass

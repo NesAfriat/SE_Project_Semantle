@@ -67,6 +67,7 @@ class Menu:
                                       "Compare noise impact on the guesses number",
                                       "Load graph from files",
                                       "Compare two word models distances",
+                                      "Compare different priority calculation",
                                       "Exit")
             if choose == '1':
                 self.loop_times()
@@ -97,6 +98,9 @@ class Menu:
                 self.compare_models()
                 done_loop = True
             elif choose == '6':
+                self.compare_errors()
+                done_loop = True
+            elif choose == '7':
                 done_loop = True
 
     def compare_models(self):
@@ -105,26 +109,36 @@ class Menu:
                                   WORD2VEC_GOOGLE)
         model2 = self.busy_choose("Choose Model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
                                   WORD2VEC_GOOGLE)
-        comperator = Mc.ModelComparator()
-        comperator.create_models_graph(models[int(model1) - 1], models[int(model2) - 1])
+        comparator = Mc.ModelComparator()
+        comparator.create_models_graph(models[int(model1) - 1], models[int(model2) - 1])
 
-    # def compare_models_with_semantle(self):
-    #     models = {WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE}
-    #     model1 = self.busy_choose("Choose Model",  FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
-    #                               WORD2VEC_GOOGLE)
-    #     model2 = self.busy_choose("Choose Model", FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
-    #                               WORD2VEC_GOOGLE)
-    #     comperator = mc.ModelComparator()
-    #     comperator.create_models_graph_with_semantle(models[int(model1)-1], models[int(model2)-1])
-    #
+    def compare_errors(self):
+        models = (WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE)
+        model2 = self.busy_choose("Choose The second model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+                                  WORD2VEC_GOOGLE)
+        done_loop = False
+        while not done_loop:
+            print("=================== Number of games ===================\n\n")
+            choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
+            if choose.isnumeric():
+                self.concrete_agent_builder = SmartAgent2Handler(input, self.out, self.finished)
+                self.concrete_agent_builder.start_queue_loop(MethodDistances.cosine_function(), models[int(model2) - 1])
+                Calc.create_error_compare_graph(int(choose), self.concrete_agent_builder.get_result(),
+                                                models[0], models[int(model2) - 1])
+                done_loop = True
+            elif choose == 'e':
+                done_loop = True
+            else:
+                print("Please choose a valid option")
 
     def loop_times(self):
         done_loop = False
         while not done_loop:
+            print("=================== Number of games ===================\n\n")
             choose = input("Please type number of executions for each algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
-                self.concrete_agent_builder.start_loop_menu()
+                self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                 Calc.calculate_graph(int(choose), self.concrete_agent_builder.get_result())
                 done_loop = True
             elif choose == 'e':
@@ -139,17 +153,39 @@ class Menu:
         algo_dict["Multi-Lateration"] = Algo.MultiLateration.MultiLateration(MethodDistances.euclid_function())
 
         # getting the number of runs to compare for each noise
-        while not done_loop:
-            choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
-            if choose.isnumeric():
-                self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
-                self.concrete_agent_builder.start_loop_menu()
-                Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
-                done_loop = True
-            elif choose == 'e':
-                done_loop = True
-            else:
-                print("Please choose a valid option")
+        done = False
+        while not done:
+            print("=================== Dist func ===================\n\n")
+            dist = input("Please type distance function.\n1.Euclidian.\n2.Cos function.\nTo exit press \'e\'.\n")
+            if dist != '1' and dist != '2' and dist != 'e':
+                print("Please enter a valid answer.")
+                continue
+            while not done_loop:
+                print("=================== Number of games ===================\n\n")
+                choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
+                if choose.isnumeric():
+                    if dist == '1':
+                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
+                        Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
+                                                              algo_dict, 'Euclid')
+                        done = True
+                        done_loop = True
+                    elif dist == '2':
+                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder.start_loop_menu(MethodDistances.cosine_function())
+                        Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
+                                                              algo_dict, 'Cosin')
+                        done = True
+                        done_loop = True
+                    elif dist == 'e':
+                        done_loop = True
+                        done = True
+                        continue
+                elif choose == 'e':
+                    done_loop = True
+                else:
+                    print("Please choose a valid option")
 
     def one_algo_loop(self):
         done_loop1 = False
@@ -176,7 +212,7 @@ class Menu:
             choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
                 self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
-                self.concrete_agent_builder.start_loop_menu()
+                self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                 Calc.calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
                 done_loop2 = True
             elif choose == 'e':

@@ -13,7 +13,7 @@ class Agent2(Agent):
         return self.last_word
 
     def calculateError(self):
-        error = self.get_model().get_models_error(self.host.model, 2000)
+        error = self.get_model().get_models_error(self.host.model)
         self.data.set_error(error)
 
     def set_agent_MultiLateration_algorithm(self):

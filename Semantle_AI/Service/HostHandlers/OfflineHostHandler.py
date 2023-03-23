@@ -1,8 +1,6 @@
 from Business import MethodDistances
 from Business.Hosts.OfflineHost import OfflineHost
 from Service.HostHandlers.HostHandler import HostBuilder
-import Business.ModelFactory as MF
-from Business.Agents.Agent1 import Agent1
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
 WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB
@@ -20,9 +18,9 @@ class OfflineHostBuilder(HostBuilder):
     def start_menu(self):
         self.step_A()
 
-    def start_loop_game(self):
+    def start_loop_game(self, dist):
         self.host.set_host_word2vec_model()
-        dist_formula = MethodDistances.euclid_function()
+        dist_formula = dist
         self.host.model.set_dist_function(dist_formula)
 
     def step_A(self):

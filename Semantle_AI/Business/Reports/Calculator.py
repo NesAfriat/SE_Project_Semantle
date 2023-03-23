@@ -5,6 +5,7 @@ class Calculator:
 
     def __init__(self):
         self.results = OrderedDict()
+        self.run_number = 1
 
     def add_result(self, num_of_guess, remain_words):
         if num_of_guess in self.results:
@@ -13,7 +14,20 @@ class Calculator:
             self.results[num_of_guess] = list()
             self.results[num_of_guess].append(remain_words)
 
-    def calc(self):
+
+    def add_noise_result(self, num_of_guess):
+        if num_of_guess in self.results:
+            self.results[num_of_guess] += 1
+        else:
+            self.results[num_of_guess] = 0
+            self.results[num_of_guess] += 1
+
+    def add_error_result(self, max_val):
+        self.results[self.run_number] = max_val
+        self.run_number += 1
+
+
+    def calc_avg(self):
         ret = OrderedDict()
         for key in self.results.keys():
             # iterate over each pair and sum the result
@@ -33,3 +47,5 @@ class Calculator:
             if od[key] != 0:
                 return key
         raise ValueError("All values in the dictionary are zero")
+
+

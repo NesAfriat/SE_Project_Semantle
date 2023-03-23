@@ -19,8 +19,8 @@ class Agent1Handler(AgentHandler):
         self.choose_host()
         self.choose_algo()
 
-    def start_loop_menu(self):
-        self.create_offline_loop_host()
+    def start_loop_menu(self, dist):
+        self.create_offline_loop_host(dist)
         self.agent.set_host_model()
         self.agent.set_agent_MultiLateration_algorithm()
 

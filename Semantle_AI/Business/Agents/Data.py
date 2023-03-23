@@ -8,6 +8,7 @@ class Data:
     def __init__(self):
         self.words_heap = PriorityQueue()
         self.guesses = dict()
+        self.scores = dict()
         self.model = None
         self.remain_words = None
         self.last_score = -1
@@ -17,15 +18,18 @@ class Data:
         self.error = 1
 
     def add_to_dict(self, word, distance):
-        if word not in self.guesses:
+        if word not in self.guesses.keys():
             self.last_score = distance
             self.last_word = word
             self.guesses[word] = (distance, self.model.get_word_vec(word))
+            self.scores[word] = distance
 
     def set_model(self, model):
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
+        while not self.words_heap.empty():
+            self.words_heap.get()
         for word in self.remain_words:
             self.words_heap.put(MyItem(word, 0))
         self.copy_vocab = copy(self.remain_words)
@@ -38,6 +42,8 @@ class Data:
 
     def get_guesses(self):
         return self.guesses
+    def get_scores(self):
+        return self.scores
 
     def get_distances(self):
         return [x for x, y in self.guesses.values()]
@@ -57,12 +63,14 @@ class Data:
     def reset(self):
         self.guesses = dict()
         self.statistics = OrderedDict()
-        self.last_score = None
+        self.last_score = -1
         self.last_word = None
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
         # init the max heap. All weights are 0.
+        while not self.words_heap.empty():
+            self.words_heap.get()
         for word in self.remain_words:
             self.words_heap.put(MyItem(word, 0))
 
@@ -118,7 +126,7 @@ class MyItem:
         self.weight = weight
 
     def __lt__(self, other):
-        return self.weight > other.weight
+        return self.weight < other.weight
 
     def __repr__(self):
         return f'{self.word} ({self.weight})'

@@ -1,5 +1,6 @@
 from random import choice
 import math
+import numpy as np
 from Business.Hosts.Host import Host
 import Business.ModelFactory as MF
 
@@ -57,3 +58,9 @@ class OfflineHost(Host):
 
     def getWordVec(self, word):
         return self.model.get_word_vec(word)
+
+    def getGuessVec(self, w):
+        return self.model.model.distance(w, self.secret_word)
+
+    def getWordsVec(self, w1, w2):
+        return np.subtract(self.model.get_word_vec(w1),self.model.get_word_vec(w2))

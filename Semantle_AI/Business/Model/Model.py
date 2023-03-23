@@ -40,11 +40,11 @@ class Model:
 
         return vocab1 & vocab2
 
-    def get_models_error(self, model2, n):
+    def get_models_error(self, model2):
         vocab = self.models_vocab_intersection(model2)
         errors_sum = 0
         error_count = 0
-        while error_count < n:
+        while error_count < len(vocab):
             word1 = random.sample(vocab, 1)[0]
             word2 = random.sample(vocab, 1)[0]
             while word1 == word2:

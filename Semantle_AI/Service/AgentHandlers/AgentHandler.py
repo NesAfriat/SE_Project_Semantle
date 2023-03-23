@@ -26,9 +26,9 @@ class AgentHandler(ABC):
     def get_result(self):
         return self.agent
 
-    def create_offline_loop_host(self):
+    def create_offline_loop_host(self, dist):
         host = OfflineHostBuilder(self.out, self.inp, self.finished)
-        host.start_loop_game()
+        host.start_loop_game(dist)
         self.agent.set_host(host.get_result())
         self.on_offline_mode()
 
@@ -59,6 +59,10 @@ class AgentHandler(ABC):
             else:
                 self.out("\nplease choose valid option please")
 
+    def choose_agent_2_host(self):
+        self.create_offline_host()
+        prev_menu = True
+        
     def choose_host(self):
         prev_menu = False
         while not self.finished and not prev_menu:

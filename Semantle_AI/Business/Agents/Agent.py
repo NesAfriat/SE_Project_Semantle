@@ -32,8 +32,7 @@ class Agent(ABC):
 
     def set_agent_smart_MultiLateration_algorithm(self):
         algo = SmartMultiLateration(self.data.model.dist_func)
-        self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
-
+        self.set_algorithm(algo, lambda: self.guess_n_queue_word(1))
 
     def set_agent_naive_algorithm(self):
         algo = Naive()
@@ -75,6 +74,7 @@ class Agent(ABC):
     # only guess word should be abstract.
     def start_play(self, out):
         self.host.select_word_and_start_game(out)
+        self.data.update_statistic()
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.init()
@@ -139,19 +139,18 @@ class Agent(ABC):
         self.data.add_to_dict(guess, dist)
 
     def guess_top_word(self):
-        guess = None
-        dist = -2
-        while dist == -2:
-            if guess is not None:
-                self.add_to_list(guess, self.data.last_score)
-                self.data.remove_by_word(guess)
-            guess = self.data.heap_pop().word
-            dist = self.host.check_word(guess)
-        self.data.add_to_dict(guess, dist)
+        word = self.data.words_heap.get()
+        dist = self.host.check_word(word.word)
+        self.data.add_to_dict(word.word, dist)
 
     def guess_n_random_word(self, n):
         for i in range(n):
             self.guess_random_word()
+            self.data.update_statistic()
+
+    def guess_n_queue_word(self, n):
+        for i in range(n):
+            self.guess_top_word()
             self.data.update_statistic()
 
     def inc_num_of_guesses(self):
