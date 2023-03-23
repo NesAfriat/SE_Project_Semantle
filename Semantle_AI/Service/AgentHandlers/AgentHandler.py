@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from Business.Agents import Agent
 from Service.HostHandlers.OfflineHostHandler import OfflineHostBuilder
 from Service.HostHandlers.OnlineHostBuilder import OnlineHostBuilder
-from Service.ModelComparator import ModelComparator
 
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
