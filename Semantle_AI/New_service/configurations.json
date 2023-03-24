@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "agent": "1",
+        "host": "online",
+        "agent_model": "Google_Word2Vec.bin",
+        "host_model": "Google_Word2Vec.bin",
+        "algorithm": "multi-lateration",
+        "runs": 2
+    },
+    {
+        "id": 1,
+        "agent": "0",
+        "host": "online",
+        "agent_model": "none",
+        "host_model": "none",
+        "algorithm": "manual",
+        "runs": 3
+    },
+    {
+        "id": 2,
+        "agent": "2",
+        "host": "offline",
+        "agent_model": "Google_Word2Vec.bin",
+        "host_model": "word2vec-google-news-300",
+        "algorithm": "n-lateration",
+        "runs": 1
+    }
+]

@@ -1,0 +1,7 @@
+
+FASTTESXT_WIKI  | "fasttext-wiki-news-subwords-300"  # 1GB
+GLOVE_WIKI      | "glove-wiki-gigaword-300"  # 376MB
+WORD2VEC_GOOGLE | "word2vec-google-news-300"  # 1.662GB
+WORD2VEC        | "Google_Word2Vec.bin"
+WORDS_LIST      | "words.txt"
+
