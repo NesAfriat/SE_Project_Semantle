@@ -18,9 +18,9 @@ def transform_input(config_file_path):
     # Iterate through the configurations and extract the game data
     for config in configurations:
         game = {
-            "id": config["id"],
             "agent": config["agent"],
             "host": config["host"],
+            "distance_function": config["distance_function"],
             "agent_model": config["agent_model"],
             "host_model": config["host_model"],
             "algorithm": config["algorithm"],

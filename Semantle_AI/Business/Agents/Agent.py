@@ -21,10 +21,14 @@ class Agent(ABC):
         self.data = Data()
         self.end_score = None
         self.init = None
+        self.id=-1
 
     @abstractmethod
     def guess_word(self):
         pass
+
+    def set_id(self,id):
+        self.id=id
 
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
@@ -36,7 +40,7 @@ class Agent(ABC):
         algo = Naive()
         self.set_algorithm(algo, lambda: None)
 
-    def set_agent_trilateration_algorithm(self):
+    def set_agent_nlateration_algorithm(self):
         algo = Trilateration()
         self.set_algorithm(algo, lambda: self.guess_n_random_word(self.data.model.get_number_of_dim() + 1))
 

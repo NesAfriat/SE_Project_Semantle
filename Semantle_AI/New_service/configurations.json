@@ -1,28 +1,28 @@
 [
     {
-        "id": 0,
         "agent": "1",
         "host": "online",
-        "agent_model": "Google_Word2Vec.bin",
-        "host_model": "Google_Word2Vec.bin",
+        "distance_function": "cosine",
+        "agent_model": "local_word2vec",
+        "host_model": "none",
         "algorithm": "multi-lateration",
         "runs": 2
     },
     {
-        "id": 1,
         "agent": "0",
-        "host": "online",
-        "agent_model": "none",
-        "host_model": "none",
+        "host": "offline",
+        "distance_function": "cosine",
+        "agent_model": "word2vec_google",
+        "host_model": "glove_wiki",
         "algorithm": "manual",
         "runs": 3
     },
     {
-        "id": 2,
         "agent": "2",
         "host": "offline",
-        "agent_model": "Google_Word2Vec.bin",
-        "host_model": "word2vec-google-news-300",
+        "distance_function": "euclid",
+        "agent_model": "word2vec_google",
+        "host_model": "local_word2vec",
         "algorithm": "n-lateration",
         "runs": 1
     }
