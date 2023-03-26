@@ -39,6 +39,9 @@ class OfflineHost(Host):
         word = choice(list(self.vocabulary))
         self.secret_word = word
 
+    def start_game(self, out):
+        out("================ Offline game===============")
+
     def check_word(self, word):
         if word in self.vocabulary:
             return self.model.get_distance_of_word(self.secret_word, word)

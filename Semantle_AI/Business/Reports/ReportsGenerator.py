@@ -9,6 +9,10 @@ from datetime import datetime
 from collections import Counter, OrderedDict
 from typing import Set
 
+SLASH_SIGN = dict({"mac": "/", "windows": "/"})
+os_type = "mac"  # mac is 0, windows is 1
+
+
 game_guesses = {}  # guesses by game numbers
 games_data = {}
 
@@ -27,7 +31,7 @@ def save_game_data(game_number, agent_model_name, host_model_name, algorithm_nam
 
 def generate_algorithms_compare_name():
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f"./Reports_output/algorithms_compare/{time}"
+    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}algorithms_compare{SLASH_SIGN[os_type]}{time}"
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -41,7 +45,8 @@ def generate_algorithms_compare_name():
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f"./Reports_output/algorithm_stat/{algo_name}/{time}"
+    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}algorithm_stat" \
+           f"{SLASH_SIGN[os_type]}{algo_name}{SLASH_SIGN[os_type]}{time}"
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -55,7 +60,8 @@ def generate_algorithm_stat_name(algo_name):
 def generate_noise_compare_name(algo_name):
     # datetime object containing current date and time
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f"./Reports_output/Noise_compare/{algo_name}/{time}"
+    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}Noise_compare" \
+           f"{SLASH_SIGN[os_type]}{algo_name}{SLASH_SIGN[os_type]}{time}"
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -69,20 +75,21 @@ def generate_noise_compare_name(algo_name):
 def generate_error_vector_name(error_method, error_size_method):
     # datetime object containing current date and time
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f"./Reports_output/Priority_calculation/{error_method}_{error_size_method}/{time}"
+    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}Priority_calculation{SLASH_SIGN[os_type]}" \
+           f"{error_method}_{error_size_method}{SLASH_SIGN[os_type]}{time}"
     try:
         if os.path.exists(path):
             os.remove(path)
         os.makedirs(path, mode=0o7777)
         print("Directory '% s' created" % path)
-    except IOError as e:
+    except IOError:
         pass
     return path
 
 
 def generate_data_files():
     dir_name = generate_algorithms_compare_name()
-    with open(dir_name + '/guesses.csv', 'w', newline='') as file:
+    with open(dir_name + f'{SLASH_SIGN[os_type]}guesses.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["guess_No", "remaining_guesses", "game_No"])
         for game_num in game_guesses.keys():
@@ -91,7 +98,7 @@ def generate_data_files():
                 g_rg = gs_num.next_guess_num_options
                 writer.writerow([g_num, g_rg, game_num])
 
-    with open(dir_name + '/games.csv', 'w', newline='') as file:
+    with open(dir_name + f'{SLASH_SIGN[os_type]}games.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["game_No", "agent_model_name", "host_model_name", "algorithm"])
         for game_num in games_data.keys():
@@ -154,9 +161,8 @@ def generate_algo_guesses_from_csv(path):
     plt.show()
 
 
-def generate_error_graph(results: OrderedDict, runs_number: int, agent: Agent, words_list, model1_name, model2_name,
+def generate_error_graph(results: OrderedDict, runs_number: int, words_list, model1_name, model2_name,
                          error_method, error_size_method):
-
     words_list = list(words_list)
     # Create the plot
     fig, ax = plt.subplots()
@@ -184,8 +190,11 @@ def generate_error_graph(results: OrderedDict, runs_number: int, agent: Agent, w
             y_max = max_val
         # color = color_cycle[i % len(color_cycle)]
         # i += 1
-    ax.scatter(x, y, s=150)
-
+    ax.scatter(x, y, s=100)
+    x = list(x)
+    y = list(y)
+    for i, val in enumerate(y):
+        ax.annotate(val, xy=(x[i], val), xytext=(x[i], val + 50), ha='center')
     # setting the plot labels.
     ax.set_xlabel('Run number', fontsize=30)
     ax.set_ylabel('Guesses until win', fontsize=30)
@@ -194,7 +203,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, agent: Agent, w
     # setting ticks for each axis.
     x_tick = get_natural_numbers(x_min, x_max)
     plt.xticks(x_tick, fontsize=10)
-    y_ticks = get_natural_numbers(y_min, y_max)
+    y_ticks = generate_y_values_by_range(y_min, y_max)
     plt.yticks(y_ticks, fontsize=10)
 
     # # adjusting the plot to the pixels size.
@@ -208,7 +217,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, agent: Agent, w
         os.makedirs(dir_name)
 
     # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}/{runs_number}_{error_method}_{error_size_method}_" \
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{runs_number}_{error_method}_{error_size_method}_" \
                f"{model1_name}_{model2_name}_PriorityCompare.csv"
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
@@ -219,7 +228,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, agent: Agent, w
             counter += 1
 
     # Save plot as png file
-    filename = f"{dir_name}/{runs_number}_{error_method}{error_size_method}_" \
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{runs_number}_{error_method}{error_size_method}_" \
                f"{model1_name}_{model2_name}_PriorityCompare.png"
     plt.savefig(filename)
 
@@ -282,7 +291,7 @@ def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_numb
         os.makedirs(dir_name)
 
     # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}/{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Noise", "GuessTillWin", "RunNumber"])
@@ -294,7 +303,7 @@ def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_numb
                 writer.writerow([noise2, result, counter])
 
     # Save plot as png file
-    filename = f"{dir_name}/{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
     plt.savefig(filename)
 
     # Show plot
@@ -358,7 +367,7 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
         os.makedirs(dir_name)
 
     # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}/{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Noise", "GuessNumber"])
@@ -367,7 +376,7 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
             writer.writerow([key2, points[key]])
 
     # Save plot as png file
-    filename = f"{dir_name}/{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
     plt.savefig(filename)
 
     # Show plot
@@ -407,7 +416,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
-    filename = f"{dir_name}/{algo_name}_{runs_number}_LGD.csv"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_LGD.csv"
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Value", "Percentage"])
@@ -415,7 +424,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
             writer.writerow([p[0], p[1]])
 
     # Save plot as png file
-    filename = f"{dir_name}/{algo_name}_{runs_number}_LGD.png"
+    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_LGD.png"
     plt.savefig(filename)
     # Show plot
     plt.show()
@@ -439,9 +448,28 @@ def generate_y_values(x, y):
     return values
 
 
+def generate_x_values_by_range(x_min, x_max):
+    values = []
+    current_value = x_min
+    jumps = round(x_max - x_min) / 30
+    while current_value <= x_max:
+        values.append(current_value)
+        current_value += jumps
+    return values
+
+
+def generate_y_values_by_range(y_min, y_max):
+    values = []
+    current_value = y_min
+    jumps = round(y_max - y_min) / 30
+    while current_value <= y_max:
+        values.append(current_value)
+        current_value += jumps
+    return values
+
+
 def get_natural_numbers(min_value, max_value):
     natural_numbers = []
-    for i in range(min_value, max_value+1):
+    for i in range(min_value, max_value + 1):
         natural_numbers.append(i)
     return natural_numbers
-

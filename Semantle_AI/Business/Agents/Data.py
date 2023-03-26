@@ -16,6 +16,7 @@ class Data:
         self.statistics = OrderedDict()
         self.copy_vocab = None
         self.error = 1
+        self.is_priority = False
 
     def add_to_dict(self, word, distance):
         if word not in self.guesses.keys():
@@ -24,7 +25,20 @@ class Data:
             self.guesses[word] = (distance, self.model.get_word_vec(word))
             self.scores[word] = distance
 
+    def set_Priority(self, value):
+        self.is_priority = value
+
     def set_model(self, model):
+        self.model = model
+        self.remain_words = copy(self.model.get_vocab())
+        # initialize the max heap. All weights are 0.
+        while not self.words_heap.empty():
+            self.words_heap.get()
+        for word in self.remain_words:
+            self.words_heap.put(MyItem(word, 0))
+        self.copy_vocab = copy(self.remain_words)
+
+    def set_model_and_vocab(self, model):
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
@@ -42,6 +56,7 @@ class Data:
 
     def get_guesses(self):
         return self.guesses
+
     def get_scores(self):
         return self.scores
 
@@ -83,40 +98,10 @@ class Data:
             next_pos = 0
         else:
             next_pos = next(reversed(self.statistics)) + 1
-        self.statistics[next_pos] = len(self.remain_words)
-
-    def heap_top(self):
-        # Get the largest element from the heap
-        largest = self.words_heap.queue[0]
-        return largest
-
-    def heap_pop(self):
-        # Pop the largest element from the heap
-        largest = self.words_heap.get()
-        return largest
-
-    def heap_remove(self, word):
-        # Remove the 'word' pair by key
-        with self.words_heap.mutex:
-            self.words_heap.queue = [
-                item for item in self.words_heap.queue if item.word != word
-            ]
-            queue.heapify(self.words_heap.queue)
-
-    def remove_by_word(self, word):
-        # create a new priority queue
-        new_pq = PriorityQueue()
-
-        # remove the item with the matching word from the original priority queue
-        while not self.words_heap.empty():
-            item = self.words_heap.get()
-            if item.word != word:
-                new_pq.put(item)
-
-        # replace the original priority queue with the new one
-        self.words_heap = new_pq.queue
-        self.words_heap.put = new_pq.put
-        self.words_heap.get = new_pq.get
+        if self.is_priority:
+            self.statistics[next_pos] = self.words_heap.qsize()
+        else:
+            self.statistics[next_pos] = len(self.remain_words)
 
 
 # class made for the heap compare function that doesn't know how to compare tuple.

@@ -6,7 +6,7 @@ from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
 from Business.Algorithms.NLateration import Trilateration
 import Business.ModelFactory as MF
-from Business.Hosts.OfflineHost import OfflineHost
+from Business.Hosts.Host import Host
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -53,7 +53,7 @@ class Agent(ABC):
     def set_model(self, model):
         self.data.set_model(model)
 
-    def set_host(self, host):
+    def set_host(self, host: Host):
         self.host = host
 
     def set_agent_word2vec_model_online(self):
@@ -63,6 +63,8 @@ class Agent(ABC):
 
     def set_agent_model_from_url(self, name):
         agent_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
+        vocab = self.host.model.vocab & vocabulary
+        agent_model.vocab = vocab
         self.set_model(agent_model)
         self.data.model.set_dist_function(self.host.model.dist_func)
 
@@ -73,7 +75,11 @@ class Agent(ABC):
 
     # only guess word should be abstract.
     def start_play(self, out):
-        self.host.select_word_and_start_game(out)
+
+        if self.data.is_priority:
+            self.host.start_game(out)
+        else:
+            self.host.select_word_and_start_game(out)
         self.data.update_statistic()
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
@@ -163,8 +169,7 @@ class Agent(ABC):
         return self.data.remain_words
 
     def set_secret_word(self, word):
-        if self.host is OfflineHost:
-            self.host.setWord(word)
+        self.host.setWord(word)
 
     def reset_data(self):
         self.data.reset_vocab()
