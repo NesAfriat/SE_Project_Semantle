@@ -21,6 +21,8 @@ os_type = "mac"  # mac is 0, windows is 1
 def select_words(num_of_words, vocab):
     ret = set()
     while len(ret) < num_of_words:
+        if len(vocab) == 0:
+            raise ValueError("Not enough words in the vocabulary to run.")
         to_add = vocab.pop()
         if to_add not in ret:
             ret.add(to_add)
@@ -233,8 +235,8 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
     # setting the new smart trilateration algorithm
     setAgentAlgo(Alg.MultiLaterationAgent2.SmartMultiLateration, agent)
     # setting the error vector methods values
-    error_method = MultiLaterationAgent2.SUM_RELATIVE
-    error_size_method = MultiLaterationAgent2.SUM_VEC
+    error_method = MultiLaterationAgent2.SUM
+    error_size_method = MultiLaterationAgent2.MSE
     if isinstance(agent.algorithm, MultiLaterationAgent2.SmartMultiLateration):
         agent.algorithm.set_error_method(error_method)
         agent.algorithm.set_vector_calculation_method(error_size_method)
