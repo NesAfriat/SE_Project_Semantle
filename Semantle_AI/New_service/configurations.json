@@ -3,7 +3,7 @@
         "agent": "1",
         "host": "online",
         "distance_function": "cosine",
-        "agent_model": "local_word2vec",
+        "agent_model": "Google_Word2Vec.bin",
         "host_model": "none",
         "algorithm": "multi-lateration",
         "runs": 2
@@ -22,7 +22,7 @@
         "host": "offline",
         "distance_function": "euclid",
         "agent_model": "word2vec_google",
-        "host_model": "local_word2vec",
+        "host_model": "Google_Word2Vec.bin",
         "algorithm": "n-lateration",
         "runs": 1
     }

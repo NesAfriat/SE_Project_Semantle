@@ -4,7 +4,7 @@ WORD2VEC_GOOGLE = "word2vec-google-news-300"  # 1.662GB
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
 
-import Business.ModelFactory as MF
+import Business.OldModelFactory as MF
 
 
 class ModelComperator:

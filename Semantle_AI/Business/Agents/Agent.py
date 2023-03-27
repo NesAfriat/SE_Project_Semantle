@@ -4,7 +4,7 @@ from Business.Algorithms.MultiLateration import MultiLateration
 from Business.Algorithms.Naive import Naive
 from Business.Agents.Data import Data
 from Business.Algorithms.NLateration import Trilateration
-import Business.ModelFactory as MF
+import Business.OldModelFactory as MF
 from Business.Hosts.OfflineHost import OfflineHost
 
 

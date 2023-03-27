@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-import Business.ModelFactory as MF
+import Business.OldModelFactory as MF
 from Business.Agents.Agent1 import Agent1
 
 WORD2VEC = "Google_Word2Vec.bin"

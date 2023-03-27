@@ -1,7 +1,6 @@
 from random import choice
-import math
 from Business.Hosts.Host import Host
-import Business.ModelFactory as MF
+import Business.OldModelFactory as MF
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -17,6 +16,7 @@ class OfflineHost(Host):
         self.model = None
         self.vocabulary = None
         self.secret_word = None
+
 
     def set_host_word2vec_model(self):
         host_model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)

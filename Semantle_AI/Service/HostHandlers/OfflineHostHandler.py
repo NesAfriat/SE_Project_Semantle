@@ -1,7 +1,7 @@
 from Business import MethodDistances
 from Business.Hosts.OfflineHost import OfflineHost
 from Service.HostHandlers.HostHandler import HostBuilder
-import Business.ModelFactory as MF
+import Business.OldModelFactory as MF
 from Business.Agents.Agent1 import Agent1
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB

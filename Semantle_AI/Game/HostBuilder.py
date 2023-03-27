@@ -14,11 +14,9 @@ class HostBuilder():
             case _:
                 self.host= OnlineHost()
 
-    def with_model(self, model):
-        if model == "Google_Word2Vec.bin":
-            self.host.set_host_word2vec_model()
-        else:
-            self.host.set_host_model_from_url(model)
+    def with_model(self, model_name,model_factory):
+            model, vocab= model_factory.get_model(model_name)
+            self.host.set_model(model,vocab)
 
     def with_distace_function(self,dist_func):
             if dist_func == "euclid":
