@@ -13,6 +13,6 @@ class GameManager():
         for game in self.games:
             try:
                 for i in range(game[1]):
-                    self.data_collector.add_results(game[0].start_play)
+                    self.data_collector.add_results(game[0].start_play())
             except:
                 print("game number", i, "has failed")
