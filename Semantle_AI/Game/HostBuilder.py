@@ -1,6 +1,7 @@
 from Business import MethodDistances
 from Business.Hosts.OnlineHost import OnlineHost
 from Business.Hosts.OfflineHost import OfflineHost
+from Game.ModelFactory import ModelFactory
 
 
 class HostBuilder():
@@ -14,8 +15,8 @@ class HostBuilder():
             case _:
                 self.host= OnlineHost()
 
-    def with_model(self, model_name,model_factory):
-            model, vocab= model_factory.get_model(model_name)
+    def with_model(self, model_name):
+            model, vocab= ModelFactory.get_model(model_name)
             self.host.set_model(model,vocab)
 
     def with_distace_function(self,dist_func):

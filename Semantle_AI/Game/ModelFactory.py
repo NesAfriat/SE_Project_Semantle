@@ -60,22 +60,22 @@ def load_from_gensim(name, word_list=None):
     return Model(my_model, model_vocab), model_vocab
 
 
-class ModelMap:
+class ModelFactory:
     _instance = None
     _model_map = {}
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def get_model(self, model_name):
-        if model_name in self._model_map:
-            return self._model_map[model_name]
+    # def __new__(cls):
+    #     if cls._instance is None:
+    #         cls._instance = super().__new__(cls)
+    #     return cls._instance
+    @staticmethod
+    def get_model(model_name):
+        if model_name in ModelFactory._model_map:
+            return ModelFactory._model_map[model_name]
         else:
-            if not model_name in self._model_map.keys():
+            if not model_name in ModelFactory._model_map.keys():
                 if model_name== "Google_Word2Vec.bin":
-                    self._model_map[model_name] = load_from_file(model_name)
+                    ModelFactory._model_map[model_name] = load_from_file(model_name)
                 else:
-                    self._model_map[model_name] = load_from_file(model_name)
-        return self._model_map[model_name]
+                    ModelFactory._model_map[model_name] = load_from_file(model_name)
+        return ModelFactory._model_map[model_name]
