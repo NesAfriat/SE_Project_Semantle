@@ -8,7 +8,7 @@ class Data:
     def __init__(self):
         self.words_heap = PriorityQueue()
         self.guesses = dict()
-        self.scores = dict()
+        self.scores = []
         self.model = None
         self.remain_words = None
         self.last_score = -1
@@ -23,7 +23,7 @@ class Data:
             self.last_score = distance
             self.last_word = word
             self.guesses[word] = (distance, self.model.get_word_vec(word))
-            self.scores[word] = distance
+            self.scores.append(GuessScore(word, distance))
 
     def set_Priority(self, value):
         self.is_priority = value
@@ -57,9 +57,6 @@ class Data:
     def get_guesses(self):
         return self.guesses
 
-    def get_scores(self):
-        return self.scores
-
     def get_distances(self):
         return [x for x, y in self.guesses.values()]
 
@@ -77,6 +74,7 @@ class Data:
 
     def reset(self):
         self.guesses = dict()
+        self.scores = []
         self.statistics = OrderedDict()
         self.last_score = -1
         self.last_word = None
@@ -108,6 +106,7 @@ class Data:
 class MyItem:
     def __init__(self, word: str, weight: int):
         self.word = word
+        self.error_vec = []
         self.weight = weight
 
     def __lt__(self, other):
@@ -120,3 +119,9 @@ class MyItem:
         if isinstance(other, MyItem):
             return self.word == other.word and self.weight == other.weight
         return False
+
+
+class GuessScore:
+    def __init__(self, word, score):
+        self.word = word
+        self.score = score

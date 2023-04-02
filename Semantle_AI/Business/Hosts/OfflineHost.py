@@ -24,8 +24,12 @@ class OfflineHost(Host):
         self.set_model(host_model, vocabulary)
 
     def set_host_model_from_url(self, name):
-        host_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
-        self.set_model(host_model, vocabulary)
+        if name == WORD2VEC:
+            host_model, vocabulary = MF.load_from_file(name, WORDS_LIST)
+            self.set_model(host_model, vocabulary)
+        else:
+            host_model, vocabulary = MF.load_from_gensim(name, WORDS_LIST)
+            self.set_model(host_model, vocabulary)
 
     def get_model(self):
         return self.model

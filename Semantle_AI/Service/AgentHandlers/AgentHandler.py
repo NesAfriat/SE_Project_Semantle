@@ -31,6 +31,12 @@ class AgentHandler(ABC):
         self.agent.set_host(host.get_result())
         self.on_offline_mode()
 
+    def create_priority_loop_host(self, dist, host_model):
+        host = OfflineHostBuilder(self.out, self.inp, self.finished)
+        host.start_queue_game(dist, host_model)
+        self.agent.set_host(host.get_result())
+        self.on_offline_mode()
+
     def create_offline_host(self):
         host = OfflineHostBuilder(self.out, self.inp, self.finished)
         host.start_menu()

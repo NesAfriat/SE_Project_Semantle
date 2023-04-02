@@ -1,6 +1,6 @@
 from Business.Agents.Agent2Priority import Agent2Priority
 from Service.AgentHandlers.AgentHandler import AgentHandler
-
+WORD2VEC = "Google_Word2Vec.bin"
 
 class SmartAgent2Handler(AgentHandler):
     def __init__(self, out, inp, finished):
@@ -17,10 +17,14 @@ class SmartAgent2Handler(AgentHandler):
         self.agent.set_host_model()
         self.agent.set_agent_MultiLateration_algorithm()
 
-    def start_queue_loop(self, dist, player_model):
-        self.create_offline_loop_host(dist)
-        self.agent.set_agent_model_from_url(player_model)
+    def start_queue_loop(self, dist, host_model, player_model):
+        self.create_priority_loop_host(dist, host_model)
+        if player_model == WORD2VEC:
+            self.agent.set_agent_word2vec_model()
+        else:
+            self.agent.set_agent_model_from_url(player_model)
         self.agent.set_agent_smart_MultiLateration_algorithm()
+
 
     def on_offline_mode(self):
         pass

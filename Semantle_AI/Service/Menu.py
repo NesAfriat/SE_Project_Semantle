@@ -114,6 +114,8 @@ class Menu:
 
     def compare_errors(self):
         models = (WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA, WORD2VEC_GOOGLE)
+        model1 = self.busy_choose("Choose The host model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
+                                  WORD2VEC_GOOGLE)
         model2 = self.busy_choose("Choose The second model", WORD2VEC, FASTTESXT_WIKI, GLOVE_WIKI, WORD2VEC_RUSCORPORA,
                                   WORD2VEC_GOOGLE)
         done_loop = False
@@ -122,9 +124,10 @@ class Menu:
             choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
                 self.concrete_agent_builder = SmartAgent2Handler(input, self.out, self.finished)
-                self.concrete_agent_builder.start_queue_loop(MethodDistances.cosine_function(), models[int(model2) - 1])
+                self.concrete_agent_builder.start_queue_loop(MethodDistances.cosine_function(), models[int(model1) - 1]
+                                                             , models[int(model2) - 1])
                 Calc.create_error_compare_graph(int(choose), self.concrete_agent_builder.get_result(),
-                                                models[0], models[int(model2) - 1])
+                                                models[int(model1) - 1], models[int(model2) - 1])
                 done_loop = True
             elif choose == 'e':
                 done_loop = True

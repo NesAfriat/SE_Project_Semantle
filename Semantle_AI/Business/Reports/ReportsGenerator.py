@@ -354,7 +354,7 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
     x_tick = generate_x_values(min(x), max(x))
     plt.xticks(x_tick, fontsize=10)
     y_ticks = generate_y_values(min(y), max(y))
-    plt.yticks(y_ticksתfontsize=10)
+    plt.yticks(y_ticks,fontsize=10)
 
     # adjusting the plot to the pixels size
     plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
@@ -385,6 +385,7 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
 
 
 def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
+
     # Count the frequency of each value in the filtered keys
     value_counts = Counter(filtered_keys)
     total = sum(value_counts.values())

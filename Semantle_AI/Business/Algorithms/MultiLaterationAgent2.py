@@ -1,23 +1,23 @@
-from concurrent.futures import ThreadPoolExecutor, Executor
+from Business.Agents.Data import MyItem, GuessScore
 from Business.Algorithms.Algorithm import Algorithm
-import numpy as np
+import torch
 
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
 MSE = "MSE"
+SUM_VEC = "Sum vec"
 BRUTE_FORCE = "Brute_force"
-SUM_VEC = "Sum_vec"
 
 
 class SmartMultiLateration(Algorithm):
     def __init__(self, dist_formula, vec_calc_method=SUM, vec_value_method=MSE):
         super().__init__()
         self.dist_formula = dist_formula
-        self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative),
-                                             (BRUTE_FORCE, self.ret_zero())])
+        self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative)])
         self.vector_value_forms = dict([(MSE, self.mse), (SUM_VEC, self.sum_vec)])
         self.error_calc_method = vec_calc_method
         self.vector_value_method = vec_value_method
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def set_error_method(self, method_name):
         self.error_calc_method = method_name
@@ -35,98 +35,66 @@ class SmartMultiLateration(Algorithm):
         return percentage_difference <= percentage_error
 
     def sum_relative(self, word):
-        ret_vector = []
-        former_words = self.data.scores
-        for item, s in former_words.items():
-            dist_from_secret = s
-            dist_from_guess = self.data.model.get_distance_of_word(word, item)
-            ret_vector.append((dist_from_secret-dist_from_guess)/dist_from_secret)
-        return ret_vector
+        last_guess: GuessScore = self.data.scores[-1]
+        dist_from_secret = last_guess.score
+        dist_from_guess = self.data.model.get_distance_of_word(last_guess.word, word)
+        return (dist_from_secret - dist_from_guess) / dist_from_secret
 
     def sum(self, word):
-        former_words = self.data.scores
-        dist_from_secret = np.array(list(former_words.values()))
-        dist_from_guess = np.array([self.data.model.get_distance_of_word(item, word) for item in former_words])
-        ret_vector = dist_from_secret - dist_from_guess
-        return ret_vector.tolist()
-
-    def ret_zero(self):
-        return 0
+        last_guess: GuessScore = self.data.scores[-1]
+        dist_from_secret = last_guess.score
+        dist_from_guess = self.data.model.get_distance_of_word(last_guess.word, word)
+        return dist_from_secret - dist_from_guess
 
     @staticmethod
-    def mse_relative(d, s):
-        s = np.array(s)
-        d = np.array(d)
-        nonzero_indices = np.nonzero(s)
-        mse = np.mean(((s[nonzero_indices] - d[nonzero_indices]) / s[nonzero_indices]) ** 2)
-        return np.sqrt(mse)
-
-
-    def mse(self, vector):
-        # iterate over eac former guess and calculate the mse.
-        vector = np.array(vector)
-        return np.sqrt(np.sum(np.square(vector)))
+    def mse(vector):
+        tensor = torch.tensor(vector)
+        mse = torch.mean(tensor ** 2)
+        return torch.sqrt(mse)
 
     def sum_vec(self, vector):
-        # iterate over eac former guess and calculate the mse.
-        vector = np.array(vector)
-        return np.sum(vector)
+        tensor_vector = torch.tensor(vector, dtype=torch.float32, device=self.device)
+        return torch.sum(tensor_vector).item()
 
-    def calculate_error_val(self, word):
-        return self.error_calculation_forms[self.error_calc_method](word)
+    def ret_zero(self, word):
+        return 0
 
-    def calculate_vector_size(self, vector):
-        return self.vector_value_forms[self.vector_value_method](vector)
+    def calculate_new_error_val(self, word):
+        if self.error_calc_method == SUM:
+            return self.sum(word)
+        elif self.error_calc_method == SUM_RELATIVE:
+            return self.sum_relative(word)
+        else:
+            return self.ret_zero(word)
+
+    def calculate_new_vector_size(self, vector):
+        if self.vector_value_method == MSE:
+            return self.mse(vector)
+        elif self.vector_value_method == SUM_VEC:
+            return self.sum_vec(vector)
 
     def calculate(self):
-
         # Get the items from the priority queue
         items = []
+        while not self.data.words_heap.empty():
+            item = self.data.words_heap.get()
+            items.append(item)
 
-        # Calculate the error vectors and vector values in parallel
-        with ThreadPoolExecutor() as executor:
-            error_vectors = list(executor.map(self.calculate_error_val, [item.word for item in items]))
-            vector_values = list(executor.map(self.calculate_vector_size, error_vectors))
-
-        # Modify the items in the queue with the new weight values
+        # Modify the items in the queue
         for i, item in enumerate(items):
-            item.weight = vector_values[i]
-            items[i] = item
+            # calc new val to add the vector.
+            val = self.calculate_new_error_val(item.word)
+
+            # updating the error vector in the queue, and update the weight.
+            items[i].error_vec.append(val)
+            items[i].weight = self.calculate_new_vector_size(items[i].error_vec)
 
         # Push the modified items back into the priority queue
         for item in items:
             self.data.words_heap.put(item)
 
-        # Return the word with the highest weight
+        # return the queue top.
         next_word = self.data.words_heap.get()
         if self.data.words_heap.empty():
-            raise ValueError("Error occurred, there are no words left to guess.")
+            raise ValueError("error occurred, there are no words left to guess.")
         return next_word.word
-
-        # # code before optimization
-        #
-        # while not self.data.words_heap.empty():
-        #     item = self.data.words_heap.get()
-        #     items.append(item)
-        #
-        # # Modify the items in the queue
-        # for i, item in enumerate(items):
-        #
-        #     # create the error vector
-        #     error_vector = self.calculate_error_val(item.word)
-        #
-        #     # calculating the vector value
-        #     dec_val = self.calculate_vector_size(error_vector)
-        #
-        #     # updating the weight in the queue
-        #     items[i] = MyItem(item.word, dec_val)
-        #
-        # # Push the modified items back into the priority queue
-        # for item in items:
-        #     self.data.words_heap.put(item)
-        #
-        # # return the queue top.
-        # next_word = self.data.words_heap.get()
-        # if self.data.words_heap.empty():
-        #     raise ValueError("error occurred, there are no words left to guess.")
-        # return next_word.word

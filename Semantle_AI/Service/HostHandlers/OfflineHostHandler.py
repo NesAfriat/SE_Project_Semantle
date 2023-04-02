@@ -23,6 +23,14 @@ class OfflineHostBuilder(HostBuilder):
         dist_formula = dist
         self.host.model.set_dist_function(dist_formula)
 
+    def start_queue_game(self, dist, host_model):
+        if host_model == WORD2VEC:
+            self.host.set_host_word2vec_model()
+        else:
+            self.host.set_host_model_from_url(host_model)
+        dist_formula = dist
+        self.host.model.set_dist_function(dist_formula)
+
     def step_A(self):
 
         def choose_host_model():

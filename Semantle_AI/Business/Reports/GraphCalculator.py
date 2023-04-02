@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from pathlib import Path
 import Business.Reports.ReportsGenerator as Reporter
 import Business.Algorithms as Alg
 from Business import MethodDistances
@@ -8,12 +7,10 @@ from Business.Algorithms import MultiLaterationAgent2
 from Business.Reports.Calculator import Calculator
 import matplotlib.pyplot as plt
 import os
-import statistics
 
 WORDS_LIST = "word_list.txt"
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"
-
 SLASH_SIGN = dict({"mac": "/", "windows": "/"})
 os_type = "mac"  # mac is 0, windows is 1
 
@@ -89,47 +86,6 @@ def calculate_graph(runs_number, agent: Agent):
     Reporter.generate_algo_guesses_from_csv(path)
 
 
-# the code before modification.
-#     # init the result
-#     # for each algo, run all words.
-#     counter = 0
-#     for algo_name in algo_dict:
-#         counter = counter + 1
-#
-#         # get the algo class
-#         algorithm = algo_dict[algo_name]
-#         setAgentAlgo(type(algorithm), agent)
-#
-#         # init the statistics result for the algorithm
-#         calculator = Calculator()
-#
-#         # iterate over each word and run the game
-#         for word in words_list:
-#
-#             # setting the secret word in each session.
-#             agent.set_secret_word(word)
-#             agent.start_play(lambda args: args)
-#
-#             # after run finished, collect the data.
-#             statistics = agent.get_statistics()
-#             for key in statistics.keys():
-#                 calculator.add_result(key, statistics[key])
-#             agent.reset_data()
-#
-#             # After creating average
-#         k = calculator.calc_avg()
-#         for key in k.keys():
-#             res = k[key]
-#             if key == list(k.keys())[-1]:
-#                 Reporter.save_guess_data(counter, key, 0)
-#             else:
-#                 Reporter.save_guess_data(counter, key, res)
-#
-#         Reporter.save_game_data(counter, WORD2VEC, WORD2VEC, algo_name, DISTANCE_METHOD)
-#     path = Reporter.generate_data_files()
-#     Reporter.generate_algo_guesses_from_csv(path)
-
-
 def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = select_words(runs_number, agent.get_vocab())
@@ -163,19 +119,6 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
 
             # reset the agent's data
             agent.reset_data()
-            #
-            # # insert in result the data from statistic by order(by guess num)
-            # for key in statistic.keys():
-            #     results[key] = statistic[key]
-            #
-            # # set up for next iteration. reset data in agent.
-            # agent.reset_data()
-            #
-            # # taking the last guess and to remain words after it.
-            # max_val = calculator.get_highest_nonzero_key(results)
-            #
-            # # calculating the graph values to be the number of guesses needed to win.
-            # calculator.add_noise_result(max_val)
 
         # After the data setting, Creating average of the results in calculator.
         Reporter.generate_graph(calculator.results.keys(), algo_name, runs_number)
@@ -202,8 +145,10 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
             agent.data.set_error(noise)
             # iterate over each word and run the game
             for word in words_list:
+
                 # setting the secret word in each session.
                 agent.set_secret_word(word)
+
                 agent.start_play(lambda args: args)
 
                 # after run finished, collect the data.
@@ -211,7 +156,6 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
 
                 # get the last guess and remaining words after it
                 last_guess = max(statistic.keys())
-                # remaining_words = statistic[last_guess]
 
                 # add the result to the calculator
                 calculator.add_noise_result(last_guess)
@@ -224,6 +168,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
 
 
 def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name):
+
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
 
@@ -232,8 +177,10 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
     if len(words_list) == 0 or len(words_list) != runs_number:
         words_list = select_words(runs_number, agent.get_vocab())
         save_words_list(words_list)
+
     # setting the new smart trilateration algorithm
     setAgentAlgo(Alg.MultiLaterationAgent2.SmartMultiLateration, agent)
+
     # setting the error vector methods values
     error_method = MultiLaterationAgent2.SUM
     error_size_method = MultiLaterationAgent2.MSE
