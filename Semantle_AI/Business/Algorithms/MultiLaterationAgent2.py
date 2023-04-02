@@ -1,19 +1,27 @@
 from Business.Agents.Data import MyItem, GuessScore
 from Business.Algorithms.Algorithm import Algorithm
 import torch
+import numpy as np
 
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
+BRUTE_FORCE = "Brute_force"
+RMSE = 'RMSE'
+MAE = "MAE"
+R_SQUARED = "R_Squared"
+MSLE = "MSLE"
+SMAPE = "SMAPE"
+MAPE = "MAPE"
+
 MSE = "MSE"
 SUM_VEC = "Sum vec"
-BRUTE_FORCE = "Brute_force"
-
 
 class SmartMultiLateration(Algorithm):
     def __init__(self, dist_formula, vec_calc_method=SUM, vec_value_method=MSE):
         super().__init__()
         self.dist_formula = dist_formula
-        self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative)])
+        self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative),
+                                             (BRUTE_FORCE, self.ret_zero)])
         self.vector_value_forms = dict([(MSE, self.mse), (SUM_VEC, self.sum_vec)])
         self.error_calc_method = vec_calc_method
         self.vector_value_method = vec_value_method
@@ -45,6 +53,33 @@ class SmartMultiLateration(Algorithm):
         dist_from_secret = last_guess.score
         dist_from_guess = self.data.model.get_distance_of_word(last_guess.word, word)
         return dist_from_secret - dist_from_guess
+
+    # Mean Absolute Error (MAE)
+    def mae(y_true, y_pred):
+        return np.mean(np.abs(y_true - y_pred))
+
+    # Root Mean Squared Error (RMSE)
+    def rmse(y_true, y_pred):
+        return np.sqrt(np.mean((y_true - y_pred) ** 2))
+
+    # Coefficient of Determination (R-squared)
+    def r_squared(y_true, y_pred):
+        ss_res = np.sum((y_true - y_pred) ** 2)  # residual sum of squares
+        ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)  # total sum of squares
+        return 1 - (ss_res / ss_tot)
+
+    # Mean Absolute Percentage Error (MAPE)
+    def mape(y_true, y_pred):
+        return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+    # Mean Squared Logarithmic Error (MSLE)
+    def msle(y_true, y_pred):
+        return np.mean((np.log(y_pred + 1) - np.log(y_true + 1)) ** 2)
+
+    # Symmetric Mean Absolute Percentage Error (SMAPE)
+    def smape(y_true, y_pred):
+        return np.mean(2.0 * np.abs(y_pred - y_true) / ((np.abs(y_true) + np.abs(y_pred)) + 1e-8)) * 100
+
 
     @staticmethod
     def mse(vector):
