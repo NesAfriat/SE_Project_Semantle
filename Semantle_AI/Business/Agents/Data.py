@@ -1,7 +1,6 @@
 from copy import copy
 from collections import OrderedDict
 from queue import PriorityQueue
-import queue
 
 
 class Data:

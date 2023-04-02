@@ -95,6 +95,7 @@ class SmartMultiLateration(Algorithm):
 
         # return the queue top.
         next_word = self.data.words_heap.get()
+
         if self.data.words_heap.empty():
             raise ValueError("error occurred, there are no words left to guess.")
         return next_word.word

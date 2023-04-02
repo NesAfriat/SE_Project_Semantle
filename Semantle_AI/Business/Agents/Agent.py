@@ -92,9 +92,10 @@ class Agent(ABC):
                     out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 self.add_to_list(self.data.last_word, self.data.last_score)
                 word = self.guess_word()
-                self.data.last_score = round(self.host.check_word(word), 10)
+                self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
+
             except ValueError as e:
                 out(e)
                 return
