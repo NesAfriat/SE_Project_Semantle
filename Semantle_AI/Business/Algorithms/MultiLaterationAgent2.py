@@ -12,9 +12,8 @@ R_SQUARED = "R_Squared"
 MSLE = "MSLE"
 SMAPE = "SMAPE"
 MAPE = "MAPE"
-
 MSE = "MSE"
-SUM_VEC = "Sum vec"
+SUM_VEC = "Sum_vec"
 
 class SmartMultiLateration(Algorithm):
     def __init__(self, dist_formula, vec_calc_method=SUM, vec_value_method=MSE):
