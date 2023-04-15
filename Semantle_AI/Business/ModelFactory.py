@@ -14,7 +14,7 @@ def filter_vocab(vocab, word_list):
     if word_list is None:
         return vocab
     try:
-        path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + word_list
+        path = os.path.join(os.getcwd(), "Business", "Model", word_list)
         file = open(path, "r")
         words_set = set((file.read()).split("\n"))
         voc = words_set & vocab
