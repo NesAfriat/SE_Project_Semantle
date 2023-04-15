@@ -11,13 +11,11 @@ import os
 WORDS_LIST = "word_list.txt"
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"
-SLASH_SIGN = dict({"mac": "/", "windows": "/"})
-os_type = "mac"  # mac is 0, windows is 1
 
 
 def select_words(num_of_words, vocab):
     ret = set()
-    while len(ret) <= num_of_words:
+    while len(ret) < num_of_words:
         if len(vocab) == 0:
             raise ValueError("Not enough words in the vocabulary to run.")
         to_add = vocab.pop()
@@ -115,7 +113,7 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
             # remaining_words = statistic[last_guess]
 
             # add the result to the calculator
-            calculator.add_noise_result(last_guess)
+            calculator.add_error_result(last_guess)
 
             # reset the agent's data
             agent.reset_data()
@@ -124,12 +122,15 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
         Reporter.generate_graph(calculator.results.keys(), algo_name, runs_number)
 
 
-def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name):
+def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name, withQueue):
     # select the noises for each run.
-    noises_list = [1.0, 1.005, 1.01, 1.02, 1.05, 1.1, 1.15, 1.2, 1.5]
+    noises_list = [1, 1.05, 1.1, 1.2, 1.5]
 
     # select the 'runs_number' words that will be run on each algorithm.
-    words_list = select_words(runs_number, agent.host.get_vocab())
+    words_list = load_words_list()
+    if len(words_list) == 0 or len(words_list) != runs_number:
+        words_list = select_words(runs_number, agent.get_vocab())
+        save_words_list(words_list)
 
     # for each algo, run all words.
     for algo_name, algorithm in algos_list.items():
@@ -142,7 +143,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
         # run each word with each noise
         for noise in noises_list:
             # setting the runs current error.
-            agent.data.set_error(noise)
+            agent.host.set_model_error(noise)
             # iterate over each word and run the game
             for word in words_list:
 
@@ -158,13 +159,13 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
                 last_guess = max(statistic.keys())
 
                 # add the result to the calculator
-                calculator.add_noise_result(last_guess)
+                calculator.add_noise_result(noise, last_guess, word)
 
                 # reset the agent's data
                 agent.reset_data()
 
         # After the data setting, Creating average of the results in calculator.
-        Reporter.generate_noises_graph_spread(calculator.results, algo_name, runs_number, dist_name)
+        Reporter.generate_noises_graph_spread(calculator.results, algo_name, runs_number, dist_name, withQueue)
 
 
 def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name):

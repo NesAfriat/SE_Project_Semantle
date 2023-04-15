@@ -65,6 +65,7 @@ class Menu:
                                       "Export algorithms graph",
                                       "Crate an algorithm graph",
                                       "Compare noise impact on the guesses number",
+                                      "Compare noise impact on the guesses number using queue",
                                       "Load graph from files",
                                       "Compare two word models distances",
                                       "Compare different priority calculation",
@@ -78,6 +79,8 @@ class Menu:
             elif choose == '3':
                 self.noise_algo_loop()
             elif choose == '4':
+                self.noise_algo_queue_loop()
+            elif choose == '5':
                 legal_path = False
                 while not legal_path:
                     path = input("Enter full file path. The go back type \'Exit\'\n")
@@ -94,13 +97,13 @@ class Menu:
                         else:
                             print(f"The file path {path} does not exists.")
                         done_loop = True
-            elif choose == '5':
+            elif choose == '6':
                 self.compare_models()
                 done_loop = True
-            elif choose == '6':
+            elif choose == '7':
                 self.compare_errors()
                 done_loop = True
-            elif choose == '7':
+            elif choose == '8':
                 done_loop = True
 
     def compare_models(self):
@@ -171,14 +174,56 @@ class Menu:
                         self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
-                                                              algo_dict, 'Euclid')
+                                                              algo_dict, 'Euclid', withQueue=False)
                         done = True
                         done_loop = True
                     elif dist == '2':
                         self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.cosine_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
-                                                              algo_dict, 'Cosin')
+                                                              algo_dict, 'Cosin', withQueue=False)
+                        done = True
+                        done_loop = True
+                    elif dist == 'e':
+                        done_loop = True
+                        done = True
+                        continue
+                elif choose == 'e':
+                    done_loop = True
+                else:
+                    print("Please choose a valid option")
+
+    def noise_algo_queue_loop(self):
+        # setting the algo to run. For now hard coded as multi-lateration queue only.
+        done_loop = False
+        algo_dict = dict()
+        # setting the smart multi-lateration agent.
+        algo_dict["Multi-Lateration"] = Algo.MultiLaterationAgent2.SmartMultiLateration(MethodDistances.euclid_function())
+
+        # getting the number of runs to compare for each noise
+        done = False
+        while not done:
+            print("=================== Dist func ===================\n\n")
+            dist = input("Please type distance function.\n1.Euclidian.\n2.Cos function.\nTo exit press \'e\'.\n")
+            if dist != '1' and dist != '2' and dist != 'e':
+                print("Please enter a valid answer.")
+                continue
+            while not done_loop:
+                print("=================== Number of games ===================\n\n")
+                choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
+                if choose.isnumeric():
+                    if dist == '1':
+                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
+                        Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
+                                                              algo_dict, 'Euclid', withQueue=True)
+                        done = True
+                        done_loop = True
+                    elif dist == '2':
+                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder.start_loop_menu(MethodDistances.cosine_function())
+                        Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
+                                                              algo_dict, 'Cosin', withQueue=True)
                         done = True
                         done_loop = True
                     elif dist == 'e':

@@ -25,7 +25,7 @@ def filter_vocab(vocab, word_list):
 
 def load_from_file(name, word_list=None):
     print("\n\n======================  Model loading ======================")
-    path = os.path.dirname(Path(os.curdir).parent.absolute()) + "/Business/Model/" + name
+    path = os.path.join(os.getcwd(), "Business", "Model", name)
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")

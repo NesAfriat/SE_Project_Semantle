@@ -9,10 +9,6 @@ from datetime import datetime
 from collections import Counter, OrderedDict
 from typing import Set
 
-SLASH_SIGN = dict({"mac": "/", "windows": "/"})
-os_type = "mac"  # mac is 0, windows is 1
-
-
 game_guesses = {}  # guesses by game numbers
 games_data = {}
 
@@ -30,8 +26,8 @@ def save_game_data(game_number, agent_model_name, host_model_name, algorithm_nam
 
 
 def generate_algorithms_compare_name():
-    time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}algorithms_compare{SLASH_SIGN[os_type]}{time}"
+    time, cwd = getTimeAndCwd()
+    path = os.path.join(cwd, "Service", "Reports_output", "algorithms_compare", time)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -44,9 +40,8 @@ def generate_algorithms_compare_name():
 
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
-    time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}algorithm_stat" \
-           f"{SLASH_SIGN[os_type]}{algo_name}{SLASH_SIGN[os_type]}{time}"
+    time, cwd = getTimeAndCwd()
+    path = os.path.join(cwd, "Service", "Reports_output", "algorithm_stat", algo_name, time)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -57,11 +52,16 @@ def generate_algorithm_stat_name(algo_name):
     return path
 
 
-def generate_noise_compare_name(algo_name):
-    # datetime object containing current date and time
+def getTimeAndCwd():
     time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}Noise_compare" \
-           f"{SLASH_SIGN[os_type]}{algo_name}{SLASH_SIGN[os_type]}{time}"
+    cwd = os.getcwd()
+    return time, cwd
+
+
+def generate_noise_compare_name(algo_name, withQueue):
+    # datetime object containing current date and time
+    time, cwd = getTimeAndCwd()
+    path = os.path.join(cwd, "Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name, time)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -74,9 +74,8 @@ def generate_noise_compare_name(algo_name):
 
 def generate_error_vector_name(error_method, error_size_method):
     # datetime object containing current date and time
-    time = datetime.now().strftime('%Y-%m-%d_%H-%M')
-    path = f".{SLASH_SIGN[os_type]}Reports_output{SLASH_SIGN[os_type]}Priority_calculation{SLASH_SIGN[os_type]}" \
-           f"{error_method}_{error_size_method}{SLASH_SIGN[os_type]}{time}"
+    time, cwd = getTimeAndCwd()
+    path = os.path.join(cwd, "Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}", time)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -88,8 +87,8 @@ def generate_error_vector_name(error_method, error_size_method):
 
 
 def generate_data_files():
-    dir_name = generate_algorithms_compare_name()
-    with open(dir_name + f'{SLASH_SIGN[os_type]}guesses.csv', 'w', newline='') as file:
+    dir_name = os.path.join(generate_algorithms_compare_name())
+    with open(os.path.join(dir_name, "guesses.csv"), 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["guess_No", "remaining_guesses", "game_No"])
         for game_num in game_guesses.keys():
@@ -98,7 +97,7 @@ def generate_data_files():
                 g_rg = gs_num.next_guess_num_options
                 writer.writerow([g_num, g_rg, game_num])
 
-    with open(dir_name + f'{SLASH_SIGN[os_type]}games.csv', 'w', newline='') as file:
+    with open(os.path.join(dir_name, " games.csv"), 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["game_No", "agent_model_name", "host_model_name", "algorithm"])
         for game_num in games_data.keys():
@@ -211,15 +210,13 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
 
     # getting the dir and file name.
     dir_name = generate_error_vector_name(error_method, error_size_method)
-
-    # Create directory if it does not exist
+    # setting dir and file name, and saving the csv files.
+    filename = os.path.join(dir_name, f"{runs_number}_{error_method}_{error_size_method}",
+                            f"{model1_name}_{model2_name}")    # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
-    # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{runs_number}_{error_method}_{error_size_method}_" \
-               f"{model1_name}_{model2_name}_PriorityCompare.csv"
-    with open(filename, 'w', newline='') as f:
+    with open(os.path.join(filename, "PriorityCompare.csv"), 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["RunNumber", "GuessTillWin", "Word"])
         counter = 0
@@ -228,90 +225,37 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
             counter += 1
 
     # Save plot as png file
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{runs_number}_{error_method}{error_size_method}_" \
-               f"{model1_name}_{model2_name}_PriorityCompare.png"
-    plt.savefig(filename)
+    plt.savefig(os.path.join(filename, "PriorityCompare.png"))
 
     # Show plot
     plt.show()
     return None
 
 
-def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_number: int, dist_name):
-    # Create the plot
-    fig, ax = plt.subplots()
-
-    # setting the pixels ( full hd = 1920 x 1080 in pixels = 19.2 x 10.8 in inches)
-    # setting the pixels ( full hd = 3760 x 2160 in pixels = 47 x 27 in inches)
-    fig.set_size_inches(19.2, 10.8)
-    color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-
-    x_min = 100
-    x_max = 0
-    y_min = 100
-    y_max = 0
-
-    # iterating over all noises. for each one we will create another graph.
-    for i, (noise, res_list) in enumerate(results.items()):
-        if noise < x_min:
-            x_min = noise
-        if noise > x_max:
-            x_max = noise
-        lst = [round((noise - 1.0) * 100, 1)]
-        x = [a for a in lst for i in range(len(res_list))]
-        y = [num for num in res_list]
-        tmp = min(y)
-        if tmp < y_min:
-            y_min = tmp
-        tmp = max(y)
-        if tmp > y_max:
-            y_max = tmp
-        color = color_cycle[i % len(color_cycle)]
-        # ax.plot(x, y, label=f'{noise}', linewidth=2.0, alpha=0.7, marker='o', markersize=4, fontsize = 30)
-        ax.scatter(x, y, color=color, s=150, label=f"{noise}%")
-
-    # setting the plot labels.
-    ax.set_xlabel('Noise value', fontsize=30)
-    ax.set_ylabel('Guesses until win', fontsize=30)
-
-    # setting ticks for each axis.
-    x_tick = generate_x_values(round((x_min - 1.0) * 100, 1), round((x_max - 1.0) * 100, 1))
-    plt.xticks(x_tick, fontsize=10)
-    y_ticks = generate_y_values(y_min, y_max)
-    plt.yticks(y_ticks, fontsize=10)
-
-    # # adjusting the plot to the pixels size.
-    # plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
-
+def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_number: int, dist_name, withQueue):
     # getting the dir and file name.
-    dir_name = generate_noise_compare_name(algo_name)
+    dir_name = generate_noise_compare_name(algo_name, withQueue)
 
+    dir_name = os.path.join(dir_name, f"algo={algo_name}_runs={runs_number}_dist={dist_name}")
     # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
     # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
+    filename = os.path.join(dir_name, "NoiseCompare.csv")
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["Noise", "GuessTillWin", "RunNumber"])
-        counter = 0
-        for noise in results.keys():
-            counter += 1
-            for result in results[noise]:
-                noise2 = round((noise - 1.0) * 100, 1)
-                writer.writerow([noise2, result, counter])
+        writer.writerow(["Noise", "GuessTillWin", "Word"])
+        for (noise, gues_dict) in results.items():
+            counter = 0
+            for (word, guesses) in gues_dict.items():
+                writer.writerow([noise, guesses, word])
+                counter += 1
 
-    # Save plot as png file
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
-    plt.savefig(filename)
-
-    # Show plot
-    plt.show()
     return None
 
 
-def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number: int, dist_name):
+def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number: int, dist_name, withQueue):
     points = OrderedDict()
 
     # iterate over the vals and check average for each noise value.
@@ -320,7 +264,7 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
         guesses_sum = 0
 
         # pass each noise values and calculate the avg.
-        for guess_num in results[noise]:
+        for (word, guess_num) in results[noise].items:
             guesses_counter += 1
             guesses_sum += guess_num
 
@@ -354,29 +298,30 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
     x_tick = generate_x_values(min(x), max(x))
     plt.xticks(x_tick, fontsize=10)
     y_ticks = generate_y_values(min(y), max(y))
-    plt.yticks(y_ticks,fontsize=10)
+    plt.yticks(y_ticks, fontsize=10)
 
     # adjusting the plot to the pixels size
     plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
     # getting the dir and file name.
-    dir_name = generate_noise_compare_name(algo_name)
-
+    dir_name = generate_noise_compare_name(algo_name,withQueue)
+    dir_name = os.path.join(dir_name, f"{algo_name}_{runs_number}_{dist_name}")
     # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
     # setting dir and file name, and saving the csv files.
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.csv"
+    filename = os.path.join(dir_name, "NoiseCompare.csv")
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["Noise", "GuessNumber"])
+        writer.writerow(["Noise", "GuessNumber", "Words"])
         for key in points.keys():
+            result_string = ', '.join(results[key].keys())
             key2 = round((key - 1.0) * 100, 1)
-            writer.writerow([key2, points[key]])
+            writer.writerow([key2, points[key], result_string])
 
     # Save plot as png file
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_{dist_name}_NoiseCompare.png"
+    filename = os.path.join(dir_name, "NoiseCompare.png")
     plt.savefig(filename)
 
     # Show plot
@@ -385,7 +330,6 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
 
 
 def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
-
     # Count the frequency of each value in the filtered keys
     value_counts = Counter(filtered_keys)
     total = sum(value_counts.values())
@@ -417,7 +361,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_LGD.csv"
+    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", "LGD.csv")
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Value", "Percentage"])
@@ -425,7 +369,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
             writer.writerow([p[0], p[1]])
 
     # Save plot as png file
-    filename = f"{dir_name}{SLASH_SIGN[os_type]}{algo_name}_{runs_number}_LGD.png"
+    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", "LGD.png")
     plt.savefig(filename)
     # Show plot
     plt.show()

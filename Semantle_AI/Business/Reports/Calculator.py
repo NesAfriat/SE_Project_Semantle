@@ -14,12 +14,11 @@ class Calculator:
             self.results[num_of_guess] = list()
             self.results[num_of_guess].append(remain_words)
 
-    def add_noise_result(self, num_of_guess):
-        if num_of_guess in self.results:
-            self.results[num_of_guess] += 1
-        else:
-            self.results[num_of_guess] = 0
-            self.results[num_of_guess] += 1
+    def add_noise_result(self, noise, num_of_guess, word):
+        if noise not in self.results:
+            self.results[noise] = OrderedDict()
+
+        self.results[noise][word] = num_of_guess
 
     def add_error_result(self, max_val):
         self.results[self.run_number] = max_val
