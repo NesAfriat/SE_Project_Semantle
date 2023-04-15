@@ -11,7 +11,7 @@ class OnlineHost(Host):
     def start_game(self, out):
         pass
 
-    ## check if the guess word is match
+    # check if the guess word is match
     def __init__(self):
         self.browser = None
         self.guesses = {}
@@ -41,7 +41,7 @@ class OnlineHost(Host):
         sleep(2)
         return float(self.guesses[word]) / 100
 
-    ## select word and start game
+    # select word and start game
     def select_word_and_start_game(self, out):
         out("===========LOADING ONLINE SERVER============")
         options = webdriver.ChromeOptions()
@@ -67,4 +67,7 @@ class OnlineHost(Host):
         pass
 
     def getWordVec(self, word):
+        pass
+
+    def set_model_error(self, noise):
         pass
