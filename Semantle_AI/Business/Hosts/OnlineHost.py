@@ -57,6 +57,9 @@ class OnlineHost(Host):
             ">> Starting the game ")
         out("================ Online game===============")
 
+    def set_model_error(self, noise):
+        pass
+
     def quitGame(self):
         self.browser.quit()
 
@@ -67,7 +70,4 @@ class OnlineHost(Host):
         pass
 
     def getWordVec(self, word):
-        pass
-
-    def set_model_error(self, noise):
         pass

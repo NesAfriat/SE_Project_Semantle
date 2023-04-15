@@ -18,6 +18,10 @@ class Host(ABC):
     def start_game(self, out):
         pass
 
+    @abstractmethod
+    def set_model_error(self, noise):
+        pass
+
     # select word and start game
     @abstractmethod
     def quitGame(self):
@@ -25,10 +29,6 @@ class Host(ABC):
 
     @abstractmethod
     def getWord(self):
-        pass
-
-    @abstractmethod
-    def set_model_error(self, noise):
         pass
 
     @abstractmethod

@@ -14,10 +14,10 @@ class OfflineHost(Host):
         pass
 
     def __init__(self):
-        self.error = 1
         self.model = None
         self.vocabulary = None
         self.secret_word = None
+        self.error = 1
 
     def set_host_word2vec_model(self):
         host_model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
@@ -69,8 +69,8 @@ class OfflineHost(Host):
     def getGuessVec(self, w):
         return self.model.model.distance(w, self.secret_word)
 
-    def set_model_error(self, noise):
-        self.error = noise
-
     def getWordsVec(self, w1, w2):
         return np.subtract(self.model.get_word_vec(w1), self.model.get_word_vec(w2))
+
+    def set_model_error(self, noise):
+        self.error = noise

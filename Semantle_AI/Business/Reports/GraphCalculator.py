@@ -125,7 +125,8 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
 def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name, withQueue):
     # select the noises for each run.
     noises_list = [1, 1.05, 1.1, 1.2, 1.5]
-
+    if withQueue:
+        agent.data.is_priority = True
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = load_words_list()
     if len(words_list) == 0 or len(words_list) != runs_number:
