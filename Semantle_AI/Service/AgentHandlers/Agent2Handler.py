@@ -12,9 +12,13 @@ class Agent2Handler(AgentHandler):
         self.choose_agent_model()
         self.choose_algo()
 
-
     def on_offline_mode(self):
         pass
 
     def on_online_mode(self):
         pass
+
+    def start_loop_menu(self, dist):
+        self.create_offline_loop_host(dist)
+        self.agent.set_host_model()
+        self.agent.set_agent_smart_MultiLateration_algorithm()

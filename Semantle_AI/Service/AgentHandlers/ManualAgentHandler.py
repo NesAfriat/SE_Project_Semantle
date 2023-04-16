@@ -11,3 +11,6 @@ class ManualAgentHandler(AgentHandler, ABC):
     def __init__(self, out, inp, finished):
         super().__init__(out, inp, finished)
         self.agent = ManualAgent()
+
+    def start_loop_menu(self, dist):
+        pass

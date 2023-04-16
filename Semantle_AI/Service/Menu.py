@@ -143,7 +143,7 @@ class Menu:
             print("=================== Number of games ===================\n\n")
             choose = input("Please type number of executions for each algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
-                self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                 Calc.calculate_graph(int(choose), self.concrete_agent_builder.get_result())
                 done_loop = True
@@ -171,14 +171,14 @@ class Menu:
                 choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
                 if choose.isnumeric():
                     if dist == '1':
-                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
                                                               algo_dict, 'Euclid', withQueue=False)
                         done = True
                         done_loop = True
                     elif dist == '2':
-                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.cosine_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
                                                               algo_dict, 'Cosin', withQueue=False)
@@ -213,14 +213,14 @@ class Menu:
                 choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
                 if choose.isnumeric():
                     if dist == '1':
-                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
                                                               algo_dict, 'Euclid', withQueue=True)
                         done = True
                         done_loop = True
                     elif dist == '2':
-                        self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                        self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                         self.concrete_agent_builder.start_loop_menu(MethodDistances.cosine_function())
                         Calc.calculate_noise_to_guesses_graph(int(choose), self.concrete_agent_builder.get_result(),
                                                               algo_dict, 'Cosin', withQueue=True)
@@ -259,7 +259,7 @@ class Menu:
         while done_loop1 and not done_loop2:
             choose = input("Please type number of executions for the algorithm, to exit press \'e\'.\n")
             if choose.isnumeric():
-                self.concrete_agent_builder = Agent1Handler(input, self.out, self.finished)
+                self.concrete_agent_builder = Agent2Handler(input, self.out, self.finished)
                 self.concrete_agent_builder.start_loop_menu(MethodDistances.euclid_function())
                 Calc.calculate_algorithm_graph(int(choose), self.concrete_agent_builder.get_result(), algo_dict)
                 done_loop2 = True

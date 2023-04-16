@@ -19,3 +19,6 @@ class Agent2(Agent):
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, self.guess_n_random_word(1))
+
+    def set_host_model(self):
+        self.set_model(self.host.model)

@@ -25,6 +25,10 @@ class AgentHandler(ABC):
     def get_result(self):
         return self.agent
 
+    @abstractmethod
+    def start_loop_menu(self, dist):
+        pass
+
     def create_offline_loop_host(self, dist):
         host = OfflineHostBuilder(self.out, self.inp, self.finished)
         host.start_loop_game(dist)

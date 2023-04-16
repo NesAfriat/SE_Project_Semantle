@@ -26,6 +26,10 @@ class Agent(ABC):
     def guess_word(self):
         pass
 
+    @abstractmethod
+    def set_host_model(self):
+        pass
+
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
