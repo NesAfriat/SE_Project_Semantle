@@ -27,7 +27,7 @@ def save_game_data(game_number, agent_model_name, host_model_name, algorithm_nam
 
 def generate_algorithms_compare_name():
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "algorithms_compare", time)
+    path = os.path.join(cwd, "Service", "Reports_output", "algorithms_compare")
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -35,13 +35,13 @@ def generate_algorithms_compare_name():
         print("Directory '% s' created" % path)
     except IOError:
         pass
-    return path
+    return path,time
 
 
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "algorithm_stat", algo_name, time)
+    path = os.path.join(cwd, "Service", "Reports_output", "algorithm_stat", algo_name)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -49,7 +49,7 @@ def generate_algorithm_stat_name(algo_name):
         print("Directory '% s' created" % path)
     except IOError:
         pass
-    return path
+    return path,time
 
 
 def getTimeAndCwd():
@@ -61,7 +61,7 @@ def getTimeAndCwd():
 def generate_noise_compare_name(algo_name, withQueue):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name, time)
+    path = os.path.join(cwd, "Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -69,13 +69,13 @@ def generate_noise_compare_name(algo_name, withQueue):
         print("Directory '% s' created" % path)
     except IOError as e:
         pass
-    return path
+    return path,time
 
 
 def generate_error_vector_name(error_method, error_size_method):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}", time)
+    path = os.path.join(cwd, "Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}")
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -83,11 +83,12 @@ def generate_error_vector_name(error_method, error_size_method):
         print("Directory '% s' created" % path)
     except IOError:
         pass
-    return path
+    return path, time
 
 
 def generate_data_files():
-    dir_name = os.path.join(generate_algorithms_compare_name())
+    path, time = generate_algorithms_compare_name()
+    dir_name = os.path.join(path, time)
     with open(os.path.join(dir_name, "guesses.csv"), 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["guess_No", "remaining_guesses", "game_No"])
@@ -169,8 +170,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
     # setting the pixels ( full hd = 1920 x 1080 in pixels = 19.2 x 10.8 in inches)
     # setting the pixels ( ultra hd = 3760 x 2160 in pixels = 47 x 27 in inches)
     fig.set_size_inches(19.2, 10.8)
-    color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-
+    # color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
     x_min = 100
     x_max = 0
     y_min = 100
@@ -209,10 +209,10 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
     # plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
     # getting the dir and file name.
-    dir_name = generate_error_vector_name(error_method, error_size_method)
+    dir_name, time_stamp = generate_error_vector_name(error_method, error_size_method)
     # setting dir and file name, and saving the csv files.
     filename = os.path.join(dir_name, f"{runs_number}_{error_method}_{error_size_method}",
-                            f"{model1_name}_{model2_name}")    # Create directory if it does not exist
+                            f"{model1_name}_{model2_name}", time_stamp)    # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
@@ -234,9 +234,9 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
 
 def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_number: int, dist_name, withQueue):
     # getting the dir and file name.
-    dir_name = generate_noise_compare_name(algo_name, withQueue)
+    dir_name, time_stamp = generate_noise_compare_name(algo_name, withQueue)
 
-    dir_name = os.path.join(dir_name, f"algo={algo_name}_runs={runs_number}_dist={dist_name}")
+    dir_name = os.path.join(dir_name, f"algo={algo_name}_runs={runs_number}_dist={dist_name}", time_stamp)
     # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
@@ -304,8 +304,8 @@ def generate_noises_graph_avg(results: OrderedDict, algo_name: str, runs_number:
     plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
     # getting the dir and file name.
-    dir_name = generate_noise_compare_name(algo_name,withQueue)
-    dir_name = os.path.join(dir_name, f"{algo_name}_{runs_number}_{dist_name}")
+    dir_name, time_stamp = generate_noise_compare_name(algo_name, withQueue)
+    dir_name = os.path.join(dir_name, f"{algo_name}_{runs_number}_{dist_name}", time_stamp)
     # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
@@ -356,12 +356,12 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     ax.xaxis.set_major_locator(MultipleLocator(0.5))
 
     # Save plot points to csv file
-    dir_name = generate_algorithm_stat_name(algo_name)
+    dir_name, time_stamp = generate_algorithm_stat_name(algo_name)
     # Create directory if it does not exist
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
 
-    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", "LGD.csv")
+    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp, "LGD.csv")
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Value", "Percentage"])
@@ -369,7 +369,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
             writer.writerow([p[0], p[1]])
 
     # Save plot as png file
-    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", "LGD.png")
+    filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp, "LGD.png")
     plt.savefig(filename)
     # Show plot
     plt.show()
