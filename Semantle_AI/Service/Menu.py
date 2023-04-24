@@ -198,7 +198,8 @@ class Menu:
         done_loop = False
         algo_dict = dict()
         # setting the smart multi-lateration agent.
-        algo_dict["Multi-Lateration"] = Algo.MultiLaterationAgent2.SmartMultiLateration(MethodDistances.euclid_function())
+        algo_dict["Multi-Lateration"] = Algo.MultiLaterationAgent2.SmartMultiLateration(
+            MethodDistances.euclid_function())
 
         # getting the number of runs to compare for each noise
         done = False

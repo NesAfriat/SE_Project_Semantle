@@ -57,9 +57,6 @@ class OnlineHost(Host):
             ">> Starting the game ")
         out("================ Online game===============")
 
-    def set_model_error(self, noise):
-        pass
-
     def quitGame(self):
         self.browser.quit()
 

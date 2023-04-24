@@ -109,7 +109,7 @@ class MyItem:
         self.weight = weight
 
     def __lt__(self, other):
-        return self.weight < other.weight
+        return abs(self.weight) < abs(other.weight)
 
     def __repr__(self):
         return f'{self.word} ({self.weight})'

@@ -88,7 +88,8 @@ class Agent(ABC):
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.init()
-        while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
+        found = False
+        while not found:
             try:
                 if self.data.last_score == -2:
                     self.guess_random_word()
@@ -97,6 +98,9 @@ class Agent(ABC):
                 self.add_to_list(self.data.last_word, self.data.last_score)
                 word = self.guess_word()
                 self.data.last_score = round(self.host.check_word(word), 5)
+                if abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
+                    found = True
+                self.data.last_score *= self.data.error
                 self.data.last_word = word
                 self.data.update_statistic()
 

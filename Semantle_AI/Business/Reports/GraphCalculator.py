@@ -124,7 +124,7 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
 
 def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name, withQueue):
     # select the noises for each run.
-    noises_list = [1.09]
+    noises_list = [1.06]
     if withQueue:
         agent.data.is_priority = True
     # select the 'runs_number' words that will be run on each algorithm.
@@ -144,7 +144,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
         # run each word with each noise
         for noise in noises_list:
             # setting the runs current error.
-            agent.host.set_model_error(noise)
+            agent.data.error = noise
             # iterate over each word and run the game
             for word in words_list:
 
@@ -173,7 +173,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
-
+    agent.data.error = 1.06
     # setting the words list.
     words_list = load_words_list()
     if len(words_list) == 0 or len(words_list) != runs_number:

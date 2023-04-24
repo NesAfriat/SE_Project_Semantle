@@ -17,7 +17,6 @@ class OfflineHost(Host):
         self.model = None
         self.vocabulary = None
         self.secret_word = None
-        self.error = 1
 
     def set_host_word2vec_model(self):
         host_model, vocabulary = MF.load_from_file(WORD2VEC, WORDS_LIST)
@@ -48,7 +47,7 @@ class OfflineHost(Host):
 
     def check_word(self, word):
         if word in self.vocabulary:
-            return self.error * (self.model.get_distance_of_word(self.secret_word, word))
+            return self.model.get_distance_of_word(self.secret_word, word)
         return -2
 
     def set_word(self, new_word):
@@ -72,5 +71,3 @@ class OfflineHost(Host):
     def getWordsVec(self, w1, w2):
         return np.subtract(self.model.get_word_vec(w1), self.model.get_word_vec(w2))
 
-    def set_model_error(self, noise):
-        self.error = noise
