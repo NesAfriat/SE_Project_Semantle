@@ -173,7 +173,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
-    agent.data.error = 1.06
+    agent.host.setError = 1.2
     # setting the words list.
     words_list = load_words_list()
     if len(words_list) == 0 or len(words_list) != runs_number:
@@ -184,7 +184,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
     setAgentAlgo(Alg.MultiLaterationAgent2.SmartMultiLateration, agent)
 
     # setting the error vector methods values
-    error_method = MultiLaterationAgent2.SUM_RELATIVE
+    error_method = MultiLaterationAgent2.SUM
     error_size_method = MultiLaterationAgent2.SUM_VEC
 
     if isinstance(agent.algorithm, MultiLaterationAgent2.SmartMultiLateration):

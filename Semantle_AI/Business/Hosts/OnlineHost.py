@@ -16,6 +16,7 @@ class OnlineHost(Host):
         self.browser = None
         self.guesses = {}
         self.legal_guesses = 0
+        self.error = 1.0
 
     def check_word(self, word):
         word = str.lower(word)
@@ -67,4 +68,7 @@ class OnlineHost(Host):
         pass
 
     def getWordVec(self, word):
+        pass
+
+    def setError(self, err):
         pass

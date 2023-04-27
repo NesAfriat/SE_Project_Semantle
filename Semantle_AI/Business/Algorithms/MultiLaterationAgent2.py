@@ -83,8 +83,8 @@ class SmartMultiLateration(Algorithm):
     @staticmethod
     def mse(vector):
         tensor = torch.tensor(vector)
-        mse = torch.mean(tensor ** 2)
-        return torch.sqrt(mse)
+        mse = float(torch.mean((tensor ** 2).float()))
+        return torch.sqrt(torch.tensor(mse))
 
     def sum_vec(self, vector):
         tensor_vector = torch.tensor(vector, dtype=torch.float32, device=self.device)
@@ -98,7 +98,7 @@ class SmartMultiLateration(Algorithm):
             return self.sum(word)
         elif self.error_calc_method == SUM_RELATIVE:
             return self.sum_relative(word)
-        else:
+        elif self.error_calc_method == BRUTE_FORCE:
             return self.ret_zero(word)
 
     def calculate_new_vector_size(self, vector):

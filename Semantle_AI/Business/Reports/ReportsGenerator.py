@@ -165,56 +165,14 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
                          error_method, error_size_method):
     words_list = list(words_list)
     # Create the plot
-    fig, ax = plt.subplots()
-
-    # setting the pixels ( full hd = 1920 x 1080 in pixels = 19.2 x 10.8 in inches)
-    # setting the pixels ( ultra hd = 3760 x 2160 in pixels = 47 x 27 in inches)
-    fig.set_size_inches(19.2, 10.8)
-    # color_cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    x_min = 100
-    x_max = 0
-    y_min = 100
-    y_max = 0
-    x = results.keys()
-    y = results.values()
-    # iterating over all noises. for each one we will create another graph.
-    for (run, max_val) in results.items():
-        if run < x_min:
-            x_min = run
-        if run > x_max:
-            x_max = run
-        if max_val < y_min:
-            y_min = max_val
-        if max_val > y_max:
-            y_max = max_val
-        # color = color_cycle[i % len(color_cycle)]
-        # i += 1
-    ax.scatter(x, y, s=100)
-    x = list(x)
-    y = list(y)
-    for i, val in enumerate(y):
-        ax.annotate(val, xy=(x[i], val), xytext=(x[i], val + 50), ha='center')
-    # setting the plot labels.
-    ax.set_xlabel('Run number', fontsize=30)
-    ax.set_ylabel('Guesses until win', fontsize=30)
-    ax.set_title(f'Guesses per run', fontsize=30)
-
-    # setting ticks for each axis.
-    x_tick = get_natural_numbers(x_min, x_max)
-    plt.xticks(x_tick, fontsize=10)
-    y_ticks = generate_y_values_by_range(y_min, y_max)
-    plt.yticks(y_ticks, fontsize=10)
-
-    # # adjusting the plot to the pixels size.
-    # plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.4, hspace=0.4)
 
     # getting the dir and file name.
     dir_name, time_stamp = generate_error_vector_name(error_method, error_size_method)
     # setting dir and file name, and saving the csv files.
     filename = os.path.join(dir_name, f"{runs_number}_{error_method}_{error_size_method}",
                             f"{model1_name}_{model2_name}", time_stamp)    # Create directory if it does not exist
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
+    if not os.path.exists(filename):
+        os.makedirs(filename)
 
     with open(os.path.join(filename, "PriorityCompare.csv"), 'w', newline='') as f:
         writer = csv.writer(f)
@@ -224,11 +182,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
             writer.writerow([run, guess, words_list[counter]])
             counter += 1
 
-    # Save plot as png file
-    plt.savefig(os.path.join(filename, "PriorityCompare.png"))
 
-    # Show plot
-    plt.show()
     return None
 
 
