@@ -61,9 +61,9 @@ class Menu:
     def generate_graphs(self):
         done_loop = False
         while not done_loop:
-            choose = self.busy_choose("Choose the graph you wand to create",
+            choose = self.busy_choose("Choose the graph you want to create",
                                       "Export algorithms graph",
-                                      "Crate an algorithm graph",
+                                      "Create an algorithm graph",
                                       "Compare noise impact on the guesses number",
                                       "Compare noise impact on the guesses number using queue",
                                       "Load graph from files",
