@@ -1,5 +1,6 @@
 import math
 
+
 def cosine_function():
     def getCosSim(v1, v2):
         def mag(a):

@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from Business import MethodDistances
-from Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
-from Business.Algorithms.MultiLateration import MultiLateration
-from Business.Algorithms.Naive import Naive
-from Business.Agents.Data import Data
-from Business.Algorithms.NLateration import Trilateration
-import Business.ModelFactory as MF
-from Business.Hosts.Host import Host
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
+from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
+from Semantle_AI.Business.Algorithms.Naive import Naive
+from Semantle_AI.Business.Agents.Data import Data
+from Semantle_AI.Business.Algorithms.NLateration import Trilateration
+import Semantle_AI.Business.ModelFactory as MF
+from Semantle_AI.Business.Hosts.Host import Host
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"

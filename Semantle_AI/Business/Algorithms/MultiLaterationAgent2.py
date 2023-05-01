@@ -1,5 +1,5 @@
-from Business.Agents.Data import MyItem, GuessScore
-from Business.Algorithms.Algorithm import Algorithm
+from Semantle_AI.Business.Agents.Data import MyItem, GuessScore
+from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
 import numpy as np
 

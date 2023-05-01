@@ -1,6 +1,6 @@
-from Business import MethodDistances
-from Business.Hosts.OfflineHost import OfflineHost
-from Service.HostHandlers.HostHandler import HostBuilder
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Hosts.OfflineHost import OfflineHost
+from Semantle_AI.Service.HostHandlers.HostHandler import HostBuilder
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
 WORD2VEC_RUSCORPORA = "word2vec-ruscorpora-300"  # 198MB

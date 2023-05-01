@@ -1,8 +1,8 @@
 from random import choice
 import math
 import numpy as np
-from Business.Hosts.Host import Host
-import Business.ModelFactory as MF
+from Semantle_AI.Business.Hosts.Host import Host
+import Semantle_AI.Business.ModelFactory as MF
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"

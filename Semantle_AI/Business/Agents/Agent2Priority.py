@@ -1,5 +1,5 @@
-from Business.Agents.Agent import Agent
-from Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 
 
 class Agent2Priority(Agent):

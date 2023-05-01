@@ -1,5 +1,5 @@
-from Business.Agents.Agent import Agent
-from Business.Algorithms.MultiLateration import MultiLateration
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
 
 
 class Agent2(Agent):

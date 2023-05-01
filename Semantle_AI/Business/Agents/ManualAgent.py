@@ -1,4 +1,4 @@
-from Business.Agents.Agent import Agent
+from Semantle_AI.Business.Agents.Agent import Agent
 from copy import copy
 
 

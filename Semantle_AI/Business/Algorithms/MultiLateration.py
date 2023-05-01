@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 
-from Business.Algorithms.Algorithm import Algorithm
+from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 
 
 def in_range(distance1, distance2, percentage_error):

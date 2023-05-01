@@ -1,5 +1,5 @@
-from Business.Agents.Agent1 import Agent1
-from Service.AgentHandlers.AgentHandler import AgentHandler
+from Semantle_AI.Business.Agents.Agent1 import Agent1
+from Semantle_AI.Service.AgentHandlers.AgentHandler import AgentHandler
 
 
 class Agent1Handler(AgentHandler):

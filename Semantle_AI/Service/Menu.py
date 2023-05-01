@@ -1,14 +1,14 @@
 import os
 
-import Business.Algorithms as Algo
-import Business.Reports.GraphCalculator as Calc
-import ModelComparator as Mc
-from Business import MethodDistances
-from Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
-from Service.AgentHandlers.Agent1Handler import Agent1Handler
-from Service.AgentHandlers.Agent2Handler import Agent2Handler
-from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
-from Service.AgentHandlers.SmartAgent2Handler import SmartAgent2Handler
+import Semantle_AI.Business.Algorithms as Algo
+import Semantle_AI.Business.Reports.GraphCalculator as Calc
+import Semantle_AI.ModelComparator as Mc
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
+from Semantle_AI.Service.AgentHandlers.Agent1Handler import Agent1Handler
+from Semantle_AI.Service.AgentHandlers.Agent2Handler import Agent2Handler
+from Semantle_AI.Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
+from Semantle_AI.Service.AgentHandlers.SmartAgent2Handler import SmartAgent2Handler
 
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
