@@ -185,7 +185,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the error vector methods values
     error_method = MultiLaterationAgent2.SUM
-    error_size_method = MultiLaterationAgent2.SUM_VEC
+    error_size_method = MultiLaterationAgent2.NORM1
 
     if isinstance(agent.algorithm, MultiLaterationAgent2.SmartMultiLateration):
         agent.algorithm.set_error_method(error_method)

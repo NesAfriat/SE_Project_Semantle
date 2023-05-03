@@ -1,11 +1,11 @@
 from copy import copy
 from collections import OrderedDict
-from queue import PriorityQueue
+from sortedcontainers import SortedList
 
 
 class Data:
     def __init__(self):
-        self.words_heap = PriorityQueue()
+        self.words_heap = SortedList()
         self.guesses = dict()
         self.scores = []
         self.model = None
@@ -31,20 +31,18 @@ class Data:
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
+        self.words_heap.clear()
         for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+            self.words_heap.add(MyItem(word, 0))
         self.copy_vocab = copy(self.remain_words)
 
     def set_model_and_vocab(self, model):
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
+        self.words_heap.clear()
         for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+            self.words_heap.add(MyItem(word, 0))
         self.copy_vocab = copy(self.remain_words)
 
     def get_most_similar(self, vec):
@@ -81,10 +79,9 @@ class Data:
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
         # init the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
+        self.words_heap.clear()
         for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+            self.words_heap.add(MyItem(word, 0))
 
     def get_statistics(self):
         return self.statistics
@@ -96,7 +93,7 @@ class Data:
         else:
             next_pos = next(reversed(self.statistics)) + 1
         if self.is_priority:
-            self.statistics[next_pos] = self.words_heap.qsize()
+            self.statistics[next_pos] = len(self.words_heap)
         else:
             self.statistics[next_pos] = len(self.remain_words)
 
@@ -109,7 +106,7 @@ class MyItem:
         self.weight = weight
 
     def __lt__(self, other):
-        return abs(self.weight) < abs(other.weight)
+        return self.weight < other.weight
 
     def __repr__(self):
         return f'{self.word} ({self.weight})'

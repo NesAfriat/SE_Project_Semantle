@@ -177,7 +177,7 @@ class Agent(ABC):
         self.data.add_to_dict(guess, dist)
 
     def guess_top_word(self):
-        word = self.data.words_heap.get()
+        word = self.data.words_heap[0]
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
 
