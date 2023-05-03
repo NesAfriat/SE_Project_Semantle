@@ -45,8 +45,10 @@ class Menu:
                 self.start_smart_play()
             elif choose == '4':
                 self.concrete_agent_builder = ManualAgentHandler(self.out, input, self.finished)
-                self.concrete_agent_builder.start_menu()
-                self.start()
+                if self.concrete_agent_builder.start_menu():
+                    self.start_manual()
+                else:
+                    done_loop = True
             elif choose == '5':
                 self.generate_graphs()
             elif choose == '6':
@@ -54,6 +56,9 @@ class Menu:
 
     def start(self):
         self.concrete_agent_builder.get_result().start_play(self.out)
+
+    def start_manual(self):
+        self.concrete_agent_builder.get_result().start_manual(self.out)
 
     def start_smart_play(self):
         self.concrete_agent_builder.get_result().start_play_with_priority(self.out)

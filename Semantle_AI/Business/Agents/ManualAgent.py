@@ -8,6 +8,6 @@ class ManualAgent(Agent):
         pass
 
     def set_host_model(self):
-        pass
+        self.set_model(self.host.model)
 
 

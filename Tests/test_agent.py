@@ -1,9 +1,6 @@
-import io
 import unittest
 from unittest.mock import patch, Mock
 from Semantle_AI.Business.Agents.Agent1 import Agent1
-from Semantle_AI.Business.Algorithms.Naive import Naive
-from Semantle_AI.Business.Agents.Data import Data
 
 
 class TestAgentPlayGame(unittest.TestCase):
