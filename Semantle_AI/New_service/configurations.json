@@ -1,0 +1,29 @@
+[
+    {
+        "agent": "1",
+        "host": "online",
+        "distance_function": "cosine",
+        "agent_model": "Google_Word2Vec.bin",
+        "host_model": "none",
+        "algorithm": "multi-lateration",
+        "runs": 2
+    },
+    {
+        "agent": "0",
+        "host": "offline",
+        "distance_function": "cosine",
+        "agent_model": "word2vec_google",
+        "host_model": "glove_wiki",
+        "algorithm": "manual",
+        "runs": 3
+    },
+    {
+        "agent": "2",
+        "host": "offline",
+        "distance_function": "euclid",
+        "agent_model": "word2vec_google",
+        "host_model": "Google_Word2Vec.bin",
+        "algorithm": "n-lateration",
+        "runs": 1
+    }
+]
