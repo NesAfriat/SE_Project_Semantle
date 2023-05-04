@@ -88,15 +88,21 @@ class SmartMultiLateration(Algorithm):
 
             # updating the error vector in the queue, and update the weight.
             item.error_vec.append(val)
-            item.weight = self.calculate_new_weight(item.weight, val)
+            # remove the current item from the sorted list
+            self.data.words_heap.remove(item)
 
+            # update the weight of the item
+            new_weight = self.calculate_new_weight(item.weight, val)
+            item.weight = new_weight
+
+            # insert the item back into the sorted list with its new weight
+            self.data.words_heap.add(item)
         # sanity check
         if len(self.data.words_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
         # return the queue top.
         if self.error_calc_method != BRUTE_FORCE:
-            next_word = self.data.words_heap[0]
-            self.data.words_heap.remove(next_word)
+            next_word = self.data.words_heap.pop(0)
         else:
             next_word = random.choice(self.data.words_heap)
             self.data.words_heap.remove(next_word)

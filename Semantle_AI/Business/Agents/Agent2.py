@@ -14,7 +14,7 @@ class Agent2(Agent):
 
     def calculateError(self):
         error = self.get_model().get_models_error(self.host.model)
-        self.data.set_error(error)
+        self.data.setError(error)
 
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)

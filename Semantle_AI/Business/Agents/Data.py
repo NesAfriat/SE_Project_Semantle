@@ -5,7 +5,7 @@ from sortedcontainers import SortedList
 
 class Data:
     def __init__(self):
-        self.words_heap = SortedList()
+        self.words_heap = SortedList([])
         self.guesses = dict()
         self.scores = []
         self.model = None
@@ -14,7 +14,6 @@ class Data:
         self.last_word = None
         self.statistics = OrderedDict()
         self.copy_vocab = None
-        self.error = 1
         self.is_priority = False
 
     def add_to_dict(self, word, distance):
@@ -24,6 +23,9 @@ class Data:
             self.guesses[word] = (distance, self.model.get_word_vec(word))
             self.scores.append(GuessScore(word, distance))
 
+    def setError(self, err):
+        self.model.setError(err)
+
     def set_Priority(self, value):
         self.is_priority = value
 
@@ -31,18 +33,14 @@ class Data:
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        self.words_heap.clear()
-        for word in self.remain_words:
-            self.words_heap.add(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
 
     def set_model_and_vocab(self, model):
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        self.words_heap.clear()
-        for word in self.remain_words:
-            self.words_heap.add(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
 
     def get_most_similar(self, vec):
@@ -66,9 +64,6 @@ class Data:
     def execute_data(self):
         pass
 
-    def set_error(self, error):
-        self.error = error
-
     def reset(self):
         self.guesses = dict()
         self.scores = []
@@ -79,9 +74,7 @@ class Data:
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
         # init the max heap. All weights are 0.
-        self.words_heap.clear()
-        for word in self.remain_words:
-            self.words_heap.add(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
 
     def get_statistics(self):
         return self.statistics
@@ -106,7 +99,7 @@ class MyItem:
         self.weight = weight
 
     def __lt__(self, other):
-        return self.weight < other.weight
+        return self.weight < other.weight or (self.weight == other.weight and self.word < other.word)
 
     def __repr__(self):
         return f'{self.word} ({self.weight})'
