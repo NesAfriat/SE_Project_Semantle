@@ -6,7 +6,8 @@
         "agent_model": "Google_Word2Vec.bin",
         "host_model": "none",
         "algorithm": "multi-lateration",
-        "runs": 2
+        "runs": 2,
+        "game_type": "calculate_algorithm_graph"
     },
     {
         "agent": "0",
@@ -15,7 +16,8 @@
         "agent_model": "word2vec_google",
         "host_model": "glove_wiki",
         "algorithm": "manual",
-        "runs": 3
+        "runs": 3,
+        "game_type": "calculate_noise_to_guesses_graph"
     },
     {
         "agent": "2",
@@ -24,6 +26,7 @@
         "agent_model": "word2vec_google",
         "host_model": "Google_Word2Vec.bin",
         "algorithm": "n-lateration",
-        "runs": 1
+        "runs": 1,
+        "game_type": "create_error_compare_graph"
     }
 ]

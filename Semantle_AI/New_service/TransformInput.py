@@ -24,7 +24,8 @@ def transform_input(config_file_path):
             "agent_model": config["agent_model"],
             "host_model": config["host_model"],
             "algorithm": config["algorithm"],
-            "runs": config["runs"]
+            "runs": config["runs"],
+            "game_type": config["game_type"]
         }
         games.append(game)
 

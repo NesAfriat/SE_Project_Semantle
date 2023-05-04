@@ -1,4 +1,4 @@
-from Game.GameBuilder import GameBuilder
+from Business.Game import GameBuilder
 import TransformInput
 
 
@@ -20,7 +20,7 @@ class Menu:
             print("Input transformation has failed- check configuration file")
 
 
-    def build_game(self):
+    def build_games(self):
         self.validate_input("./configurations.json")
         self.transform_input("./configurations.json")
         self.game_manager=self.game_builder.build(self.input_games)

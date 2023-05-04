@@ -1,3 +1,4 @@
+
 from collections import OrderedDict
 import Business.Reports.ReportsGenerator as Reporter
 import Business.Algorithms as Alg
@@ -11,7 +12,6 @@ import os
 WORDS_LIST = "word_list.txt"
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"
-
 
 def select_words(num_of_words, vocab):
     ret = set()
@@ -229,7 +229,7 @@ def setAgentAlgo(algo_type, agent: Agent):
         agent.set_agent_trilateration_algorithm()
 
 
-def reload_graph_from_path(path):
+def reload_graph_from_path(path):     #add another function from menu
     Reporter.generate_algo_guesses_from_csv(path)
 
 
@@ -238,3 +238,33 @@ def show_png_file(file_path):
     img = plt.imread(file_path)
     plt.imshow(img)
     plt.show()
+
+# =======================================Game Manager Class===============================================
+class GameManager():
+    def __init__(self):
+        self.games = []
+        self.statistics = []
+
+    def add_game(self, agent, runs_number):
+        self.games.append((agent, runs_number))
+
+    def run_games(self):
+        for game in self.games:
+            match game[2]:   #The game type
+                case "calculate_graph":
+                    calculate_graph(game[0],game[1]) #number of runs and agent
+                    continue
+                case "calculate_algorithm_graph":
+                    calculate_algorithm_graph(game[0],game[1])#input algos dict? keep a global constant instead?
+                    continue
+                case "calculate_noise_to_guesses_graph":
+                    calculate_noise_to_guesses_graph(game[0],game[1]) #input the rest?
+                    continue
+                case "create_error_compare_graph":
+                    create_error_compare_graph(game[0],game[1].getModelName(),game[1].getHostModelName()) #add methods to agent and name field
+                    continue
+                case _:
+                    for i in range(game[0]):
+                        game[1].start_play()
+                        self.statistics.append(game[1].get_statistics())
+                        #decide what to do with statistic or drop them instead
