@@ -1,10 +1,10 @@
 from collections import OrderedDict
-import Business.Reports.ReportsGenerator as Reporter
-import Business.Algorithms as Alg
-from Business import MethodDistances
-from Business.Agents.Agent import Agent
-from Business.Algorithms import MultiLaterationAgent2
-from Business.Reports.Calculator import Calculator
+import Semantle_AI.Business.Reports.ReportsGenerator as Reporter
+import Semantle_AI.Business.Algorithms as Alg
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Algorithms import MultiLaterationAgent2
+from Semantle_AI.Business.Reports.Calculator import Calculator
 import matplotlib.pyplot as plt
 import os
 
@@ -173,7 +173,8 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
-    agent.host.setError = 1.2
+    error = 1.00
+    agent.data.setError(error)
     # setting the words list.
     words_list = load_words_list()
     if len(words_list) == 0 or len(words_list) != runs_number:
@@ -185,7 +186,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the error vector methods values
     error_method = MultiLaterationAgent2.SUM
-    error_size_method = MultiLaterationAgent2.SUM_VEC
+    error_size_method = MultiLaterationAgent2.NORM1
 
     if isinstance(agent.algorithm, MultiLaterationAgent2.SmartMultiLateration):
         agent.algorithm.set_error_method(error_method)
@@ -215,7 +216,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
         agent.reset_data()
     # After the data setting, Creating average of the results in calculator.
     Reporter.generate_error_graph(calculator.results, runs_number, words_list, model1_name, model2_name,
-                                  error_method, error_size_method)
+                                  error_method, error_size_method, error)
     agent.data.is_priority = False
 
 

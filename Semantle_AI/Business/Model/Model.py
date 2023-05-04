@@ -9,10 +9,14 @@ class Model:
         self.model = model
         self.vocab = vocab
         self.dist_func = None
+        self.error = 1
 
     def get_distance_of_word(self, word1, word2):
         ans = self.dist_func(self.model[word1], self.model[word2])
-        return ans
+        return self.error * ans
+
+    def setError(self, err):
+        self.error = err
 
     def get_word_from_distance(self, dis: float) -> str:
         pass

@@ -1,14 +1,14 @@
 import os
 
-import Business.Algorithms as Algo
-import Business.Reports.GraphCalculator as Calc
-import ModelComparator as Mc
-from Business import MethodDistances
-from Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
-from Service.AgentHandlers.Agent1Handler import Agent1Handler
-from Service.AgentHandlers.Agent2Handler import Agent2Handler
-from Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
-from Service.AgentHandlers.SmartAgent2Handler import SmartAgent2Handler
+import Semantle_AI.Business.Algorithms as Algo
+import Semantle_AI.Business.Reports.GraphCalculator as Calc
+import Semantle_AI.ModelComparator as Mc
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Reports.ReportsGenerator import generate_algo_guesses_from_csv
+from Semantle_AI.Service.AgentHandlers.Agent1Handler import Agent1Handler
+from Semantle_AI.Service.AgentHandlers.Agent2Handler import Agent2Handler
+from Semantle_AI.Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
+from Semantle_AI.Service.AgentHandlers.SmartAgent2Handler import SmartAgent2Handler
 
 FASTTESXT_WIKI = "fasttext-wiki-news-subwords-300"  # 1GB
 GLOVE_WIKI = "glove-wiki-gigaword-300"  # 376MB
@@ -45,8 +45,10 @@ class Menu:
                 self.start_smart_play()
             elif choose == '4':
                 self.concrete_agent_builder = ManualAgentHandler(self.out, input, self.finished)
-                self.concrete_agent_builder.start_menu()
-                self.start()
+                if self.concrete_agent_builder.start_menu():
+                    self.start_manual()
+                else:
+                    done_loop = True
             elif choose == '5':
                 self.generate_graphs()
             elif choose == '6':
@@ -54,6 +56,9 @@ class Menu:
 
     def start(self):
         self.concrete_agent_builder.get_result().start_play(self.out)
+
+    def start_manual(self):
+        self.concrete_agent_builder.get_result().start_manual(self.out)
 
     def start_smart_play(self):
         self.concrete_agent_builder.get_result().start_play_with_priority(self.out)

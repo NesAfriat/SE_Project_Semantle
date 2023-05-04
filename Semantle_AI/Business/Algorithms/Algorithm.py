@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from Business.Agents.Data import Data
+from Semantle_AI.Business.Agents.Data import Data
 
 
 class Algorithm(ABC):

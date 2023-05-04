@@ -1,5 +1,5 @@
-from Business.Hosts.OnlineHost import OnlineHost
-from Service.HostHandlers.HostHandler import HostBuilder
+from Semantle_AI.Business.Hosts.OnlineHost import OnlineHost
+from Semantle_AI.Service.HostHandlers.HostHandler import HostBuilder
 
 
 class OnlineHostBuilder(HostBuilder):

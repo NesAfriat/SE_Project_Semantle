@@ -2,7 +2,7 @@ import copy
 import os
 from pathlib import Path
 from gensim.models import KeyedVectors
-from Business.Model.Model import Model
+from Semantle_AI.Business.Model.Model import Model
 import gensim.downloader as api
 
 
@@ -14,7 +14,11 @@ def filter_vocab(vocab, word_list):
     if word_list is None:
         return vocab
     try:
-        path = os.path.join(os.getcwd(), "Business", "Model", word_list)
+        if "Tests" in os.getcwd():
+            path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
+            path = os.path.join(path, "Business", "Model", word_list)
+        else:
+            path = os.path.join(os.getcwd(), "Business", "Model", word_list)
         file = open(path, "r")
         words_set = set((file.read()).split("\n"))
         voc = words_set & vocab
@@ -23,9 +27,20 @@ def filter_vocab(vocab, word_list):
         raise e
 
 
+def replace_subdir(path, old_subdir, new_subdir):
+    path_parts = path.split(os.sep)
+    updated_path_parts = [new_subdir if part == old_subdir else part for part in path_parts]
+    updated_path = os.sep.join(updated_path_parts)
+    return updated_path
+
+
 def load_from_file(name, word_list=None):
     print("\n\n======================  Model loading ======================")
-    path = os.path.join(os.getcwd(), "Business", "Model", name)
+    if "Tests" in os.getcwd():
+        path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
+        path = os.path.join(path, "Business", "Model", name)
+    else:
+        path = os.path.join(os.getcwd(), "Business", "Model", name)
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")

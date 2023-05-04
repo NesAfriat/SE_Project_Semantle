@@ -1,5 +1,5 @@
-from Business.Agents.Agent2Priority import Agent2Priority
-from Service.AgentHandlers.AgentHandler import AgentHandler
+from Semantle_AI.Business.Agents.Agent2Priority import Agent2Priority
+from Semantle_AI.Service.AgentHandlers.AgentHandler import AgentHandler
 WORD2VEC = "Google_Word2Vec.bin"
 
 class SmartAgent2Handler(AgentHandler):

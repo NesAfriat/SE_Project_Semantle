@@ -1,11 +1,11 @@
 from copy import copy
 from collections import OrderedDict
-from queue import PriorityQueue
+from sortedcontainers import SortedList
 
 
 class Data:
     def __init__(self):
-        self.words_heap = PriorityQueue()
+        self.words_heap = SortedList([])
         self.guesses = dict()
         self.scores = []
         self.model = None
@@ -14,7 +14,6 @@ class Data:
         self.last_word = None
         self.statistics = OrderedDict()
         self.copy_vocab = None
-        self.error = 1
         self.is_priority = False
 
     def add_to_dict(self, word, distance):
@@ -24,6 +23,9 @@ class Data:
             self.guesses[word] = (distance, self.model.get_word_vec(word))
             self.scores.append(GuessScore(word, distance))
 
+    def setError(self, err):
+        self.model.setError(err)
+
     def set_Priority(self, value):
         self.is_priority = value
 
@@ -31,20 +33,14 @@ class Data:
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
-        for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
 
     def set_model_and_vocab(self, model):
         self.model = model
         self.remain_words = copy(self.model.get_vocab())
         # initialize the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
-        for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
 
     def get_most_similar(self, vec):
@@ -68,9 +64,6 @@ class Data:
     def execute_data(self):
         pass
 
-    def set_error(self, error):
-        self.error = error
-
     def reset(self):
         self.guesses = dict()
         self.scores = []
@@ -81,10 +74,7 @@ class Data:
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
         # init the max heap. All weights are 0.
-        while not self.words_heap.empty():
-            self.words_heap.get()
-        for word in self.remain_words:
-            self.words_heap.put(MyItem(word, 0))
+        self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
 
     def get_statistics(self):
         return self.statistics
@@ -96,7 +86,7 @@ class Data:
         else:
             next_pos = next(reversed(self.statistics)) + 1
         if self.is_priority:
-            self.statistics[next_pos] = self.words_heap.qsize()
+            self.statistics[next_pos] = len(self.words_heap)
         else:
             self.statistics[next_pos] = len(self.remain_words)
 
@@ -109,7 +99,7 @@ class MyItem:
         self.weight = weight
 
     def __lt__(self, other):
-        return abs(self.weight) < abs(other.weight)
+        return self.weight < other.weight or (self.weight == other.weight and self.word < other.word)
 
     def __repr__(self):
         return f'{self.word} ({self.weight})'

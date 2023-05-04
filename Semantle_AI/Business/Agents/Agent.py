@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from Business import MethodDistances
-from Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
-from Business.Algorithms.MultiLateration import MultiLateration
-from Business.Algorithms.Naive import Naive
-from Business.Agents.Data import Data
-from Business.Algorithms.NLateration import Trilateration
-import Business.ModelFactory as MF
-from Business.Hosts.Host import Host
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
+from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
+from Semantle_AI.Business.Algorithms.Naive import Naive
+from Semantle_AI.Business.Agents.Data import Data
+from Semantle_AI.Business.Algorithms.NLateration import Trilateration
+import Semantle_AI.Business.ModelFactory as MF
+from Semantle_AI.Business.Hosts.Host import Host
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
@@ -131,6 +131,33 @@ class Agent(ABC):
             f"{len(self.data.statistics)} guesses")
         out(f"you won!!\n\n\n\n")
 
+    def start_manual(self, out):
+        self.host.select_word_and_start_game(out)
+        out(f"secret word is : {self.host.getWord()}")
+        self.data.last_score = -2
+        while self.data.last_score == -2:
+            word = self.get_next_word()
+            self.data.last_score = round(self.host.check_word(word), 5)
+            self.data.last_word = word
+        self.data.update_statistic()
+        while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
+            try:
+                out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
+                self.add_to_list(self.data.last_word, self.data.last_score)
+                word = self.get_next_word()
+                self.data.last_score = round(self.host.check_word(word), 5)
+                while self.data.last_score == -2:
+                    word = self.get_next_word()
+                    self.data.last_score = round(self.host.check_word(word), 5)
+                self.data.last_word = word
+                self.data.update_statistic()
+            except ValueError as e:
+                out(e)
+                return
+        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.\nYou took "
+            f"{len(self.data.statistics)} guesses")
+        out(f"you won!!\n\n\n\n")
+
     def add_to_list(self, last_word, dist):
         self.data.add_to_dict(last_word, dist)
 
@@ -150,7 +177,7 @@ class Agent(ABC):
         self.data.add_to_dict(guess, dist)
 
     def guess_top_word(self):
-        word = self.data.words_heap.get()
+        word = self.data.words_heap[0]
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
 
@@ -182,4 +209,8 @@ class Agent(ABC):
 
     def get_statistics(self):
         return self.data.get_statistics()
+
+    @staticmethod
+    def get_next_word():
+        return input("Insert next guess:\n")
 

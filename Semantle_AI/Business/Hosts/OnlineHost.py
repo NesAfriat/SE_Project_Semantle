@@ -1,6 +1,6 @@
 from time import sleep
 
-from Business.Hosts.Host import Host
+from Semantle_AI.Business.Hosts.Host import Host
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 

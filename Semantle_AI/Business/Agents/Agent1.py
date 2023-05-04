@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from Business.Agents.Agent import Agent
+from Semantle_AI.Business.Agents.Agent import Agent
 import random
 
 

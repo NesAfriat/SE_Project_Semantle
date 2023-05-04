@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
-from Business.Agents.Agent import Agent
-from Business.Reports.GuessData import GuessData
-from Business.Reports.GameData import GameData
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Reports.GuessData import GuessData
+from Semantle_AI.Business.Reports.GameData import GameData
 import os
 import csv
 from matplotlib.ticker import MultipleLocator
@@ -162,7 +162,7 @@ def generate_algo_guesses_from_csv(path):
 
 
 def generate_error_graph(results: OrderedDict, runs_number: int, words_list, model1_name, model2_name,
-                         error_method, error_size_method):
+                         error_method, error_size_method,error):
     words_list = list(words_list)
     # Create the plot
 
@@ -174,7 +174,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
     if not os.path.exists(filename):
         os.makedirs(filename)
 
-    with open(os.path.join(filename, "PriorityCompare.csv"), 'w', newline='') as f:
+    with open(os.path.join(filename, f"error{error} PriorityCompare.csv"), 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["RunNumber", "GuessTillWin", "Word"])
         counter = 0

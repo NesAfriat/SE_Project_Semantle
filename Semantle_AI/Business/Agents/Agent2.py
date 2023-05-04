@@ -1,5 +1,5 @@
-from Business.Agents.Agent import Agent
-from Business.Algorithms.MultiLateration import MultiLateration
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
 
 
 class Agent2(Agent):
@@ -14,7 +14,7 @@ class Agent2(Agent):
 
     def calculateError(self):
         error = self.get_model().get_models_error(self.host.model)
-        self.data.set_error(error)
+        self.data.setError(error)
 
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
