@@ -1,8 +1,7 @@
 import random
-from Semantle_AI.Business.Agents.Data import MyItem, GuessScore
+from Semantle_AI.Business.Agents.Data import  GuessScore
 from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
-import numpy as np
 
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"

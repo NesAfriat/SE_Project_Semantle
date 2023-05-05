@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
-from Business.Reports.GuessData import GuessData
-from Business.Reports.GameData import GameData
+from Semantle_AI.Business.Reports.GuessData import GuessData
+from Semantle_AI.Business.Reports.GameData import GameData
 import os
 import csv
 from matplotlib.ticker import MultipleLocator

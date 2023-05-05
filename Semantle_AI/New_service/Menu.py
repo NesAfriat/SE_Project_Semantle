@@ -1,5 +1,7 @@
-from Business.Game import GameBuilder
-import TransformInput
+import os
+
+from Semantle_AI.Business.Game.GameBuilder import GameBuilder
+from Semantle_AI.New_service import TransformInput
 
 
 
@@ -21,8 +23,8 @@ class Menu:
 
 
     def build_games(self):
-        self.validate_input("./configurations.json")
-        self.transform_input("./configurations.json")
+        self.validate_input(os.path.join(os.getcwd(),"New_Service", "configurations.json"))
+        self.transform_input(os.path.join(os.getcwd(), "New_Service","configurations.json"))
         self.game_manager=self.game_builder.build(self.input_games)
         print(len(self.input_games), "games added")
 
@@ -32,7 +34,7 @@ class Menu:
             choice = input("\nChoose the desired action:\n1.Build game from file\n2.Run games\n3.Clear games\n4.Reports menu\n5.Leave\n")
             match choice:
                 case '1':
-                    self.build_game()
+                    self.build_games()
                 case '2':
                     self.run_games()
                 case '3':
@@ -54,6 +56,6 @@ class Menu:
         self.game_manager.clear_games()
 
     def reports_menu(self):
-        pass
+        pass #import graph from path
 
 

@@ -1,7 +1,7 @@
-import ModelFactory
-import AgentBuilder
-import GameManager
-import HostBuilder
+from Semantle_AI.Business.Game.ModelFactory import ModelFactory
+from Semantle_AI.Business.Game.AgentBuilder import AgentBuilder
+from Semantle_AI.Business.Game.GameManager import GameManager
+from Semantle_AI.Business.Game.HostBuilder import HostBuilder
 
 
 
@@ -20,7 +20,7 @@ class GameBuilder():
         self.host_builder.with_model(game["host_model"])
         self.host_builder.with_distance_function(game["distance_function"])
         host = self.host_builder.get_host()
-        self.agent_builder.create_agent_and_model(game["agent"],host,game["model"], ModelFactory)
+        self.agent_builder.create_agent_and_model(game["agent"],host, game["agent_model"], ModelFactory)
         self.agent_builder.with_id(self.id_counter)
         self.agent_builder.with_algo(game["algorithm"])
         return self.agent_builder.get_agent()

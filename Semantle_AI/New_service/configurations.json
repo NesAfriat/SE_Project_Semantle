@@ -1,30 +1,30 @@
 [
     {
-        "agent": "1",
-        "host": "online",
+        "agent": "agent1",
+        "host": "offline",
         "distance_function": "cosine",
-        "agent_model": "Google_Word2Vec.bin",
-        "host_model": "none",
-        "algorithm": "multi-lateration",
+        "agent_model": "local_word2vec",
+        "host_model": "local_word2vec",
+        "algorithm": "multi-lateration,brute-force",
         "runs": 2,
         "game_type": "calculate_algorithm_graph"
     },
     {
-        "agent": "0",
+        "agent": "agent2",
         "host": "offline",
         "distance_function": "cosine",
         "agent_model": "word2vec_google",
         "host_model": "glove_wiki",
-        "algorithm": "manual",
+        "algorithm": "multi-lateration",
         "runs": 3,
         "game_type": "calculate_noise_to_guesses_graph"
     },
     {
-        "agent": "2",
+        "agent": "agent2",
         "host": "offline",
         "distance_function": "euclid",
         "agent_model": "word2vec_google",
-        "host_model": "Google_Word2Vec.bin",
+        "host_model": "local_word2vec",
         "algorithm": "n-lateration",
         "runs": 1,
         "game_type": "create_error_compare_graph"

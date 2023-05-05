@@ -1,11 +1,11 @@
 
 from collections import OrderedDict
-import Business.Reports.ReportsGenerator as Reporter
-import Business.Algorithms as Alg
-from Business import MethodDistances
-from Business.Agents.Agent import Agent
-from Business.Algorithms import MultiLaterationAgent2
-from Business.Reports.Calculator import Calculator
+import Semantle_AI.Business.Reports.ReportsGenerator as Reporter
+import Semantle_AI.Business.Algorithms as Alg
+from Semantle_AI.Business import MethodDistances
+from Semantle_AI.Business.Agents.Agent import Agent
+from Semantle_AI.Business.Algorithms import MultiLaterationAgent2
+from Semantle_AI.Business.Reports.Calculator import Calculator
 import matplotlib.pyplot as plt
 import os
 
@@ -245,8 +245,8 @@ class GameManager():
         self.games = []
         self.statistics = []
 
-    def add_game(self, agent, runs_number):
-        self.games.append((agent, runs_number))
+    def add_game(self, agent, runs_number,game_type):
+        self.games.append((agent, runs_number,game_type))
 
     def run_games(self):
         for game in self.games:
