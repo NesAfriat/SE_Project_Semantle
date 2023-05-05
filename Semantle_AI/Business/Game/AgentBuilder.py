@@ -12,16 +12,22 @@ class AgentBuilder():
         self.agent=None
 
     def create_agent_and_model(self, agent_type,host,model_name,model_factory):
+        create = False
         match agent_type:
             case "agent1":
-                self.agent= Agent1()
-                self.with_model(model_factory,model_name)
-            case "agnet2":
-                self.agent= Agent2()
+                self.agent = Agent1()
                 self.agent.set_model(host.model)
+                create = True
+            case "agent2":
+                self.agent = Agent2()
+                self.with_model(model_factory, model_name)
+                create = True
             case _:
                 self.agent= ManualAgent()  #TODO: return regular manual game
-        print(agent_type,"created")
+        if create:
+            print(agent_type,"created")
+        else:
+            raise ("Agent model set was failed ... bug accure")
 
     def with_id(self, id):
         self.agent.set_id(self, id)
