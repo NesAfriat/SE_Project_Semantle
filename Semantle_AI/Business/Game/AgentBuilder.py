@@ -1,17 +1,18 @@
 from Semantle_AI.Business.Agents.Agent1 import Agent1
 from Semantle_AI.Business.Agents.Agent2 import Agent2
 from Semantle_AI.Business.Agents.ManualAgent import ManualAgent
-dict_model= {'fasttext_wiki' : 'fasttext-wiki-news-subwords-300',
-             'glove_wiki' : "glove-wiki-gigaword-300" ,
-             "word2vec_google":"word2vec-google-news-300",
-             'local_word2vec' : "Google_Word2Vec.bin"}
+
+dict_model = {'fasttext_wiki': 'fasttext-wiki-news-subwords-300',
+              'glove_wiki': "glove-wiki-gigaword-300",
+              "word2vec_google": "word2vec-google-news-300",
+              'local_word2vec': "Google_Word2Vec.bin"}
 
 
 class AgentBuilder():
     def __init__(self):
-        self.agent=None
+        self.agent = None
 
-    def create_agent_and_model(self, agent_type,host,model_name,model_factory):
+    def create_agent_and_model(self, agent_type, host, model_name, model_factory):
         create = False
         match agent_type:
             case "agent1":
@@ -23,9 +24,9 @@ class AgentBuilder():
                 self.with_model(model_factory, model_name)
                 create = True
             case _:
-                self.agent= ManualAgent()  #TODO: return regular manual game
+                self.agent = ManualAgent()  # TODO: return regular manual game
         if create:
-            print(agent_type,"created")
+            print(agent_type, "created")
         else:
             raise ("Agent model set was failed ... bug accure")
 
@@ -47,3 +48,6 @@ class AgentBuilder():
 
     def get_agent(self):
         return self.agent
+
+    def set_host(self, host):
+        self.agent.set_host(host)
