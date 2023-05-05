@@ -1,6 +1,5 @@
 import copy
 import os
-from pathlib import Path
 from gensim.models import KeyedVectors
 from Semantle_AI.Business.Model.Model import Model
 import gensim.downloader as api

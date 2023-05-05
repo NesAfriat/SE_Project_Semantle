@@ -1,5 +1,6 @@
 import random
 
+import gensim
 from gensim.models import KeyedVectors
 
 
@@ -9,7 +10,6 @@ class Model:
         self.vocab = vocab
         self.dist_func = None
         self.error = 1
-
 
     def get_distance_of_word(self, word1, word2):
         ans = self.dist_func(self.model[word1], self.model[word2])

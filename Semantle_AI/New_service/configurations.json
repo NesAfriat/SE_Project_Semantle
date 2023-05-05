@@ -3,8 +3,8 @@
         "agent": "agent1",
         "host": "offline",
         "distance_function": "cosine",
-        "agent_model": "local_word2vec",
-        "host_model": "local_word2vec",
+        "agent_model": "fasttext_wiki",
+        "host_model": "fasttext_wiki",
         "algorithm": "multi-lateration,brute-force",
         "runs": 2,
         "game_type": "calculate_algorithm_graph"

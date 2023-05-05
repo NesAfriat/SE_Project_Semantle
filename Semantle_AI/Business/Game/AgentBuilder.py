@@ -24,7 +24,7 @@ class AgentBuilder():
         print(agent_type,"created")
 
     def with_id(self, id):
-        self.agent.set_id(self, id)
+        self.agent.set_id(id)
 
     def with_model(self, model_factory, model_name):
         model, vocab = model_factory.get_model(dict_model.get(model_name))
