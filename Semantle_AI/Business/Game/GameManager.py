@@ -1,4 +1,3 @@
-
 from collections import OrderedDict
 import Semantle_AI.Business.Reports.ReportsGenerator as Reporter
 import Semantle_AI.Business.Algorithms as Alg
@@ -12,6 +11,7 @@ import os
 WORDS_LIST = "word_list.txt"
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"
+
 
 def select_words(num_of_words, vocab):
     ret = set()
@@ -84,22 +84,26 @@ def calculate_graph(runs_number, agent: Agent):
     Reporter.generate_algo_guesses_from_csv(path)
 
 
-def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
+algo_dict = dict({"Brute_force": Alg.Naive.Naive(),
+                  "Multi-Lateration": Alg.MultiLateration.MultiLateration(MethodDistances.euclid_function()),
+                  "Trilateration": Alg.NLateration.Trilateration()})
+
+
+def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = select_words(runs_number, agent.get_vocab())
 
     # init the result
     # for each algo, run all words.
-    for algo_name, algorithm in algos_list.items():
+    for algo_name in algos_list:
 
-        setAgentAlgo(type(algorithm), agent)
+        setAgentAlgo(type(algo_dict[algo_name]), agent)
 
         # initialize the statistics result for the algorithm
         calculator = Calculator()
 
         # iterate over each word and run the game
         for word in words_list:
-            results = OrderedDict()
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
@@ -134,9 +138,9 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
         save_words_list(words_list)
 
     # for each algo, run all words.
-    for algo_name, algorithm in algos_list.items():
+    for algo_name in algos_list:
         # get the algo class
-        setAgentAlgo(type(algorithm), agent)
+        setAgentAlgo(type(algo_dict[algo_name]), agent)
 
         # init the statistics result for the algorithm
         calculator = Calculator()
@@ -147,7 +151,6 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
             agent.data.error = noise
             # iterate over each word and run the game
             for word in words_list:
-
                 # setting the secret word in each session.
                 agent.set_secret_word(word)
 
@@ -170,7 +173,6 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
 
 
 def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name):
-
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
     error = 1.00
@@ -229,7 +231,7 @@ def setAgentAlgo(algo_type, agent: Agent):
         agent.set_agent_trilateration_algorithm()
 
 
-def reload_graph_from_path(path):     #add another function from menu
+def reload_graph_from_path(path):  # add another function from menu
     Reporter.generate_algo_guesses_from_csv(path)
 
 
@@ -239,32 +241,39 @@ def show_png_file(file_path):
     plt.imshow(img)
     plt.show()
 
+
 # =======================================Game Manager Class===============================================
+
 class GameManager():
     def __init__(self):
         self.games = []
         self.statistics = []
 
-    def add_game(self, agent, runs_number,game_type):
-        self.games.append((agent, runs_number,game_type))
+    def add_game(self, agent, runs_number, game_type, algo_list, dist_name, host_model, agent_model):
+        game = {"agent": agent, "runs_number": runs_number, "game_type": game_type, "algo_list": algo_list,
+                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model}
+        self.games.append(game)
 
     def run_games(self):
         for game in self.games:
-            match game[2]:   #The game type
+            match game["game_type"]:  # The game type
                 case "calculate_graph":
-                    calculate_graph(game[0],game[1]) #number of runs and agent
+                    calculate_graph(game["runs_number"], game["agent"])  # number of runs and agent
                     continue
                 case "calculate_algorithm_graph":
-                    calculate_algorithm_graph(game[0],game[1])#input algos dict? keep a global constant instead?
+                    calculate_algorithm_graph(game["runs_number"], game["agent"],
+                                              game["algo_list"])  # input algos dict? keep a global constant instead?
                     continue
                 case "calculate_noise_to_guesses_graph":
-                    calculate_noise_to_guesses_graph(game[0],game[1]) #input the rest?
+                    calculate_noise_to_guesses_graph(game["runs_number"], game["agent"],
+                                                     game["algo_list"] , game["dist_name"], withQueue=False)  # input the rest?
                     continue
                 case "create_error_compare_graph":
-                    create_error_compare_graph(game[0],game[1].getModelName(),game[1].getHostModelName()) #add methods to agent and name field
+                    create_error_compare_graph(game["runs_number"], game["agent"], game["host_model"],
+                                               game["agent_model"])  # add methods to agent and name field
                     continue
                 case _:
                     for i in range(game[0]):
                         game[1].start_play()
                         self.statistics.append(game[1].get_statistics())
-                        #decide what to do with statistic or drop them instead
+                        # decide what to do with statistic or drop them instead

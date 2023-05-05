@@ -4,34 +4,32 @@ from Semantle_AI.Business.Game.GameBuilder import GameBuilder
 from Semantle_AI.New_service import TransformInput
 
 
-
 class Menu:
     def __init__(self):
-        self.game_builder= GameBuilder()
-        self.input_games=[]
-        self.finish= False
-        self.game_manager= None
+        self.game_builder = GameBuilder()
+        self.input_games = []
+        self.finish = False
+        self.game_manager = None
 
-    def validate_input(self,path):
+    def validate_input(self, path):
         pass
 
-    def transform_input(self,path):
+    def transform_input(self, path):
         try:
             self.input_games += TransformInput.transform_input(path)
         except:
             print("Input transformation has failed- check configuration file")
 
-
     def build_games(self):
-        self.validate_input(os.path.join(os.getcwd(),"New_Service", "configurations.json"))
-        self.transform_input(os.path.join(os.getcwd(), "New_Service","configurations.json"))
-        self.game_manager=self.game_builder.build(self.input_games)
+        self.validate_input(os.path.join(os.getcwd(), "New_Service", "configurations.json"))
+        self.transform_input(os.path.join(os.getcwd(), "New_Service", "configurations.json"))
+        self.game_manager = self.game_builder.build(self.input_games)
         print(len(self.input_games), "games added")
-
 
     def start_menu(self):
         while not self.finish:
-            choice = input("\nChoose the desired action:\n1.Build game from file\n2.Run games\n3.Clear games\n4.Reports menu\n5.Leave\n")
+            choice = input("\nChoose the desired action:\n1.Build game from file\n2.Run games\n3.Clear "
+                           "games\n4.Reports menu\n5.Leave\n")
             match choice:
                 case '1':
                     self.build_games()
@@ -42,7 +40,7 @@ class Menu:
                 case '4':
                     self.reports_menu()
                 case '5':
-                    self.finish=True
+                    self.finish = True
                 case _:
                     print("illegal input - please choose an option from 1-5")
 
@@ -56,6 +54,4 @@ class Menu:
         self.game_manager.clear_games()
 
     def reports_menu(self):
-        pass #import graph from path
-
-
+        pass  # import graph from path

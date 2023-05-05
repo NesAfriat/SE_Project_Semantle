@@ -40,7 +40,7 @@ def generate_algorithms_compare_name():
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "algorithm_stat", algo_name)
+    path = os.path.join(cwd, "New_Service", "Reports_output", "algorithm_stat", algo_name)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -60,7 +60,7 @@ def getTimeAndCwd():
 def generate_noise_compare_name(algo_name, withQueue):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name)
+    path = os.path.join(cwd, "New_Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name)
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -68,13 +68,13 @@ def generate_noise_compare_name(algo_name, withQueue):
         print("Directory '% s' created" % path)
     except IOError as e:
         pass
-    return path,time
+    return path, time
 
 
 def generate_error_vector_name(error_method, error_size_method):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}")
+    path = os.path.join(cwd, "New_Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}")
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -311,10 +311,13 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     # Save plot points to csv file
     dir_name, time_stamp = generate_algorithm_stat_name(algo_name)
     # Create directory if it does not exist
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
+
 
     filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp, "LGD.csv")
+
+    if not os.path.exists(os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp)):
+        os.makedirs(os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp), exist_ok=True)
+
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Value", "Percentage"])

@@ -29,6 +29,8 @@ class GameBuilder():
         game_manager = GameManager()
         for game in games:
             agent = self.build_agent_host(game)
-            game_manager.add_game(game["runs"], agent, game["game_type"])
+            algo_list = game["algorithm_list"].split('$')
+            game_manager.add_game(agent, game["runs"], game["game_type"], algo_list, game["distance_function"],
+                                  game["host_model"], game["agent_model"])
             self.id_counter += 1
         return game_manager
