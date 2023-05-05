@@ -1,4 +1,4 @@
-from Semantle_AI.Business.Agents.Agent1 import Agent1
+from Semantle_AI.Business.Agents.Agent import Agent
 from Semantle_AI.Service.AgentHandlers.AgentHandler import AgentHandler
 
 
@@ -26,4 +26,4 @@ class Agent1Handler(AgentHandler):
 
     def __init__(self, out, inp, finished):
         super().__init__(out, inp, finished)
-        self.agent = Agent1()
+        self.agent = Agent()

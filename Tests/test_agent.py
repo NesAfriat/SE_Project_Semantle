@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, Mock
-from Semantle_AI.Business.Agents.Agent1 import Agent1
+
+from Semantle_AI.Business.Agents.Agent import Agent
 
 
 class TestAgentPlayGame(unittest.TestCase):
@@ -13,7 +14,7 @@ class TestAgentPlayGame(unittest.TestCase):
         mock_host = Mock()
         mock_host.error = 1.0
         mock_out = Mock()
-        agent = Agent1()
+        agent = Agent()
         agent.set_host(mock_host)
         agent.algorithm = mock_algo
         agent.init = Mock(return_value=None)

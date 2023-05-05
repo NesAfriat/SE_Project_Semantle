@@ -1,5 +1,4 @@
-from Semantle_AI.Business.Agents.Agent1 import Agent1
-from Semantle_AI.Business.Agents.Agent2 import Agent2
+from Semantle_AI.Business.Agents.Agent import Agent
 from Semantle_AI.Business.Agents.ManualAgent import ManualAgent
 
 dict_model = {'fasttext_wiki': 'fasttext-wiki-news-subwords-300',
@@ -14,13 +13,12 @@ class AgentBuilder():
 
     def create_agent_and_model(self, agent_type, host, model_name, model_factory):
         create = False
+        self.agent = Agent()
         match agent_type:
             case "agent1":
-                self.agent = Agent1()
                 self.agent.set_model(host.model)
                 create = True
             case "agent2":
-                self.agent = Agent2()
                 self.with_model(model_factory, model_name)
                 create = True
             case _:

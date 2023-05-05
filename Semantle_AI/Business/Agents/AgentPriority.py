@@ -2,7 +2,7 @@ from Semantle_AI.Business.Agents.Agent import Agent
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 
 
-class Agent2Priority(Agent):
+class AgentPriority(Agent):
 
     def __init__(self):
         super().__init__()

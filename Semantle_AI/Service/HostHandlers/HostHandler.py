@@ -1,7 +1,5 @@
 from abc import ABC, abstractmethod
 
-import Semantle_AI.Business.ModelFactory as MF
-from Semantle_AI.Business.Agents.Agent1 import Agent1
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"

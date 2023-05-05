@@ -16,10 +16,12 @@ class GameBuilder():
         self.host_builder.with_model(game["host_model"])
         self.host_builder.with_distance_function(game["distance_function"])
         host = self.host_builder.get_host()
+        #initiate an agent
+        self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory)
         # set agent host
         self.agent_builder.set_host(host)
-        self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory)
-        #        self.agent_builder.with_id(self.id_counter)
+
+        self.agent_builder.with_id(self.id_counter)
         self.agent_builder.with_algo(game["algorithm"])
         return self.agent_builder.get_agent()
 

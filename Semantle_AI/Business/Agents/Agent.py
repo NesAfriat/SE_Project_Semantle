@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
@@ -12,7 +11,7 @@ WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"
 
 
-class Agent(ABC):
+class Agent():
     def __init__(self):
         self.algorithm = None
         self.host = None
@@ -23,14 +22,12 @@ class Agent(ABC):
         self.init = None
         self.id = -1
 
-    @abstractmethod
     def guess_word(self):
-        pass
+        self.last_word = self.algorithm.calculate()
+        return self.last_word
 
-
-    @abstractmethod
     def set_host_model(self):
-        pass
+        self.set_model(self.host.model)
 
     def set_id(self, id):
         self.id = id
@@ -43,13 +40,13 @@ class Agent(ABC):
         algo = SmartMultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_queue_word(1))
 
-    def set_agent_naive_algorithm(self):
-        algo = Naive()
-        self.set_algorithm(algo, lambda: None)
-
     def set_agent_trilateration_algorithm(self):
         algo = Trilateration()
         self.set_algorithm(algo, lambda: self.guess_n_random_word(self.data.model.get_number_of_dim() + 1))
+
+    def set_agent_naive_algorithm(self):
+        algo = Naive()
+        self.set_algorithm(algo, lambda: None)
 
     def set_end_score(self, end_score):
         self.end_score = end_score
@@ -96,7 +93,7 @@ class Agent(ABC):
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score* self.host.error) != 0:
             try:
                 if self.data.last_score == -2:
-                    self.guess_random_word()
+                    self.guess_n_random_word(1)
                 else:
                     out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 self.add_to_list(self.data.last_word, self.data.last_score)
@@ -169,27 +166,29 @@ class Agent(ABC):
     def set_last_score(self, score):
         self.data.last_score = score
 
-    def guess_random_word(self):
-        guess = None
-        dist = -2
+    def guess_n_random_word(self, n):
         algo = Naive()
-        algo.set_data(self.data)
-        while dist == -2:
-            if guess is not None:
-                self.add_to_list(guess, self.data.last_score)
-            guess = algo.calculate()
-            dist = self.host.check_word(guess)
-        self.data.add_to_dict(guess, dist)
+        for i in range(n):
+            guess = None
+            dist = -2
+            algo.set_data(self.data)
+
+            while dist == -2:
+                if guess is not None:
+                    self.add_to_list(guess, self.data.last_score)
+                guess = algo.calculate()
+                dist = self.host.check_word(guess)
+            self.data.add_to_dict(guess, dist)
+            self.data.update_statistic()
+
+
 
     def guess_top_word(self):
         word = self.data.words_heap[0]
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
 
-    def guess_n_random_word(self, n):
-        for i in range(n):
-            self.guess_random_word()
-            self.data.update_statistic()
+
 
     def guess_n_queue_word(self, n):
         for i in range(n):
