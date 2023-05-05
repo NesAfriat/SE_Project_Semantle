@@ -21,14 +21,19 @@ class Agent(ABC):
         self.data = Data()
         self.end_score = None
         self.init = None
+        self.id = -1
 
     @abstractmethod
     def guess_word(self):
         pass
 
+
     @abstractmethod
     def set_host_model(self):
         pass
+
+    def set_id(self, id):
+        self.id = id
 
     def set_agent_MultiLateration_algorithm(self):
         algo = MultiLateration(self.data.model.dist_func)
