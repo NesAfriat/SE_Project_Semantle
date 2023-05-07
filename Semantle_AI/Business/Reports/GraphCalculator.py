@@ -99,7 +99,6 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list: dict):
 
         # iterate over each word and run the game
         for word in words_list:
-            results = OrderedDict()
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
