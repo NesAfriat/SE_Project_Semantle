@@ -101,6 +101,7 @@ class Agent():
                 self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
+                self.data.state.append((self.data.last_word, self.data.last_score))
 
             except ValueError as e:
                 out(e)

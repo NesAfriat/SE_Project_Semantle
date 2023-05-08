@@ -15,6 +15,7 @@ class Data:
         self.statistics = OrderedDict()
         self.copy_vocab = None
         self.is_priority = False
+        self.state = list()
 
     def add_to_dict(self, word, distance):
         if word not in self.guesses.keys():
@@ -55,6 +56,10 @@ class Data:
     def get_distances(self):
         return [x for x, y in self.guesses.values()]
 
+    def get_distance_of_word(self, last_guess_word, word):
+
+        return self.model.get_distance_of_word(last_guess_word, word)
+
     def get_points(self):
         return [y for x, y in self.guesses.values()]
 
@@ -70,6 +75,7 @@ class Data:
         self.statistics = OrderedDict()
         self.last_score = -1
         self.last_word = None
+        self.state = list()
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
