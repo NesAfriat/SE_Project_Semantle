@@ -39,8 +39,11 @@ class AgentBuilder():
         match algo:
             case "multi-lateration":
                 self.agent.set_agent_MultiLateration_algorithm()
-            case "n-Lateration":
+            case "multi-lateration-agent-2":
+                self.agent.set_agent_smart_MultiLateration_algorithm()
+            case "n-lateration":
                 self.agent.set_agent_nlateration_algorithm()
+
             case _:
                 self.agent.set_agent_naive_algorithm()
 

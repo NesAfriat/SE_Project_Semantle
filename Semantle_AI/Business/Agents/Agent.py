@@ -1,3 +1,5 @@
+import random
+
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
@@ -23,8 +25,8 @@ class Agent():
         self.id = -1
 
     def guess_word(self):
-        self.last_word = self.algorithm.calculate()
-        return self.last_word
+        last_word = self.algorithm.calculate()
+        return last_word
 
     def set_host_model(self):
         self.set_model(self.host.model)
@@ -86,10 +88,12 @@ class Agent():
             self.host.start_game(out)
         else:
             self.host.select_word_and_start_game(out)
-        self.data.update_statistic()
+            self.data.update_statistic()
+            self.data.state.append((self.data.last_word, self.data.last_score))
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.init()
+        self.data.state.append((self.data.last_word, self.data.last_score))
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score* self.host.error) != 0:
             try:
                 if self.data.last_score == -2:
@@ -185,9 +189,11 @@ class Agent():
 
 
     def guess_top_word(self):
-        word = self.data.words_heap[0]
+        word = random.choice(self.data.words_heap)
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
+        self.data.last_score = dist
+        self.data.last_word = word.word
 
 
 
@@ -219,3 +225,8 @@ class Agent():
     def get_next_word():
         return input("Insert next guess:\n")
 
+    def with_distance_function(self, dist_func):
+        if dist_func == "euclid":
+            self.data.model.set_dist_function(MethodDistances.euclid_function())
+        else:
+            self.data.model.set_dist_function(MethodDistances.cosine_function())

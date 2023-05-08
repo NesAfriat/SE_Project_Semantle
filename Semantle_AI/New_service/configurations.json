@@ -1,38 +1,16 @@
 [
-    {
-        "agent": "agent1",
-        "host": "offline",
-        "distance_function": "cosine",
-        "calc_error": "None",
-        "agent_model": "glove_wiki",
-        "host_model": "glove_wiki",
-        "algorithm": "multi-lateration",
-        "algorithm_list": "Brute_force$Multi-Lateration$Trilateration",
-        "runs": 2,
-        "game_type": "calculate_algorithm_graph"
-    },
-    {
-        "agent": "agent2",
-        "host": "offline",
-        "distance_function": "cosine",
-        "calc_error": "None",
-        "agent_model": "glove_wiki",
-        "host_model": "glove_wiki",
-        "algorithm": "multi-lateration",
-        "algorithm_list": "None",
-        "runs": 3,
-        "game_type": "calculate_noise_to_guesses_graph"
-    },
+
     {
         "agent": "agent2",
         "host": "offline",
         "distance_function": "euclid",
-        "calc_error": "SUM$Norm1",
-        "agent_model": "glove_wiki",
+        "error": "1.0",
+        "calc_error": "SUM$VOI",
+        "agent_model": "fasttext_wiki",
         "host_model": "glove_wiki",
-        "algorithm": "n-lateration",
+        "algorithm": "multi-lateration-agent-2",
         "algorithm_list": "None",
-        "runs": 1,
+        "runs": 40,
         "game_type": "create_error_compare_graph"
     }
 ]

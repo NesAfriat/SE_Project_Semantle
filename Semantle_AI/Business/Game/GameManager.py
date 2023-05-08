@@ -24,8 +24,9 @@ def select_words(num_of_words, vocab):
     return ret
 
 
+
 def load_words_list():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), WORDS_LIST)
+    path = os.path.join(os.getcwd(), "Business", "Reports", WORDS_LIST)
     try:
         with open(path, 'r') as file:
             lines = [line.strip() for line in file]
@@ -172,10 +173,10 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
         Reporter.generate_noises_graph_spread(calculator.results, algo_name, runs_number, dist_name, withQueue)
 
 
-def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name):
+def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name, error, error_method,
+                               error_size_method):
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
-    error = 1.00
     agent.data.setError(error)
     # setting the words list.
     words_list = load_words_list()
@@ -185,10 +186,6 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
     # setting the new smart trilateration algorithm
     setAgentAlgo(Alg.MultiLaterationAgent2.SmartMultiLateration, agent)
-
-    # setting the error vector methods values
-    error_method = MultiLaterationAgent2.SUM
-    error_size_method = MultiLaterationAgent2.NORM1
 
     if isinstance(agent.algorithm, MultiLaterationAgent2.SmartMultiLateration):
         agent.algorithm.set_error_method(error_method)
@@ -249,9 +246,11 @@ class GameManager():
         self.games = []
         self.statistics = []
 
-    def add_game(self, agent, runs_number, game_type, algo_list, dist_name, host_model, agent_model):
+    def add_game(self, agent, runs_number, game_type, algo_list, dist_name, host_model, agent_model, error,
+                 error_method, size_method):
         game = {"agent": agent, "runs_number": runs_number, "game_type": game_type, "algo_list": algo_list,
-                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model}
+                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model,"error":error,
+                "error_method": error_method, "size_method": size_method}
         self.games.append(game)
 
     def run_games(self):
@@ -266,11 +265,12 @@ class GameManager():
                     continue
                 case "calculate_noise_to_guesses_graph":
                     calculate_noise_to_guesses_graph(game["runs_number"], game["agent"],
-                                                     game["algo_list"] , game["dist_name"], withQueue=False)  # input the rest?
+                                                     game["algo_list"], game["dist_name"], withQueue=False)  # input the rest?
                     continue
                 case "create_error_compare_graph":
                     create_error_compare_graph(game["runs_number"], game["agent"], game["host_model"],
-                                               game["agent_model"])  # add methods to agent and name field
+                                               game["agent_model"], game["error"], game["error_method"],
+                                               game["size_method"])  # add methods to agent and name field
                     continue
                 case _:
                     for i in range(game[0]):

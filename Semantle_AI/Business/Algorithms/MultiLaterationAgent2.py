@@ -29,9 +29,11 @@ class SmartMultiLateration(Algorithm):
 
     def set_error_method(self, method_name):
         self.error_calc_method = method_name
+        self.using_entropy = not(self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
 
     def set_vector_calculation_method(self, method_name):
         self.vector_value_method = method_name
+        self.using_entropy = not (self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
 
     @staticmethod
     def in_range(distance1, distance2, percentage_error):
@@ -72,7 +74,10 @@ class SmartMultiLateration(Algorithm):
         s_array = np.array(s)
         word_primes = s_array[:, 0]
         distances_word_prime = s_array[:, 1].astype(float)
-        distances_w_word_primes = np.array([self.data.get_distance_of_word(w, word_prime) for word_prime in word_primes])
+        dists = []
+        for word_prime in word_primes:
+            dists.append(self.data.get_distance_of_word(w, word_prime))
+        distances_w_word_primes = np.array(dists)
         total_sum = np.sum((distances_w_word_primes - distances_word_prime) ** 2)
         return (1 / len(s)) * np.sqrt(total_sum)
 
@@ -122,7 +127,7 @@ class SmartMultiLateration(Algorithm):
 
         for w_prime in V_s_without_w:
             p_w_prime_s = self.p_w_s(w_prime, s)
-            s_w_w_prime = self.s_w_w(w, w_prime, s)
+            s_w_w_prime = self.s_w_w(s, w, w_prime)
             entropy_sum += p_w_prime_s * self.E(s_w_w_prime)
 
         return entropy_sum
@@ -133,7 +138,7 @@ class SmartMultiLateration(Algorithm):
         self.data.words_heap.remove(item)
 
         # update the weight of the item
-        item.weight = voi_val
+        item.weight = abs(voi_val)
 
         # insert the item back into the sorted list with its new weight
         self.data.words_heap.add(item)
@@ -161,7 +166,7 @@ class SmartMultiLateration(Algorithm):
         if self.vector_value_method == PROB:
             self.prob(item)
         elif self.vector_value_method == VOI:
-            self.voi(self.data.state, item.word)
+            self.voi(self.data.state, item)
 
     def prob(self, item):
         # remove the current item from the sorted list

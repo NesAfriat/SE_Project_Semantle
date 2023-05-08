@@ -8,6 +8,7 @@ from Semantle_AI.Business.Reports.Calculator import Calculator
 import matplotlib.pyplot as plt
 import os
 
+
 WORDS_LIST = "word_list.txt"
 WORD2VEC = "Google_Word2Vec.bin"
 DISTANCE_METHOD = "Euclid"

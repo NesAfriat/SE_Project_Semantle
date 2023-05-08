@@ -23,6 +23,7 @@ def transform_input(config_file_path):
             "agent": config["agent"],
             "host": config["host"],
             "distance_function": config["distance_function"],
+            "error": config["error"],
             "calc_error": config["calc_error"],
             "agent_model": config["agent_model"],
             "host_model": config["host_model"],
