@@ -5,12 +5,12 @@
         "host": "offline",
         "distance_function": "euclid",
         "error": "1.0",
-        "calc_error": "SUM$VOI",
+        "calc_error": "SUM$Relative_Probability",
         "agent_model": "fasttext_wiki",
         "host_model": "glove_wiki",
         "algorithm": "multi-lateration-agent-2",
         "algorithm_list": "None",
-        "runs": 40,
+        "runs": 2,
         "game_type": "create_error_compare_graph"
     }
 ]

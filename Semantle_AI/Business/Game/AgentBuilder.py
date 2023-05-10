@@ -3,7 +3,7 @@ from Semantle_AI.Business.Agents.ManualAgent import ManualAgent
 
 dict_model = {'fasttext_wiki': 'fasttext-wiki-news-subwords-300',
               'glove_wiki': "glove-wiki-gigaword-300",
-              "word2vec_google": "word2vec-google-news-300",
+              'word2vec_google': "word2vec-google-news-300",
               'local_word2vec': "Google_Word2Vec.bin"}
 
 

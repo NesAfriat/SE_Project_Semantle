@@ -29,7 +29,7 @@ class Menu:
     def start_menu(self):
         while not self.finish:
             choice = input("\nChoose the desired action:\n1.Build game from file\n2.Run games\n3.Clear "
-                           "games\n4.Reports menu\n5.Leave\n")
+                           "games\n4.Leave\n")
             match choice:
                 case '1':
                     self.build_games()
@@ -38,8 +38,6 @@ class Menu:
                 case '3':
                     self.clear_games()
                 case '4':
-                    self.reports_menu()
-                case '5':
                     self.finish = True
                 case _:
                     print("illegal input - please choose an option from 1-5")
