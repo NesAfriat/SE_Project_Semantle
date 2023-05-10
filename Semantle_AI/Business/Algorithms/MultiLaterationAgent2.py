@@ -71,28 +71,35 @@ class SmartMultiLateration(Algorithm):
     def e_w_s(self, w, s):
         if not s:
             raise ValueError("State (s) cannot be an empty list")
+        # creating array for using numpy.
         s_array = np.array(s)
-        word_primes = s_array[:, 0]
-        distances_word_prime = s_array[:, 1].astype(float)
+        words_list = s_array[:, 0]
+        distances_lists = s_array[:, 1].astype(float)
         dists = []
-        for word_prime in word_primes:
+        # calculating the distances in out model.s
+        for word_prime in words_list:
             dists.append(self.data.get_distance_of_word(w, word_prime))
+        # converting the results list to array for numpy.s
         distances_w_word_primes = np.array(dists)
-        total_sum = np.sum((distances_w_word_primes - distances_word_prime) ** 2)
+        # summing the result.
+        total_sum = np.sum((distances_w_word_primes - distances_lists) ** 2)
         return (1 / len(s)) * np.sqrt(total_sum)
 
     def f_w_s(self, w, s):
         return np.exp(-self.e_w_s(w, s))
 
     def norm_factor(self, s):
+        # converting to array for numpy.
         s_array = np.array(s)
         words = s_array[:, 0]
+        # summing f_w_s for each word for the factor.s
         return np.sum(np.exp(-np.array([self.e_w_s(word, s) for word in words])))
 
     def p_w_s(self, w, s):
         return self.f_w_s(w, s) / self.norm_factor(s)
 
     def s_w_w(self, s, w, w_t):
+        # adding new tuple of word-dist to the state.
         s_prime = [(word, dist) for word, dist in s if word != w]
         d_w_w_prime = self.data.get_distance_of_word(w, w_t)
         s_prime.append((w, d_w_w_prime))
@@ -110,29 +117,35 @@ class SmartMultiLateration(Algorithm):
         elif self.error_calc_method == BRUTE_FORCE:
             return self.ret_zero(word)
 
-
     def E(self, s):
         if not s:
             raise ValueError("State (s) cannot be an empty list")
+        # converting to array for numpy.
         s_array = np.array(s)
         words = s_array[:, 0]
+        # calculating the probability.
         p_w_s_values = np.array([self.p_w_s(word, s) for word in words])
         Entropy = -np.sum(p_w_s_values * np.log2(p_w_s_values))
+        # returning the entropy.
         return Entropy
 
     def E_s_w(self, s, w):
+        # removing w from the words in the state.
         V_s = {word for word, _ in s}
         V_s_without_w = V_s - {w}
         entropy_sum = 0
-
-        for w_prime in V_s_without_w:
-            p_w_prime_s = self.p_w_s(w_prime, s)
-            s_w_w_prime = self.s_w_w(s, w, w_prime)
+        # for each word in the remain list, calculate:
+        for word in V_s_without_w:
+            # call the prob. modify the state with the new word
+            p_w_prime_s = self.p_w_s(word, s)
+            s_w_w_prime = self.s_w_w(s, w, word)
+            # using the original entropy formula for calculation.
             entropy_sum += p_w_prime_s * self.E(s_w_w_prime)
-
+            # returning the E_s_W value for the difference calculation in voi.
         return entropy_sum
 
     def voi(self, s, item):
+        # calculating the new weight to be the difference between E(s) to E(s,w) and updating the weight on the list.
         voi_val = self.E(s) - self.E_s_w(s, item.word)
         # remove the current item from the sorted list
         self.data.words_heap.remove(item)
@@ -179,18 +192,32 @@ class SmartMultiLateration(Algorithm):
         # insert the item back into the sorted list with its new weight
         self.data.words_heap.add(item)
 
-    def choose_next(self, items):
+    def choose_next(self, word_heap):
         # sanity check
-        if len(items) == 0:
+        if len(word_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
-        # return the queue top.
-        if self.error_calc_method != BRUTE_FORCE:
-            next_word = items.pop(0)
+        if self.error_calc_method == PROB:
+            probability = random.random()
+            sum = 0
+            word_index = 0
+            while word_index < len(word_heap)-1:
+                if word_heap[word_index]+sum <= probability:
+                    word_index += 1
+                    sum += word_heap[word_index]
+                else:
+                    break
+            next_word = word_heap[word_index]
+            word_heap.remove(next_word)
+            return next_word.word
         else:
-            next_word = random.choice(items)
-            items.remove(next_word)
+            # return the queue top.
+            if self.error_calc_method != BRUTE_FORCE:
+                next_word = word_heap.pop(0)
+            else:
+                next_word = random.choice(word_heap)
+                word_heap.remove(next_word)
 
-        return next_word.word
+            return next_word.word
 
     def calculate(self):
 
@@ -209,8 +236,10 @@ class SmartMultiLateration(Algorithm):
                 self.old_calculation(item, val)
 
             else:
+                # in case of the new improved methods.
                 self.new_calculation(item)
 
+        # choose the next word guess from the updated list.
         return self.choose_next(self.data.words_heap)
 
 
