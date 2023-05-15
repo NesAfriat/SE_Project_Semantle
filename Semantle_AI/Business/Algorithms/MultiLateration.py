@@ -20,12 +20,12 @@ class MultiLateration(Algorithm):
     def calculate(self):
         last_vec = self.data.get_word_vec(self.data.last_word)
 
-        self.data.remain_words = [x for x in
-                                  filter(lambda x: in_range(
-                                      self.dist_formula(self.data.get_word_vec(x), last_vec),
-                                      self.data.last_score,
-                                      0.01),
-                                         self.data.remain_words)]
+        res = []
+        for x in self.data.remain_words:
+            if in_range(self.dist_formula(self.data.get_word_vec(x), last_vec), self.data.last_score, 0.01):
+                res.append(x)
+
+        self.data.remain_words = res
         if len(self.data.remain_words) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
         return random.choice(self.data.remain_words)
