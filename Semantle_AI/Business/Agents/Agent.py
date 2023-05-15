@@ -90,7 +90,7 @@ class Agent():
             self.host.select_word_and_start_game(out)
             self.data.update_statistic()
             self.data.state.append((self.data.last_word, self.data.last_score))
-        print(f"secret word is : {self.host.getWord()}")
+        out(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.init()
         self.data.state.append((self.data.last_word, self.data.last_score))
@@ -116,7 +116,7 @@ class Agent():
 
     def start_play_with_priority(self, out):
         self.host.select_word_and_start_game(out)
-        print(f"secret word is : {self.host.getWord()}")
+        out(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         self.data.update_statistic()
         self.init()
