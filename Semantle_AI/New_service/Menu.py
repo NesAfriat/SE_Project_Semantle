@@ -17,12 +17,18 @@ class Menu:
     def transform_input(self, path):
         try:
             self.input_games += TransformInput.transform_input(path)
-        except:
-            print("Input transformation has failed- check configuration file")
+        except Exception as e:
+            print(f"Input transformation has failed- check configuration file\n error {e}")
 
     def build_games(self):
-        self.validate_input(os.path.join(os.getcwd(), "New_Service", "configurations.json"))
-        self.transform_input(os.path.join(os.getcwd(), "New_Service", "configurations.json"))
+        if "Tests" in os.getcwd():
+            path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
+            path = os.path.join(path, "New_Service",  "configurations.json")
+        else:
+            path = os.path.join(os.getcwd(), "New_Service", "configurations.json")
+
+        self.validate_input(path)
+        self.transform_input(path)
         self.game_manager = self.game_builder.build(self.input_games)
         print(len(self.input_games), "games added")
 
@@ -53,3 +59,11 @@ class Menu:
 
     def reports_menu(self):
         pass  # import graph from path
+
+
+
+def replace_subdir(path, old_subdir, new_subdir):
+    path_parts = path.split(os.sep)
+    updated_path_parts = [new_subdir if part == old_subdir else part for part in path_parts]
+    updated_path = os.sep.join(updated_path_parts)
+    return updated_path

@@ -24,7 +24,6 @@ def select_words(num_of_words, vocab):
     return ret
 
 
-
 def load_words_list():
     path = os.path.join(os.getcwd(), "Business", "Reports", WORDS_LIST)
     try:
@@ -37,7 +36,7 @@ def load_words_list():
 
 
 def save_words_list(words_list):
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), WORDS_LIST)
+    path = os.path.join(os.getcwd(), "Business", "Reports", WORDS_LIST)
     with open(path, 'w') as file:
         file.truncate(0)
         file.write('\n'.join(words_list))
@@ -85,9 +84,9 @@ def calculate_graph(runs_number, agent: Agent):
     Reporter.generate_algo_guesses_from_csv(path)
 
 
-algo_dict = dict({"Brute_force": Alg.Naive.Naive(),
-                  "Multi-Lateration": Alg.MultiLateration.MultiLateration(MethodDistances.euclid_function()),
-                  "Trilateration": Alg.NLateration.Trilateration()})
+algo_dict = dict({"naive": Alg.Naive.Naive(),
+                  "multi-lateration": Alg.MultiLateration.MultiLateration(MethodDistances.euclid_function()),
+                  "n-lateration": Alg.NLateration.Trilateration()})
 
 
 def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):

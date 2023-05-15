@@ -8,6 +8,7 @@ import gensim.downloader as api
 def existing_model(path):
     return os.path.isfile(path)
 
+
 def replace_subdir(path, old_subdir, new_subdir):
     path_parts = path.split(os.sep)
     updated_path_parts = [new_subdir if part == old_subdir else part for part in path_parts]
@@ -99,13 +100,13 @@ class ModelFactory:
     #     return cls._instance
     @staticmethod
     def get_model(model_name):
-        words_list= os.path.join(os.getcwd(),"Business","Model","words.txt")
+        words_list ="words.txt"
         if model_name in ModelFactory._model_map:
             return ModelFactory._model_map[model_name]
         else:
             if not model_name in ModelFactory._model_map.keys():
                 if model_name== "Google_Word2Vec.bin":
-                    ModelFactory._model_map[model_name] = load_from_file(model_name,words_list)
+                    ModelFactory._model_map[model_name] = load_from_file(model_name, words_list)
                 else:
-                    ModelFactory._model_map[model_name] = load_from_gensim(model_name,words_list)
+                    ModelFactory._model_map[model_name] = load_from_gensim(model_name, words_list)
         return ModelFactory._model_map[model_name]
