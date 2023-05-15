@@ -24,7 +24,7 @@ class MultiLateration(Algorithm):
                                   filter(lambda x: in_range(
                                       self.dist_formula(self.data.get_word_vec(x), last_vec),
                                       self.data.last_score,
-                                      self.data.error),
+                                      0.01),
                                          self.data.remain_words)]
         if len(self.data.remain_words) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
