@@ -22,11 +22,12 @@ class test_hosts(unittest.TestCase):
 
     def test_check_word_offline(self):
         items = {'dog', 'house', 'cat', 'child'}
-        self.mock_model.return_value.get_distance_of_word = 1
+        self.mock_model.get_distance_of_word.return_value = 1
         self.offline_host.set_model(self.mock_model, items)
         val = self.offline_host.check_word('dog')
+
     @patch('builtins.print')
-    def test_online_host_select_word_and_start_game(self):
-        str_finish = None
+    def test_online_host_select_word_and_start_game(self, mock_print):
 
         self.online_host.select_word_and_start_game(lambda x: print(x))
+        assert mock_print.call_count == 3
