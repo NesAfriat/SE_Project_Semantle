@@ -1,7 +1,7 @@
 import random
 import unittest
 from parameterized import parameterized
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
 from Semantle_AI.Business.Agents.Agent import Agent
 
 class TestAgentPlayGame(unittest.TestCase):

@@ -73,20 +73,20 @@ def load_from_gensim(name, word_list=None):
     return Model(my_model, model_vocab), model_vocab
 
 
-def load_from_gensim(name, word_list=None):
-    print("\n\n======================  Model loading ======================")
-    print(">>Loading model.")
-    my_model = api.load(name)
-    print(">>model loaded successfully!")
-    print(">>loading vocabulary")
-    # getting the vocabulary
-    vocab = set(my_model.key_to_index)
-    print(">>filtering words")
-    # filter only if given path to words
-    model_vocab = filter_vocab(vocab, word_list)
-    print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
-    print(">>done!")
-    return Model(my_model, model_vocab), model_vocab
+# def load_from_gensim(name, word_list=None):
+#     print("\n\n======================  Model loading ======================")
+#     print(">>Loading model.")
+#     my_model = api.load(name)
+#     print(">>model loaded successfully!")
+#     print(">>loading vocabulary")
+#     # getting the vocabulary
+#     vocab = set(my_model.key_to_index)
+#     print(">>filtering words")
+#     # filter only if given path to words
+#     model_vocab = filter_vocab(vocab, word_list)
+#     print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
+#     print(">>done!")
+#     return Model(my_model, model_vocab), model_vocab
 
 
 class ModelFactory:
