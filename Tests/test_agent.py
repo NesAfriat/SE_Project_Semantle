@@ -37,7 +37,6 @@ class TestAgentPlayGame(unittest.TestCase):
 
         calculate_side_effect.call_count = 0
         self.agent.algorithm.calculate.side_effect = calculate_side_effect
-
         self.mock_host.check_word.side_effect = lambda word: 1 if word == "secret_word" else random.uniform(0.01, 0.99)
         self.mock_host.getWord.return_value = "secret_word"
 

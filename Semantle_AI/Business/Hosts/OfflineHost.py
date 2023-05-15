@@ -39,12 +39,12 @@ class OfflineHost(Host):
         self.vocabulary = list(vocab)
 
     def select_word_and_start_game(self, out):
-        out("================ Offline game===============")
+        out("================Offline game===============")
         word = choice(list(self.vocabulary))
         self.secret_word = word
 
     def start_game(self, out):
-        out("================ Offline game===============")
+        out("================Offline game===============")
 
     def check_word(self, word):
         if word in self.vocabulary:
