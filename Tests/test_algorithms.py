@@ -35,8 +35,8 @@ class TestAlgorithms(unittest.TestCase):
 
         # Mocking the data instance
         multilateration.data.last_word = "test"
-        multilateration.data.last_score = 10
-        multilateration.data.error = 5
+        multilateration.data.last_score = 1
+        multilateration.data.error = 1
 
         # Use fixed seed to make the test deterministic
         random.seed(42)
@@ -44,25 +44,16 @@ class TestAlgorithms(unittest.TestCase):
         # Create a dictionary to map words to dummy vectors
         word_vec_mapping = {word: [random.random() for _ in range(5)] for word in range(5, 15)}
         word_vec_mapping["test"] = [0.5, 0.5, 0.5, 0.5, 0.5]
-
-        # Modify the last_score and error values to ensure at least one word satisfies the condition in the filter()
-        # function
-        multilateration.data.last_score = 1.5
-        multilateration.data.error = 80
+        word_vec_mapping["test2"] = [1.5, 0.5, 0.5, 0.5, 0.5]
 
         # Use the dictionary's `get` method as the side effect for the `get_word_vec` method
         multilateration.data.get_word_vec.side_effect = word_vec_mapping.get
 
         multilateration.data.remain_words = list(range(5, 15))
-        multilateration.data.remain_words.append("test")
+        multilateration.data.remain_words.append("test2")
 
         result = multilateration.calculate()
-        self.assertIn(result, list(range(5, 15)))
-
-        # Update the remain_words list to exclude the result
-        multilateration.data.remain_words.remove(result)
-
-        self.assertNotIn(result, multilateration.data.remain_words)
+        self.assertEqual(result,"test2")
 
     def test_naive(self):
         naive = Naive()
