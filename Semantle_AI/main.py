@@ -8,7 +8,7 @@
 
 
 # Press the green button in the gutter to run the script.
-from  Semantle_AI.New_service.Menu import Menu
+from Semantle_AI.New_service.Menu import Menu
 if __name__ == '__main__':
     menu = Menu()
     menu.start_menu()

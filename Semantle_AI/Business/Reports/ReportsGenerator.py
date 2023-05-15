@@ -26,7 +26,9 @@ def save_game_data(game_number, agent_model_name, host_model_name, algorithm_nam
 
 def generate_algorithms_compare_name():
     time, cwd = getTimeAndCwd()
-    path = os.path.join(cwd, "Service", "Reports_output", "algorithms_compare")
+    if "Tests" in os.getcwd():
+        cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
+    path = os.path.join(cwd, "New_service", "Reports_output", "algorithms_compare")
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -36,10 +38,18 @@ def generate_algorithms_compare_name():
         pass
     return path,time
 
+def replace_subdir(path, old_subdir, new_subdir):
+    path_parts = path.split(os.sep)
+    updated_path_parts = [new_subdir if part == old_subdir else part for part in path_parts]
+    updated_path = os.sep.join(updated_path_parts)
+    return updated_path
+
 
 def generate_algorithm_stat_name(algo_name):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
+    if "Tests" in os.getcwd():
+        cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
     path = os.path.join(cwd, "New_Service", "Reports_output", "algorithm_stat", algo_name)
     try:
         if os.path.exists(path):
@@ -48,7 +58,7 @@ def generate_algorithm_stat_name(algo_name):
         print("Directory '% s' created" % path)
     except IOError:
         pass
-    return path,time
+    return path, time
 
 
 def getTimeAndCwd():
@@ -60,6 +70,8 @@ def getTimeAndCwd():
 def generate_noise_compare_name(algo_name, withQueue):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
+    if "Tests" in os.getcwd():
+        cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
     path = os.path.join(cwd, "New_Service", "Reports_output", "Noise_compare", f"Queue={withQueue}", algo_name)
     try:
         if os.path.exists(path):
@@ -74,6 +86,8 @@ def generate_noise_compare_name(algo_name, withQueue):
 def generate_error_vector_name(error_method, error_size_method):
     # datetime object containing current date and time
     time, cwd = getTimeAndCwd()
+    if "Tests" in os.getcwd():
+        cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
     path = os.path.join(cwd, "New_Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}")
     try:
         if os.path.exists(path):
@@ -328,7 +342,7 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp, "LGD.png")
     plt.savefig(filename)
     # Show plot
-    plt.show()
+    # plt.show()
 
 
 def generate_x_values(x, y):

@@ -1,10 +1,4 @@
-
-from New_service.Menu import Menu
-
-
-
-
-
+from Semantle_AI.New_service.Menu import Menu
 
 # Press the green button in the gutter to run the script.
 
