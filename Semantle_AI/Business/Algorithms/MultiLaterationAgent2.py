@@ -5,6 +5,8 @@ import numpy as np
 from Semantle_AI.Business.Agents.Data import GuessScore
 from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
+import cProfile
+
 
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
@@ -179,14 +181,14 @@ class SmartMultiLateration(Algorithm):
         if self.vector_value_method == PROB:
             self.prob(item)
         elif self.vector_value_method == VOI:
-            self.voi(self.data.state, item)
+            self.voi(self.data.state.lis, item)
 
     def prob(self, item):
         # remove the current item from the sorted list
         self.data.words_heap.remove(item)
 
         # update the weight of the item
-        new_weight = self.p_w_s(item.word, self.data.state)
+        new_weight = self.p_w_s(item.word, self.data.state.lis)
         item.weight = new_weight
 
         # insert the item back into the sorted list with its new weight

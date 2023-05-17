@@ -1,5 +1,5 @@
 import random
-
+import cProfile
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
@@ -89,11 +89,12 @@ class Agent():
         else:
             self.host.select_word_and_start_game(out)
             self.data.update_statistic()
-            self.data.state.append((self.data.last_word, self.data.last_score))
-        out(f"secret word is : {self.host.getWord()}")
+            self.data.state.append(self.data.last_word, self.data.last_score)
+        print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
+        # counter = 0
         self.init()
-        self.data.state.append((self.data.last_word, self.data.last_score))
+        self.data.state.append(self.data.last_word, self.data.last_score)
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score* self.host.error) != 0:
             try:
                 if self.data.last_score == -2:
@@ -105,8 +106,11 @@ class Agent():
                 self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
-                self.data.state.append((self.data.last_word, self.data.last_score))
-
+                self.data.state.append(self.data.last_word, self.data.last_score)
+                # if counter == 10:
+                #     break
+                # else:
+                #     counter += 1
             except ValueError as e:
                 out(e)
                 return
@@ -120,6 +124,7 @@ class Agent():
         self.data.last_score = -2
         self.data.update_statistic()
         self.init()
+        # counter=0
         while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
                 if self.data.last_score == -2:
@@ -131,6 +136,10 @@ class Agent():
                 self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
+                # if counter == 10:
+                #     break
+                # else:
+                #     counter += 1
             except ValueError as e:
                 out(e)
                 return
@@ -142,6 +151,7 @@ class Agent():
         self.host.select_word_and_start_game(out)
         out(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
+        # counter = 0
         while self.data.last_score == -2:
             word = self.get_next_word()
             self.data.last_score = round(self.host.check_word(word), 5)
@@ -158,6 +168,10 @@ class Agent():
                     self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
+                # if counter == 10:
+                #     break
+                # else:
+                #     counter += 1
             except ValueError as e:
                 out(e)
                 return

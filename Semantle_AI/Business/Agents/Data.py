@@ -15,7 +15,7 @@ class Data:
         self.statistics = OrderedDict()
         self.copy_vocab = None
         self.is_priority = False
-        self.state = list()
+        self.state = State()
 
     def add_to_dict(self, word, distance):
         if word not in self.guesses.keys():
@@ -75,7 +75,7 @@ class Data:
         self.statistics = OrderedDict()
         self.last_score = -1
         self.last_word = None
-        self.state = list()
+        self.state.reset()
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
@@ -114,6 +114,19 @@ class MyItem:
         if isinstance(other, MyItem):
             return self.word == other.word and self.weight == other.weight
         return False
+
+
+class State:
+    def __init__(self):
+        self.lis = list()
+        self.sum_till_now = 0
+
+    def reset(self):
+        self.lis = list()
+        self.sum_till_now = 0
+
+    def append(self, word, dist):
+        self.lis.append((word, dist))
 
 
 class GuessScore:

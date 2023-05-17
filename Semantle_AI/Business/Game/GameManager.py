@@ -264,7 +264,7 @@ class GameManager():
                     continue
                 case "calculate_noise_to_guesses_graph":
                     calculate_noise_to_guesses_graph(game["runs_number"], game["agent"],
-                                                     game["algo_list"], game["dist_name"], withQueue=False)  # input the rest?
+                                                     game["algo_list"], game["dist_name"], withQueue=False)
                     continue
                 case "create_error_compare_graph":
                     create_error_compare_graph(game["runs_number"], game["agent"], game["host_model"],
