@@ -36,7 +36,8 @@ def generate_algorithms_compare_name():
         print("Directory '% s' created" % path)
     except IOError:
         pass
-    return path,time
+    return path, time
+
 
 def replace_subdir(path, old_subdir, new_subdir):
     path_parts = path.split(os.sep)
@@ -88,7 +89,8 @@ def generate_error_vector_name(error_method, error_size_method):
     time, cwd = getTimeAndCwd()
     if "Tests" in os.getcwd():
         cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
-    path = os.path.join(cwd, "New_Service", "Reports_output", "Priority_calculation", f"{error_method}_{error_size_method}")
+    path = os.path.join(cwd, "New_Service", "Reports_output", "Priority_calculation",
+                        f"{error_method}_{error_size_method}")
     try:
         if os.path.exists(path):
             os.remove(path)
@@ -175,7 +177,7 @@ def generate_algo_guesses_from_csv(path):
 
 
 def generate_error_graph(results: OrderedDict, runs_number: int, words_list, model1_name, model2_name,
-                         error_method, error_size_method,error):
+                         error_method, error_size_method, error):
     words_list = list(words_list)
     # Create the plot
 
@@ -183,7 +185,7 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
     dir_name, time_stamp = generate_error_vector_name(error_method, error_size_method)
     # setting dir and file name, and saving the csv files.
     filename = os.path.join(dir_name, f"{runs_number}_{error_method}_{error_size_method}",
-                            f"{model1_name}_{model2_name}", time_stamp)    # Create directory if it does not exist
+                            f"{model1_name}_{model2_name}", time_stamp)  # Create directory if it does not exist
     if not os.path.exists(filename):
         os.makedirs(filename)
 
@@ -194,9 +196,6 @@ def generate_error_graph(results: OrderedDict, runs_number: int, words_list, mod
         for (run, guess) in results.items():
             writer.writerow([run, guess, words_list[counter]])
             counter += 1
-
-
-    return None
 
 
 def generate_noises_graph_spread(results: OrderedDict, algo_name: str, runs_number: int, dist_name, withQueue):
@@ -325,7 +324,6 @@ def generate_graph(filtered_keys: Set[str], algo_name: str, runs_number: int):
     # Save plot points to csv file
     dir_name, time_stamp = generate_algorithm_stat_name(algo_name)
     # Create directory if it does not exist
-
 
     filename = os.path.join(dir_name, f"{algo_name}_{runs_number}", time_stamp, "LGD.csv")
 

@@ -1,5 +1,5 @@
 import random
-import cProfile
+import time
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
 from Semantle_AI.Business.Algorithms.MultiLateration import MultiLateration
@@ -94,6 +94,7 @@ class Agent():
         self.data.last_score = -2
         counter = 0
         self.init()
+        start_time = time.time()  # get the current time
         self.data.state.append(self.data.last_word, self.data.last_score)
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score * self.host.error) != 0:
             try:
@@ -107,10 +108,13 @@ class Agent():
                 self.data.last_word = word
                 self.data.update_statistic()
                 self.data.state.append(self.data.last_word, self.data.last_score)
-                if counter == 10:
-                    break
-                else:
-                    counter += 1
+                counter += 1
+                current_time = time.time()  # get the current time
+                elapsed_time = current_time - start_time  # calculate elapsed time
+
+                if elapsed_time >= 60:  # if more than 60 seconds have passed
+                    print(f"counter => {counter}")
+                    break  # exit the loop
             except ValueError as e:
                 out(e)
                 return
@@ -124,7 +128,8 @@ class Agent():
         self.data.last_score = -2
         self.data.update_statistic()
         self.init()
-        # counter=0
+        counter = 0
+        start_time = time.time()  # get the current time
         while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
                 if self.data.last_score == -2:
@@ -136,10 +141,13 @@ class Agent():
                 self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
-                # if counter == 10:
-                #     break
-                # else:
-                #     counter += 1
+                counter += 1
+                current_time = time.time()  # get the current time
+                elapsed_time = current_time - start_time  # calculate elapsed time
+
+                if elapsed_time > 60:  # if more than 60 seconds have passed
+                    print(f"counter => {counter}")
+                    break  # exit the loop
             except ValueError as e:
                 out(e)
                 return
@@ -157,6 +165,7 @@ class Agent():
             self.data.last_score = round(self.host.check_word(word), 5)
             self.data.last_word = word
         self.data.update_statistic()
+        start_time = time.time()  # get the current time
         while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
                 out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
@@ -168,10 +177,11 @@ class Agent():
                     self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
-                if counter == 10:
-                    break
-                else:
-                    counter += 1
+                counter += 1
+                current_time = time.time()  # get the current time
+                elapsed_time = current_time - start_time  # calculate elapsed time
+                if elapsed_time > 60:  # if more than 60 seconds have passed
+                    break  # exit the loop
             except ValueError as e:
                 out(e)
                 return

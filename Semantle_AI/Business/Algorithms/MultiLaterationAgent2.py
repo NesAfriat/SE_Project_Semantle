@@ -1,12 +1,10 @@
+import functools
 import random
 
 import numpy as np
-
 from Semantle_AI.Business.Agents.Data import GuessScore
 from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
-import cProfile
-
 
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
@@ -77,13 +75,14 @@ class SmartMultiLateration(Algorithm):
         s_array = np.array(s)
         words_list = s_array[:, 0]
         distances_lists = s_array[:, 1].astype(float)
-        dists = []
-        # calculating the distances in out model.s
-        for word_prime in words_list:
-            dists.append(self.data.get_distance_of_word(w, word_prime))
-        # converting the results list to array for numpy.s
+
+        # Use a list comprehension instead of a for loop and append
+        dists = [self.data.get_distance_of_word(w, word_prime) for word_prime in words_list]
+
+        # Convert the results list to an array for numpy.
         distances_w_word_primes = np.array(dists)
-        # summing the result.
+
+        # Compute the total sum using numpy.
         total_sum = np.sum((distances_w_word_primes - distances_lists) ** 2)
         return (1 / len(s)) * np.sqrt(total_sum)
 
