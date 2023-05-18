@@ -22,26 +22,26 @@ def main_func():
 if __name__ == '__main__':
 
     # Configuring the sProfile
-    # profiler = cProfile.Profile()
-    # profiler.enable()
+    profiler = cProfile.Profile()
+    profiler.enable()
 
     main_func()
 
     # made for saving the stats from cprofile
-    # profiler.disable()
-    #
-    # stats_file = 'profile_results.pstat'
-    # stats = pstats.Stats(profiler).sort_stats('cumtime')
-    # stats.dump_stats(stats_file)
-    #
-    # p = pstats.Stats(stats_file)
-    # rows = []
-    # for func, info in p.stats.items():
-    #
-    #     current_row = []
-    #     current_row.append(func)  # function name
-    #     current_row.extend(info[:4])  # cc, nc, tt, ct
-    #     rows.append(current_row)
-    #
-    # df = pd.DataFrame(rows, columns=['function', 'callsCount', 'numCalls', 'totalTime', 'cumtime'])
-    # df.to_excel('profile_results.xlsx')
+    profiler.disable()
+
+    stats_file = 'profile_results.pstat'
+    stats = pstats.Stats(profiler).sort_stats('cumtime')
+    stats.dump_stats(stats_file)
+
+    p = pstats.Stats(stats_file)
+    rows = []
+    for func, info in p.stats.items():
+
+        current_row = []
+        current_row.append(func)  # function name
+        current_row.extend(info[:4])  # cc, nc, tt, ct
+        rows.append(current_row)
+
+    df = pd.DataFrame(rows, columns=['function', 'callsCount', 'numCalls', 'totalTime', 'cumtime'])
+    df.to_excel('profile_results.xlsx')

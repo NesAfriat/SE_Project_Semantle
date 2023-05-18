@@ -34,7 +34,16 @@ def replace_subdir(path, old_subdir, new_subdir):
     return updated_path
 
 
-def load_from_file(name, word_list=None):
+def load_to_dict(filename):
+    result_dict = {}
+    with open(filename, 'r') as file:
+        for line in file:
+            key, value = line.strip().split("$")  # split line into key and value
+            result_dict[key] = float(value)  # convert value to float and store in dictionary
+    return result_dict
+
+
+def load_from_file(name, word_list=None, dist_method=None):
     print("\n\n======================  Model loading ======================")
     if "Tests" in os.getcwd():
         path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
@@ -44,22 +53,37 @@ def load_from_file(name, word_list=None):
     if not existing_model(path):
         raise ValueError(f"file not fount in dir : {path}" +
                          ",\n Please make sure the model exists in folder before starting the program...")
-    else:
-        print(">>Loading model.")
-        my_model = KeyedVectors.load_word2vec_format(path, binary=True)
-        print(">>model loaded successfully!")
-        print(">>loading vocabulary")
-        # getting the vocabulary
-        vocab = set(my_model.key_to_index)
-        print(">>filtering words")
-        # filter only if given path to words
-        model_vocab = filter_vocab(vocab, word_list)
-        print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
+
+    print(">>Loading model.")
+    my_model = KeyedVectors.load_word2vec_format(path, binary=True)
+    print(">>model loaded successfully!")
+    print(">>loading vocabulary")
+    # getting the vocabulary
+    vocab = set(my_model.key_to_index)
+    print(">>filtering words")
+    # filter only if given path to words
+    model_vocab = filter_vocab(vocab, word_list)
+    print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)}")
+    if dist_method is not None:
+        print(">>loading the distances dictionary")
+        if "Tests" in os.getcwd():
+            path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
+            path = os.path.join(path, "Business", "Model", f"{name}_{dist_method}.txt")
+        else:
+            path = os.path.join(os.getcwd(), "Business", "Model", f"{name}_{dist_method}.txt")
+
+        if os.path.exists(path):
+            distances = load_to_dict(path)
+        else:
+            distances = dict()
         print(">>done!")
-    return Model(my_model, model_vocab), copy.copy(model_vocab)
+        return Model(my_model, model_vocab, distances), copy.copy(model_vocab)
+    else:
+        print(">>done!")
+        return Model(my_model, model_vocab, dict()), copy.copy(model_vocab)
 
 
-def load_from_gensim(name, word_list=None):
+def load_from_gensim(name, word_list=None, dist_method=None):
     print("\n\n======================  Model loading ======================")
     print(">>Loading model.")
     my_model = api.load(name)
@@ -71,6 +95,20 @@ def load_from_gensim(name, word_list=None):
     # filter only if given path to words
     model_vocab = filter_vocab(vocab, word_list)
     print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
-    print(">>done!")
-    return Model(my_model, model_vocab), model_vocab
+    if dist_method is not None:
+        print(">>loading the distances dictionary")
+        if "Tests" in os.getcwd():
+            path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
+            path = os.path.join(path, "Business", "Model", f"{name}_{dist_method}.txt")
+        else:
+            path = os.path.join(os.getcwd(), "Business", "Model", f"{name}_{dist_method}.txt")
 
+        if os.path.exists(path):
+            distances = load_to_dict(path)
+        else:
+            distances = dict()
+        print(">>done!")
+        return Model(my_model, model_vocab, distances), copy.copy(model_vocab)
+    else:
+        print(">>done!")
+        return Model(my_model, model_vocab, dict()), copy.copy(model_vocab)

@@ -5,15 +5,17 @@ from gensim.models import KeyedVectors
 
 
 class Model:
-    def __init__(self, model: KeyedVectors, vocab):
+    def __init__(self, model: KeyedVectors, vocab, dist_dict: dict):
         self.model = model
         self.vocab = vocab
         self.dist_func = None
+        self.distances_dict = dist_dict
         self.error = 1
 
     def get_distance_of_word(self, word1, word2):
-        ans = self.dist_func(self.model[word1], self.model[word2])
-        return self.error * ans
+        if len(self.distances_dict) > 0:
+            return self.error * self.distances_dict[f"{word1}{word2}"]
+        return self.error * self.dist_func(self.model[word1], self.model[word2])
 
     def setError(self, err):
         self.error = err
@@ -32,6 +34,7 @@ class Model:
 
     def get_vocab(self):
         return self.vocab
+
     def get_model(self):
         return self.model
 

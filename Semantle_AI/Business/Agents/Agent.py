@@ -92,10 +92,10 @@ class Agent():
             self.data.state.append(self.data.last_word, self.data.last_score)
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
-        # counter = 0
+        counter = 0
         self.init()
         self.data.state.append(self.data.last_word, self.data.last_score)
-        while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score* self.host.error) != 0:
+        while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score * self.host.error) != 0:
             try:
                 if self.data.last_score == -2:
                     self.guess_n_random_word(1)
@@ -107,10 +107,10 @@ class Agent():
                 self.data.last_word = word
                 self.data.update_statistic()
                 self.data.state.append(self.data.last_word, self.data.last_score)
-                # if counter == 10:
-                #     break
-                # else:
-                #     counter += 1
+                if counter == 10:
+                    break
+                else:
+                    counter += 1
             except ValueError as e:
                 out(e)
                 return
@@ -151,7 +151,7 @@ class Agent():
         self.host.select_word_and_start_game(out)
         out(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
-        # counter = 0
+        counter = 0
         while self.data.last_score == -2:
             word = self.get_next_word()
             self.data.last_score = round(self.host.check_word(word), 5)
@@ -168,10 +168,10 @@ class Agent():
                     self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
-                # if counter == 10:
-                #     break
-                # else:
-                #     counter += 1
+                if counter == 10:
+                    break
+                else:
+                    counter += 1
             except ValueError as e:
                 out(e)
                 return
@@ -200,16 +200,12 @@ class Agent():
             self.data.add_to_dict(guess, dist)
             self.data.update_statistic()
 
-
-
     def guess_top_word(self):
         word = random.choice(self.data.words_heap)
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
         self.data.last_score = dist
         self.data.last_word = word.word
-
-
 
     def guess_n_queue_word(self, n):
         for i in range(n):
