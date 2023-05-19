@@ -35,7 +35,7 @@ def save_word_combinations(kv_model, vocabulary, model_name):
     with open(output_file, 'x') as file:
         for word1 in vocabulary:
             for word2 in vocabulary:
-                distance = get_distance_of_word(kv_model.model, word1, word2)
+                distance = get_distance_of_word(kv_model, word1, word2)
                 line = f"{word1}{word2}${distance:.6f}\n"
                 file.write(line)
 
