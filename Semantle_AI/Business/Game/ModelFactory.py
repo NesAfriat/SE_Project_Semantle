@@ -112,7 +112,7 @@ def load_from_file(name, word_list=None, dist_method=None):
         else:
             print(">>Loading the distances and vectors dictionaries")
             distances, vectors = load_to_dict(dist_path, vec_path)
-            model_vocab = vectors.keys()
+            model_vocab = set(vectors.keys())
             print(">>done!")
 
         return Model(distances, vectors, model_vocab)
@@ -155,7 +155,7 @@ def load_from_gensim(name, word_list=None, dist_method=None):
         else:
             print(">>Loading the distances and vectors dictionaries")
             distances, vectors = load_to_dict(dist_path, vec_path)
-            model_vocab = vectors.keys()
+            model_vocab = set(vectors.keys())
             print(">>done!")
 
         return Model(distances, vectors, model_vocab)

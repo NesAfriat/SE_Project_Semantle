@@ -2,7 +2,7 @@ from random import choice
 import math
 import numpy as np
 from Semantle_AI.Business.Hosts.Host import Host
-import Semantle_AI.Business.ModelFactory as MF
+import Semantle_AI.Business.Game.ModelFactory as MF
 
 WORD2VEC = "Google_Word2Vec.bin"
 WORDS_LIST = "words.txt"

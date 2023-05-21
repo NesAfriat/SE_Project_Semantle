@@ -32,7 +32,7 @@ class AgentBuilder():
         self.agent.set_id(id)
 
     def with_model(self, model_factory, model_name, dist_func_name):
-        model, vocab = model_factory.get_model(dict_model.get(model_name), dist_func_name)
+        model = model_factory.get_model(dict_model.get(model_name), dist_func_name)
         self.agent.set_model(model)
 
     def with_algo(self, algo):

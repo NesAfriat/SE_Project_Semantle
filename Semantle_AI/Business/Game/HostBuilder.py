@@ -17,7 +17,8 @@ class HostBuilder():
                 self.host = OfflineHost()
 
     def with_model(self, model_name, dist_func_name):
-        model, vocab = ModelFactory.get_model(dict_model.get(model_name),dist_func_name)
+        model = ModelFactory.get_model(dict_model.get(model_name), dist_func_name)
+        vocab = model.vocab
         self.host.set_model(model, vocab)
 
     def with_distance_function(self, dist_func):

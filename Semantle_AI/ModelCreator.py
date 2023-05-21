@@ -78,18 +78,18 @@ for dist_function_name, dist_function in dist_dict.items():
         if i == 3:
             # handle from file
             model_path = os.path.join(os.getcwd(), "Business", "Model", model_name)
-            my_model = KeyedVectors.load_word2vec_format(model_path, binary=True)
-            model_vocab = filter_vocab(set(my_model.key_to_index), WORDS_LIST)
-            path = os.path.join(os.getcwd(), "Business", "Model")
-            dist_path = os.path.join(path, f"{model_name}_{dist_function_name}.txt")
-            vec_path = os.path.join(path, f"{model_name}_vectors.txt")
-            distances, vectors = mc.save_word_combinations(my_model, model_vocab, model_name, dist_path, vec_path)
+            # my_model = KeyedVectors.load_word2vec_format(model_path, binary=True)
+            # model_vocab = filter_vocab(set(my_model.key_to_index), WORDS_LIST)
+            # path = os.path.join(os.getcwd(), "Business", "Model")
+            # dist_path = os.path.join(path, f"{model_name}_{dist_function_name}.txt")
+            # vec_path = os.path.join(path, f"{model_name}_vectors.txt")
+            # distances, vectors = mc.save_word_combinations(my_model, model_vocab, model_name, dist_path, vec_path)
 
         else:
             path = os.path.join(os.getcwd(), "Business", "Model")
-            dist_path = os.path.join(path, f"{model_name}_{dist_function_name}.txt")
-            vec_path = os.path.join(path, f"{model_name}_vectors.txt")
-            # load from gensim
-            my_model = api.load(model_name)
-            model_vocab = filter_vocab(set(my_model.key_to_index), WORDS_LIST)
-            distances, vectors = mc.save_word_combinations(my_model, model_vocab, model_name, dist_path, vec_path)
+            # dist_path = os.path.join(path, f"{model_name}_{dist_function_name}.txt")
+            # vec_path = os.path.join(path, f"{model_name}_vectors.txt")
+            # # load from gensim
+            # my_model = api.load(model_name)
+            # model_vocab = filter_vocab(set(my_model.key_to_index), WORDS_LIST)
+            # distances, vectors = mc.save_word_combinations(my_model, model_vocab, model_name, dist_path, vec_path)
