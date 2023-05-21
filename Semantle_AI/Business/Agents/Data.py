@@ -45,7 +45,8 @@ class Data:
         # initialize the max heap. All weights are 0.
         self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
-        self.normCache = dict()
+        self.normCache = OrderedDict()
+        self.entropyCache = OrderedDict()
 
     def add_state_norm(self, state_lis, norm):
         key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
@@ -129,7 +130,8 @@ class Data:
         self.last_score = -1
         self.last_word = None
         self.state.reset()
-        self.normCache = dict()
+        self.normCache = OrderedDict()
+        self.entropyCache = OrderedDict()
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)

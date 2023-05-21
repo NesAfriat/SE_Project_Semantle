@@ -16,7 +16,7 @@ class model_tests(unittest.TestCase):
 
     def test_load_model_semantle(self):
         model, vocab = None, None
-        model, vocab = load_from_file("Google_Word2Vec.bin")
+        model, vocab = load_from_file(name="Google_Word2Vec.bin", dist_method="euclid")
         self.assertTrue(model is not None)
         self.assertTrue(vocab is not None)
         print(vocab)

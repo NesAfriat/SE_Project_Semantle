@@ -5,11 +5,11 @@ from gensim.models import KeyedVectors
 
 
 class Model:
-    def __init__(self, model: KeyedVectors, vocab, dist_dict: dict):
-        self.model = model
-        self.vocab = vocab
+    def __init__(self, distances: dict, vectors: dict, model_vocab: set):
+        self.model = vectors
+        self.vocab = model_vocab
         self.dist_func = None
-        self.distances_dict = dist_dict
+        self.distances_dict = distances
         self.error = 1
 
     def get_distance_of_word(self, word1, word2):
@@ -27,7 +27,10 @@ class Model:
         self.dist_func = function
 
     def get_most_similar_by_vec(self, vec):
-        return self.model.most_similar(positive=vec, topn=1)
+        try:
+            return self.model[vec]
+        except:
+            return self.model[list(self.vocab)[0]]
 
     def get_word_vec(self, word):
         return self.model[word]
@@ -39,28 +42,4 @@ class Model:
         return self.model
 
     def get_number_of_dim(self):
-        return self.model.vector_size
-
-    def models_vocab_intersection(self, model2) -> set:
-        vocab1 = set(self.model.key_to_index)
-        vocab2 = set(model2.model.key_to_index)
-
-        return vocab1 & vocab2
-
-    def get_models_error(self, model2):
-        vocab = self.models_vocab_intersection(model2)
-        errors_sum = 0
-        error_count = 0
-        while error_count < len(vocab):
-            word1 = random.sample(vocab, 1)[0]
-            word2 = random.sample(vocab, 1)[0]
-            while word1 == word2:
-                word2 = random.sample(vocab, 1)[0]
-            dis1 = self.get_distance_of_word(word1, word2)
-            dis2 = model2.get_distance_of_word(word1, word2)
-            error = abs(dis1-dis2)
-            print("error num -", error_count, " is ", error)
-            errors_sum += error
-            error_count += 1
-        return errors_sum/error_count
-
+        return len(self.model[list(self.vocab)[0]])

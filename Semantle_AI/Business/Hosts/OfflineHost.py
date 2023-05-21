@@ -55,7 +55,7 @@ class OfflineHost(Host):
         return self.model.get_word_vec(word)
 
     def getGuessVec(self, w):
-        return self.model.model.distance(w, self.secret_word)
+        return self.model.get_distance_of_word(w, self.secret_word)
 
     def getWordsVec(self, w1, w2):
         return np.subtract(self.model.get_word_vec(w1), self.model.get_word_vec(w2))

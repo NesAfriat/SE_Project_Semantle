@@ -1,4 +1,6 @@
 from collections import OrderedDict
+import time
+
 import Semantle_AI.Business.Reports.ReportsGenerator as Reporter
 import Semantle_AI.Business.Algorithms as Alg
 from Semantle_AI.Business import MethodDistances
@@ -199,8 +201,11 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
 
         # setting the secret word in each session.
         agent.set_secret_word(word)
+        start_time = time.time()
         agent.start_play(lambda args: args)
-
+        current_time = time.time()  # get the current time
+        elapsed_time = current_time - start_time  # calculate elapsed time
+        print(f"The number of minuted for this game => {elapsed_time/60}")
         # after run finished, collect the data.
         statistic = agent.get_statistics()
 
