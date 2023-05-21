@@ -24,12 +24,12 @@ class SmartMultiLateration(Algorithm):
         self.vector_value_forms = dict([(NORM2, self.mse), (NORM1, self.sum_vec), (PROB, self.prob), (VOI, self.voi)])
         self.error_calc_method = vec_calc_method
         self.vector_value_method = vec_value_method
-        self.using_entropy = not(self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
+        self.using_entropy = not (self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def set_error_method(self, method_name):
         self.error_calc_method = method_name
-        self.using_entropy = not(self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
+        self.using_entropy = not (self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
 
     def set_vector_calculation_method(self, method_name):
         self.vector_value_method = method_name
@@ -97,7 +97,11 @@ class SmartMultiLateration(Algorithm):
         return np.sum(np.exp(-np.array([self.e_w_s(word, s) for word in words])))
 
     def p_w_s(self, w, s):
-        return self.f_w_s(w, s) / self.norm_factor(s)
+        norm_factor = self.data.get_state_norm(s)
+        if norm_factor == -1:
+            norm_factor = self.norm_factor(s)
+            self.data.add_state_norm(s, norm_factor)
+        return self.f_w_s(w, s) / norm_factor
 
     def s_w_w(self, s, w, w_t):
         # adding new tuple of word-dist to the state.
@@ -119,6 +123,14 @@ class SmartMultiLateration(Algorithm):
             return self.ret_zero(word)
 
     def E(self, s):
+        entropy = self.data.get_state_norm(s)
+        if entropy == -1:
+            entropy = self.calc_entropy(s)
+            self.data.add_state_entropy(s, entropy)
+
+        return entropy
+
+    def calc_entropy(self, s):
         if not s:
             raise ValueError("State (s) cannot be an empty list")
         # converting to array for numpy.
@@ -201,8 +213,8 @@ class SmartMultiLateration(Algorithm):
             probability = random.random()
             sum = 0
             word_index = 0
-            while word_index < len(word_heap)-1:
-                if word_heap[word_index]+sum <= probability:
+            while word_index < len(word_heap) - 1:
+                if word_heap[word_index] + sum <= probability:
                     word_index += 1
                     sum += word_heap[word_index]
                 else:
@@ -242,6 +254,3 @@ class SmartMultiLateration(Algorithm):
 
         # choose the next word guess from the updated list.
         return self.choose_next(self.data.words_heap)
-
-
-

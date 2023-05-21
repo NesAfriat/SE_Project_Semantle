@@ -111,7 +111,6 @@ class Agent():
                 counter += 1
                 current_time = time.time()  # get the current time
                 elapsed_time = current_time - start_time  # calculate elapsed time
-
                 if elapsed_time >= 60:  # if more than 60 seconds have passed
                     print(f"counter => {counter}")
                     break  # exit the loop

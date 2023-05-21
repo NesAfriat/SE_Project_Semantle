@@ -16,6 +16,8 @@ class Data:
         self.copy_vocab = None
         self.is_priority = False
         self.state = State()
+        self.normCache = OrderedDict()
+        self.entropyCache = OrderedDict()
 
     def add_to_dict(self, word, distance):
         if word not in self.guesses.keys():
@@ -43,6 +45,57 @@ class Data:
         # initialize the max heap. All weights are 0.
         self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
         self.copy_vocab = copy(self.remain_words)
+        self.normCache = dict()
+
+    def add_state_norm(self, state_lis, norm):
+        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+        self.normCache[key] = norm  # Add the state to the dictionary
+        self.update_state_norm()  # Check and remove states that don't meet the criteria
+
+    def add_state_entropy(self, state_lis, entropy):
+        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+        self.entropyCache[key] = entropy  # Add the state to the dictionary
+        self.update_state_entropy()  # Check and remove states that don't meet the criteria
+
+    def update_state_norm(self):
+        current_length = None
+        # Process keys
+        for key in list(self.normCache.keys()):
+            length, _ = key.split('_')  # Split the key into length and last word
+            length = int(length)  # Convert length to integer
+            if current_length is None:
+                current_length = length
+            if length < current_length - 2 or length > current_length:
+                del self.normCache[key]  # Remove this state
+            else:
+                return
+
+    def update_state_entropy(self):
+        current_length = None
+        # Process keys
+        for key in list(self.entropyCache.keys()):
+            length, _ = key.split('_')  # Split the key into length and last word
+            length = int(length)  # Convert length to integer
+            if current_length is None:
+                current_length = length
+            if length < current_length - 2 or length > current_length:
+                del self.entropyCache[key]  # Remove this state
+            else:
+                return
+
+    def get_state_norm(self, state_lis):
+        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+        if key in self.normCache:
+            return self.normCache.get(key)
+        else:
+            return -1
+
+    def get_state_entropy(self, state_lis):
+        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+        if key in self.entropyCache:
+            return self.entropyCache.get(key)
+        else:
+            return -1
 
     def get_most_similar(self, vec):
         return self.model.get_most_similar_by_vec(vec)
@@ -76,6 +129,7 @@ class Data:
         self.last_score = -1
         self.last_word = None
         self.state.reset()
+        self.normCache = dict()
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
@@ -120,7 +174,6 @@ class State:
     def __init__(self):
         self.lis = list()
         self.sum_till_now = 0
-        self.normCache = dict()
 
     def reset(self):
         self.lis = list()
@@ -128,6 +181,14 @@ class State:
 
     def append(self, word, dist):
         self.lis.append((word, dist))
+
+    def __eq__(self, other):
+        if isinstance(other, State):
+            return self.lis == other.lis and self.sum_till_now == other.sum_till_now
+        return False
+
+    def __hash__(self):
+        return hash(tuple(self.lis)) ^ hash(self.sum_till_now)
 
 
 class GuessScore:
