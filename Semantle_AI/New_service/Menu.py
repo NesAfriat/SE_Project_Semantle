@@ -23,7 +23,7 @@ class Menu:
     def build_games(self):
         if "Tests" in os.getcwd():
             path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
-            path = os.path.join(path, "New_Service",  "configurations.json")
+            path = os.path.join(path, "New_Service", "configurations.json")
         else:
             path = os.path.join(os.getcwd(), "New_Service", "configurations.json")
 
@@ -59,7 +59,6 @@ class Menu:
 
     def reports_menu(self):
         pass  # import graph from path
-
 
 
 def replace_subdir(path, old_subdir, new_subdir):

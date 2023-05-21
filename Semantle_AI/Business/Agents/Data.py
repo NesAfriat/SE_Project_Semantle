@@ -120,6 +120,7 @@ class State:
     def __init__(self):
         self.lis = list()
         self.sum_till_now = 0
+        self.normCache = dict()
 
     def reset(self):
         self.lis = list()

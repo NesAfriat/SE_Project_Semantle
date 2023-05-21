@@ -28,15 +28,17 @@ def get_distance_of_word(kv_model, w1, w2):
     return dist_func(kv_model[w1], kv_model[w2])
 
 
-def save_word_combinations(kv_model, vocabulary, model_name):
+def save_word_combinations(kv_model, vocabulary, model_name, path):
     print(f"Word combinations starts for model  {model_name}")
     vocabulary = list(vocabulary)
-    output_file = f"{model_name}_{dist_func_name}.txt"
-    with open(output_file, 'x') as file:
+    # If file exists, delete it
+    if os.path.isfile(path):
+        os.remove(path)
+    with open(path, 'x') as file:
         for word1 in vocabulary:
             for word2 in vocabulary:
                 distance = get_distance_of_word(kv_model, word1, word2)
                 line = f"{word1}{word2}${distance:.6f}\n"
                 file.write(line)
 
-    print(f"Word combinations and distances saved to {output_file}")
+    print(f"Word combinations and distances saved to {path}")

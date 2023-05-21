@@ -43,6 +43,20 @@ def load_to_dict(filename):
     return result_dict
 
 
+def is_file_empty(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            if len(content.strip()) == 0:
+                return True
+            else:
+                return False
+    except FileNotFoundError:
+        print(f"The file '{file_path}' does not exist.")
+    except IOError:
+        print(f"An error occurred while reading the file '{file_path}'.")
+
+
 def load_from_file(name, word_list=None, dist_method=None):
     print("\n\n======================  Model loading ======================")
     if "Tests" in os.getcwd():
@@ -71,9 +85,8 @@ def load_from_file(name, word_list=None, dist_method=None):
             path = os.path.join(path, "Business", "Model", f"{name}_{dist_method}.txt")
         else:
             path = os.path.join(os.getcwd(), "Business", "Model", f"{name}_{dist_method}.txt")
-
-        if not os.path.exists(path):
-            mc.save_word_combinations(my_model, vocab, name)
+        if not os.path.exists(path) or is_file_empty(path):
+            mc.save_word_combinations(my_model, vocab, name, path)
         distances = load_to_dict(path)
         print(">>done!")
         return Model(my_model, model_vocab, distances), copy.copy(model_vocab)
@@ -101,8 +114,8 @@ def load_from_gensim(name, word_list=None, dist_method=None):
             path = os.path.join(path, "Business", "Model", f"{name}_{dist_method}.txt")
         else:
             path = os.path.join(os.getcwd(), "Business", "Model", f"{name}_{dist_method}.txt")
-        if not os.path.exists(path):
-            mc.save_word_combinations(my_model, vocab, name)
+        if not os.path.exists(path) or is_file_empty(path):
+            mc.save_word_combinations(my_model, vocab, name, path)
         distances = load_to_dict(path)
         print(">>done!")
         return Model(my_model, model_vocab, distances), copy.copy(model_vocab)
