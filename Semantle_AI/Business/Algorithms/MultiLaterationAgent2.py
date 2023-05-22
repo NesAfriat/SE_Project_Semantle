@@ -209,14 +209,14 @@ class SmartMultiLateration(Algorithm):
         # sanity check
         if len(word_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
-        if self.error_calc_method == PROB:
+        if self.vector_value_method == PROB:
             probability = random.random()
             sum = 0
             word_index = 0
             while word_index < len(word_heap) - 1:
-                if word_heap[word_index] + sum <= probability:
+                if word_heap[word_index].weight + sum <= probability:
                     word_index += 1
-                    sum += word_heap[word_index]
+                    sum += word_heap[word_index].weight
                 else:
                     break
             next_word = word_heap[word_index]
