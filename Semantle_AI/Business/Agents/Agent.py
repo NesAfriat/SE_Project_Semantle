@@ -89,69 +89,24 @@ class Agent():
         else:
             self.host.select_word_and_start_game(out)
             self.data.update_statistic()
-            self.data.state.append(self.data.last_word, self.data.last_score)
+            self.data.update_state_map(self.data.last_word, self.data.last_score)
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
-        self.init()
-        self.data.state.append(self.data.last_word, self.data.last_score)
-        # counter = 0
-        # start_time = time.time()  # get the current time
+        counter = self.init()
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score * self.host.error) != 0:
             try:
-                if self.data.last_score == -2:
-                    self.guess_n_random_word(1)
-                else:
-                    out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
-                self.add_to_list(self.data.last_word, self.data.last_score)
                 word = self.guess_word()
-                self.data.last_score = round(self.host.check_word(word), 5)
+                self.data.last_score = round(self.host.check_word(word), 6)
                 self.data.last_word = word
                 self.data.update_statistic()
-                self.data.state.append(self.data.last_word, self.data.last_score)
-                # counter += 1
-                # current_time = time.time()  # get the current time
-                # elapsed_time = current_time - start_time  # calculate elapsed time
-                # if elapsed_time >= 60:  # if more than 60 seconds have passed
-                #     print(f"counter => {counter}")
-                #     break  # exit the loop
+                self.add_to_list(self.data.last_word, self.data.last_score)
+                self.data.update_state_map(self.data.last_word, self.data.last_score)
+                out(f"Guess number {counter}:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
+                counter += 1
             except ValueError as e:
                 out(e)
                 return
-        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.")
-        out(f"\nGame over.\n"
-            f"you won!!\n\n\n\n")
-
-    def start_play_with_priority(self, out):
-        self.host.select_word_and_start_game(out)
-        out(f"secret word is : {self.host.getWord()}")
-        self.data.last_score = -2
-        self.data.update_statistic()
-        self.init()
-        # counter = 0
-        # start_time = time.time()  # get the current time
-        while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
-            try:
-                if self.data.last_score == -2:
-                    self.guess_top_word()
-                else:
-                    out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
-                self.add_to_list(self.data.last_word, self.data.last_score)
-                word = self.guess_word()
-                self.data.last_score = round(self.host.check_word(word), 5)
-                self.data.last_word = word
-                self.data.update_statistic()
-                # counter += 1
-                # current_time = time.time()  # get the current time
-                # elapsed_time = current_time - start_time  # calculate elapsed time
-                #
-                # if elapsed_time > 60:  # if more than 60 seconds have passed
-                #     break  # exit the loop
-            except ValueError as e:
-                out(e)
-                return
-        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.\nYou took "
-            f"{len(self.data.statistics)} guesses")
-        out(f"you won!!\n\n\n\n")
+        out(f"\n\nyou won!!\nThe secret word iss: {self.data.last_word}.\nYou took => {counter} guesses")
 
     def start_manual(self, out):
         self.host.select_word_and_start_game(out)
@@ -163,11 +118,10 @@ class Agent():
             self.data.last_score = round(self.host.check_word(word), 5)
             self.data.last_word = word
         self.data.update_statistic()
-        # counter = 0
-        # start_time = time.time()  # get the current time
+        counter = 1
         while abs(self.data.last_score) != 1.0 and abs(self.data.last_score) != 0:
             try:
-                out(f"Next guessed word:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
+                out(f"Guess number {counter}:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 self.add_to_list(self.data.last_word, self.data.last_score)
                 word = self.get_next_word()
                 self.data.last_score = round(self.host.check_word(word), 5)
@@ -176,17 +130,11 @@ class Agent():
                     self.data.last_score = round(self.host.check_word(word), 5)
                 self.data.last_word = word
                 self.data.update_statistic()
-                # counter += 1
-                # current_time = time.time()  # get the current time
-                # elapsed_time = current_time - start_time  # calculate elapsed time
-                # if elapsed_time > 60:  # if more than 60 seconds have passed
-                #     break  # exit the loop
+                counter += 1
             except ValueError as e:
                 out(e)
                 return
-        out(f"Last guessed word is: {self.data.last_word}. This is the secret word.\nYou took "
-            f"{len(self.data.statistics)} guesses")
-        out(f"you won!!\n\n\n\n")
+        out(f"\n\nyou won!!\nThe secret word iss: {self.data.last_word}.\nYou took => {counter} guesses")
 
     def add_to_list(self, last_word, dist):
         self.data.add_to_dict(last_word, dist)
@@ -208,6 +156,10 @@ class Agent():
                 dist = self.host.check_word(guess)
             self.data.add_to_dict(guess, dist)
             self.data.update_statistic()
+            self.data.update_state_map(guess, dist)
+        if n > 0:
+            return n+1
+        return 1
 
     def guess_top_word(self):
         word = random.choice(self.data.words_heap)
@@ -215,11 +167,16 @@ class Agent():
         self.data.add_to_dict(word.word, dist)
         self.data.last_score = dist
         self.data.last_word = word.word
+        self.data.words_heap.remove(word)
 
     def guess_n_queue_word(self, n):
         for i in range(n):
             self.guess_top_word()
             self.data.update_statistic()
+            self.data.update_state_map(self.data.last_word, self.data.last_score)
+        if n > 0:
+            return n + 1
+        return 1
 
     def inc_num_of_guesses(self):
         self.num_og_guesses = self.num_og_guesses + 1

@@ -64,7 +64,7 @@ def calculate_graph(runs_number, agent: Agent):
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
-            agent.start_play(lambda args: args)
+            agent.start_play(lambda args: print(args))
 
             # after run finished, collect the data.
             statistics = agent.get_statistics()
@@ -109,7 +109,7 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
-            agent.start_play(lambda args: args)
+            agent.start_play(lambda args: print(args))
 
             # after run finished, collect the data.
             statistic = agent.get_statistics()
@@ -156,7 +156,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
                 # setting the secret word in each session.
                 agent.set_secret_word(word)
 
-                agent.start_play(lambda args: args)
+                agent.start_play(lambda args: print(args))
 
                 # after run finished, collect the data.
                 statistic = agent.get_statistics()
@@ -202,7 +202,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
         # setting the secret word in each session.
         agent.set_secret_word(word)
         start_time = time.time()
-        agent.start_play(lambda args: args)
+        agent.start_play(lambda args: print(args))
         current_time = time.time()  # get the current time
         elapsed_time = current_time - start_time  # calculate elapsed time
         print(f"The number of minuted for this game => {elapsed_time/60}")

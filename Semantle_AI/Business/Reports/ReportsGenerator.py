@@ -16,7 +16,7 @@ def save_guess_data(game_number, guess_num, next_guess_num_options):
     guess = GuessData(guess_num, next_guess_num_options)
     if game_number not in game_guesses:
         game_guesses[game_number] = list()
-    game_guesses[game_number].append(guess)
+    game_guesses[game_number].update(guess)
 
 
 def save_game_data(game_number, agent_model_name, host_model_name, algorithm_name, distance_method):

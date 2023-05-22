@@ -9,10 +9,10 @@ class Calculator:
 
     def add_result(self, num_of_guess, remain_words):
         if num_of_guess in self.results:
-            self.results[num_of_guess].append(remain_words)
+            self.results[num_of_guess].update(remain_words)
         else:
             self.results[num_of_guess] = list()
-            self.results[num_of_guess].append(remain_words)
+            self.results[num_of_guess].update(remain_words)
 
     def add_noise_result(self, noise, num_of_guess, word):
         if noise not in self.results:
