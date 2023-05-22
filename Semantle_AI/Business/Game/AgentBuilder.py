@@ -26,7 +26,7 @@ class AgentBuilder():
         if create:
             print(agent_type, "created")
         else:
-            raise ("Agent model set was failed ... bug accure")
+            raise ValueError("Agent model set was failed ... bug accure")
 
     def with_id(self, id):
         self.agent.set_id(id)

@@ -107,6 +107,7 @@ def load_from_file(name, word_list=None, dist_method=None):
             print(">>Saving the nex model as vectors and distances.")
             # After loading the model, save the data for next times.
             distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path)
+            del my_model,model_vocab
             print(">>done!")
         # If the data exists, load it.
         else:
@@ -150,6 +151,7 @@ def load_from_gensim(name, word_list=None, dist_method=None):
             print(">>Saving the nex model as vectors and distances.")
             # After loading the model, save the data for next times.
             distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path)
+            del my_model, model_vocab
             print(">>done!")
         # If the data exists, load it.
         else:
