@@ -107,7 +107,6 @@ class SmartMultiLateration(Algorithm):
         # adding new tuple of word-dist to the state.
         new_state = State()
         new_state.lis = [(word, dist) for word, dist in s.lis if word != w]
-        del s.words_new_sum[w]
         new_state.words_new_sum = s.words_new_sum
         d_w_w = self.data.get_distance_of_word(w, w_t)
         new_state.lis.append((w, d_w_w))
@@ -166,7 +165,7 @@ class SmartMultiLateration(Algorithm):
         voi_val = self.E(s) - self.E_s_w(s, item.word)
 
         # update the weight of the item
-        self.data.words_heap.change_weight(item=item, value=voi_val)
+        self.data.words_heap.change_weight(item=item, value=abs(voi_val))
 
     def calculate_new_weight(self, weight, val):
         if self.vector_value_method == NORM2:
