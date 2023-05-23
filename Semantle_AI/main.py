@@ -21,7 +21,7 @@ def main_func():
 
 if __name__ == '__main__':
 
-    run_profiler = False
+    run_profiler = True
     if run_profiler:
         # Configuring the sProfile
         profiler = cProfile.Profile()

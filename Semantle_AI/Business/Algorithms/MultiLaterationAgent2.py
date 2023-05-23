@@ -1,11 +1,12 @@
-import functools
 import random
 
 import numpy as np
-from Semantle_AI.Business.Agents.Data import GuessScore
+from Semantle_AI.Business.Container.GuessScore import GuessScore
+from Semantle_AI.Business.Container.MyItem import MyItem
 from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
-from Semantle_AI.Business.Agents.Data import State
+from Semantle_AI.Business.Container.SortedList import SortedList
+from Semantle_AI.Business.Container.State import State
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
 BRUTE_FORCE = "Brute_force"
@@ -106,6 +107,7 @@ class SmartMultiLateration(Algorithm):
         # adding new tuple of word-dist to the state.
         new_state = State()
         new_state.lis = [(word, dist) for word, dist in s.lis if word != w]
+        del s.words_new_sum[w]
         new_state.words_new_sum = s.words_new_sum
         d_w_w = self.data.get_distance_of_word(w, w_t)
         new_state.lis.append((w, d_w_w))
@@ -159,17 +161,12 @@ class SmartMultiLateration(Algorithm):
             del s_w_w_prime
         return entropy_sum
 
-    def voi(self, s: State, item):
+    def voi(self, s: State, item: MyItem):
         # calculating the new weight to be the difference between E(s) to E(s,w) and updating the weight on the list.
         voi_val = self.E(s) - self.E_s_w(s, item.word)
-        # remove the current item from the sorted list
-        self.data.words_heap.remove(item)
 
         # update the weight of the item
-        item.weight = abs(voi_val)
-
-        # insert the item back into the sorted list with its new weight
-        self.data.words_heap.add(item)
+        self.data.words_heap.change_weight(item=item, value=voi_val)
 
     def calculate_new_weight(self, weight, val):
         if self.vector_value_method == NORM2:
@@ -177,17 +174,11 @@ class SmartMultiLateration(Algorithm):
         elif self.vector_value_method == NORM1:
             return self.norm_i(1, weight, val)
 
-    def old_calculation(self, item, val):
-
-        # remove the current item from the sorted list
-        self.data.words_heap.remove(item)
+    def old_calculation(self, item: MyItem, val):
 
         # update the weight of the item
         new_weight = self.calculate_new_weight(item.weight, val)
-        item.weight = new_weight
-
-        # insert the item back into the sorted list with its new weight
-        self.data.words_heap.add(item)
+        self.data.words_heap.change_weight(item=item, value=new_weight)
 
     def new_calculation(self, item):
 
@@ -197,17 +188,12 @@ class SmartMultiLateration(Algorithm):
             self.voi(self.data.state, item)
 
     def prob(self, item):
-        # remove the current item from the sorted list
-        self.data.words_heap.remove(item)
 
         # update the weight of the item
         new_weight = self.p_w_s(item.word, self.data.state, isProb=True)
-        item.weight = new_weight
+        self.data.words_heap.change_weight(item=item, value=new_weight)
 
-        # insert the item back into the sorted list with its new weight
-        self.data.words_heap.add(item)
-
-    def choose_next(self, word_heap):
+    def choose_next(self, word_heap: SortedList):
         # sanity check
         if len(word_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
@@ -216,29 +202,26 @@ class SmartMultiLateration(Algorithm):
             sum = 0
             word_index = 0
             while word_index < len(word_heap) - 1:
-                if word_heap[word_index].weight + sum <= probability:
+                item = word_heap.get_by_index(word_index)
+                if item.weight + sum <= probability:
                     word_index += 1
-                    sum += word_heap[word_index].weight
+                    sum += item.weight
                 else:
-                    break
-            next_word = word_heap[word_index]
-            word_heap.remove(next_word)
-            self.data.state.words_new_sum.pop(next_word.word)
-            return next_word.word
+                    next_word = word_heap.remove(item)
+                    return next_word.word
+            item = word_heap.get_last_item()
+            return item
         else:
             # return the queue top.
             if self.error_calc_method != BRUTE_FORCE:
-                next_word = word_heap.pop(0)
+                next_word = word_heap.get_by_index(0)
             else:
-                next_word = random.choice(word_heap)
-                word_heap.remove(next_word)
-                self.data.state.words_new_sum.pop(next_word.word)
 
+                next_word = word_heap.remove(word_heap.pick_random())
             return next_word.word
 
     def calculate(self):
 
-        listed = list(self.data.words_heap)
         # Modify the items in the queue
         for item in self.data.words_heap:
 
@@ -257,5 +240,6 @@ class SmartMultiLateration(Algorithm):
                 # in case of the new improved methods.
                 self.new_calculation(item)
 
+        self.data.words_heap.sort()
         # choose the next word guess from the updated list.
         return self.choose_next(self.data.words_heap)

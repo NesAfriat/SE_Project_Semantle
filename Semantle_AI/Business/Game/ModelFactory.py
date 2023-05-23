@@ -1,9 +1,16 @@
 import copy
 import os
 from gensim.models import KeyedVectors
+
+from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Model.Model import Model
 import gensim.downloader as api
 import Semantle_AI.ModelCreator as mc
+
+dist_dict = {
+    "euclid": MethodDistances.euclid_function(),
+    "cosine": MethodDistances.cosine_function()
+}
 
 
 def existing_model(path):
@@ -106,7 +113,9 @@ def load_from_file(name, word_list=None, dist_method=None):
             print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)}")
             print(">>Saving the nex model as vectors and distances.")
             # After loading the model, save the data for next times.
-            distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path)
+
+            distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path,
+                                                           dist_dict[dist_method])
             del my_model, vocab
             print(">>done!")
         # If the data exists, load it.
@@ -150,7 +159,8 @@ def load_from_gensim(name, word_list=None, dist_method=None):
             print(f">>vocabulary is loaded, The number of words is: {len(model_vocab)} ")
             print(">>Saving the nex model as vectors and distances.")
             # After loading the model, save the data for next times.
-            distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path)
+            distances, vectors = mc.save_word_combinations(my_model, model_vocab, name, dist_path, vec_path,
+                                                           dist_dict[dist_method])
             del my_model, vocab
             print(">>done!")
         # If the data exists, load it.

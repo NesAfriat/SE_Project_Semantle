@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import Semantle_AI.Business.Reports.ReportsGenerator as Reporter
 import Semantle_AI.Business.Algorithms as Alg
 from Semantle_AI.Business import MethodDistances

@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import time
 
 import Semantle_AI.Business.Reports.ReportsGenerator as Reporter

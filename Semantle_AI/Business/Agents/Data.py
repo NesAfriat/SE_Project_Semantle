@@ -2,61 +2,15 @@ from copy import copy
 from collections import OrderedDict
 
 import numpy as np
-from sortedcontainers import SortedList
-
-
-# class made for the heap compare function that doesn't know how to compare tuple.
-class MyItem:
-    def __init__(self, word: str, weight: int):
-        self.word = word
-        self.error_vec = []
-        self.weight = weight
-
-    def __lt__(self, other):
-        return self.weight < other.weight or (self.weight == other.weight and self.word < other.word)
-
-    def __repr__(self):
-        return f'{self.word} ({self.weight})'
-
-    def __eq__(self, other):
-        if isinstance(other, MyItem):
-            return self.word == other.word and self.weight == other.weight
-        return False
-
-    def __hash__(self):
-        return hash((self.word, self.weight))
-
-
-class State:
-    def __init__(self):
-        self.lis = list()
-        self.words_new_sum = dict()
-
-    def reset(self):
-        self.lis = list()
-        self.words_new_sum = dict()
-
-    def update(self, word, dist):
-        self.lis.append((word, dist))
-
-    def __eq__(self, other):
-        if isinstance(other, State):
-            return self.lis == other.lis and self.words_new_sum == other.words_new_sum
-        return False
-
-    def __hash__(self):
-        return hash(tuple(self.lis))
-
-
-class GuessScore:
-    def __init__(self, word, score):
-        self.word = word
-        self.score = score
+from Semantle_AI.Business.Container.MyItem import MyItem
+from Semantle_AI.Business.Container.SortedList import SortedList
+from Semantle_AI.Business.Container.State import State
+from Semantle_AI.Business.Container.GuessScore import GuessScore
 
 
 class Data:
     def __init__(self):
-        self.words_heap = SortedList([])
+        self.words_heap = SortedList()
         self.guesses = dict()
         self.scores = []
         self.model = None
@@ -83,6 +37,7 @@ class Data:
             new_weight, new_sum = self.ews(item.word, self.state)
             self.state.words_new_sum[item.word] = new_sum
             item.weight = new_weight
+        self.state.words_new_sum[word] = self.ews(word, self.state)[1]
 
     def ews(self, w, s: State):
         if not s:
@@ -124,13 +79,13 @@ class Data:
         self.normCache = OrderedDict()
         self.entropyCache = OrderedDict()
 
-    def add_state_norm(self, state_lis, norm):
-        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+    def add_state_norm(self, state, norm):
+        key = f"{len(state.lis)}_{state.lis[-1][0] if state.lis else ''}"  # creates a string key like '3_word'
         self.normCache[key] = norm  # Add the state to the dictionary
         self.update_state_norm()  # Check and remove states that don't meet the criteria
 
-    def add_state_entropy(self, state_lis, entropy):
-        key = f"{len(state_lis)}_{state_lis[-1][0] if state_lis else ''}"  # creates a string key like '3_word'
+    def add_state_entropy(self, state, entropy):
+        key = f"{len(state.lis)}_{state.lis[-1][0] if state.lis else ''}"  # creates a string key like '3_word'
         self.entropyCache[key] = entropy  # Add the state to the dictionary
         self.update_state_entropy()  # Check and remove states that don't meet the criteria
 

@@ -162,12 +162,11 @@ class Agent():
         return 1
 
     def guess_top_word(self):
-        word = random.choice(self.data.words_heap)
+        word = self.data.words_heap.pick_random()
         dist = self.host.check_word(word.word)
         self.data.add_to_dict(word.word, dist)
         self.data.last_score = dist
         self.data.last_word = word.word
-        self.data.words_heap.remove(word)
 
     def guess_n_queue_word(self, n):
         for i in range(n):
