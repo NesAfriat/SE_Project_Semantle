@@ -166,6 +166,7 @@ class Data:
 
     def reset_vocab(self):
         self.remain_words = copy(self.copy_vocab)
+
         # init the max heap. All weights are 0.
         self.words_heap = SortedList([MyItem(word, 0) for word in self.remain_words])
 

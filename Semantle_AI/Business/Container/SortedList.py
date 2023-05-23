@@ -4,6 +4,7 @@ import numpy as np
 from Semantle_AI.Business.Container.MyItem import MyItem
 from typing import List, Optional
 
+
 class SortedList:
     def __init__(self, initial_items=None):
         self.items = initial_items if initial_items is not None else []

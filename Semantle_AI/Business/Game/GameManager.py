@@ -43,7 +43,7 @@ def save_words_list(words_list):
         file.write('\n'.join(words_list))
 
 
-def calculate_graph(runs_number, agent: Agent):
+def calculate_graph(runs_number, agent: Agent, dist_func_name):
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = select_words(runs_number, agent.get_vocab())
     algo_dict = dict({"Brute_force": Alg.Naive.Naive(),
@@ -63,7 +63,7 @@ def calculate_graph(runs_number, agent: Agent):
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
-            agent.start_play(lambda args: print(args))
+            agent.start_play(lambda args: print(args), dist_func_name)
 
             # after run finished, collect the data.
             statistics = agent.get_statistics()
@@ -90,7 +90,7 @@ algo_dict = dict({"naive": Alg.Naive.Naive(),
                   "n-lateration": Alg.NLateration.Trilateration()})
 
 
-def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
+def calculate_algorithm_graph(runs_number, agent: Agent, algos_list, dist_func_name):
     # select the 'runs_number' words that will be run on each algorithm.
     words_list = select_words(runs_number, agent.get_vocab())
 
@@ -108,7 +108,7 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
 
             # setting the secret word in each session.
             agent.set_secret_word(word)
-            agent.start_play(lambda args: print(args))
+            agent.start_play(lambda args: print(args), dist_func_name)
 
             # after run finished, collect the data.
             statistic = agent.get_statistics()
@@ -127,7 +127,7 @@ def calculate_algorithm_graph(runs_number, agent: Agent, algos_list):
         Reporter.generate_graph(calculator.results.keys(), algo_name, runs_number)
 
 
-def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name, withQueue):
+def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist_name, withQueue, dist_func_name):
     # select the noises for each run.
     noises_list = [1.06]
     if withQueue:
@@ -155,7 +155,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
                 # setting the secret word in each session.
                 agent.set_secret_word(word)
 
-                agent.start_play(lambda args: print(args))
+                agent.start_play(lambda args: print(args), dist_func_name)
 
                 # after run finished, collect the data.
                 statistic = agent.get_statistics()
@@ -174,7 +174,7 @@ def calculate_noise_to_guesses_graph(runs_number, agent: Agent, algos_list, dist
 
 
 def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_name, error, error_method,
-                               error_size_method):
+                               error_size_method, dist_func_name):
     # setting the statistics to be by the priority heap and not remain words.
     agent.data.is_priority = True
     agent.data.setError(error)
@@ -201,7 +201,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
         # setting the secret word in each session.
         agent.set_secret_word(word)
         start_time = time.time()
-        agent.start_play(lambda args: print(args))
+        agent.start_play(lambda args: print(args), dist_func_name)
         current_time = time.time()  # get the current time
         elapsed_time = current_time - start_time  # calculate elapsed time
         print(f"The number of minuted for this game => {elapsed_time/60}")
@@ -252,7 +252,7 @@ class GameManager():
     def add_game(self, agent, runs_number, game_type, algo_list, dist_name, host_model, agent_model, error,
                  error_method, size_method):
         game = {"agent": agent, "runs_number": runs_number, "game_type": game_type, "algo_list": algo_list,
-                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model,"error":error,
+                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model, "error":error,
                 "error_method": error_method, "size_method": size_method}
         self.games.append(game)
 
@@ -260,23 +260,26 @@ class GameManager():
         for game in self.games:
             match game["game_type"]:  # The game type
                 case "calculate_graph":
-                    calculate_graph(game["runs_number"], game["agent"])  # number of runs and agent
+                    calculate_graph(game["runs_number"], game["agent"], game["dist_name"])  # number of runs and agent
                     continue
                 case "calculate_algorithm_graph":
                     calculate_algorithm_graph(game["runs_number"], game["agent"],
-                                              game["algo_list"])  # input algos dict? keep a global constant instead?
+                                              game["algo_list"], game["dist_name"])  # input algos dict? keep a
+                    # global constant instead?
                     continue
                 case "calculate_noise_to_guesses_graph":
                     calculate_noise_to_guesses_graph(game["runs_number"], game["agent"],
-                                                     game["algo_list"], game["dist_name"], withQueue=False)
+                                                     game["algo_list"], game["dist_name"], False, game["dist_name"])
                     continue
                 case "create_error_compare_graph":
                     create_error_compare_graph(game["runs_number"], game["agent"], game["host_model"],
                                                game["agent_model"], game["error"], game["error_method"],
-                                               game["size_method"])  # add methods to agent and name field
+                                               game["size_method"], game["dist_name"])  # add methods to agent and
+                    # name field
                     continue
                 case _:
                     for i in range(game[0]):
-                        game[1].start_play()
+
+                        game[1].start_play(game["dist_name"])
                         self.statistics.append(game[1].get_statistics())
                         # decide what to do with statistic or drop them instead

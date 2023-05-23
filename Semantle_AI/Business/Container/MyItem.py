@@ -2,7 +2,6 @@
 class MyItem:
     def __init__(self, word: str, weight: int):
         self.word = word
-        self.error_vec = []
         self.weight = weight
 
     def __lt__(self, other):

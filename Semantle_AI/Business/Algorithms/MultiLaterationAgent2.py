@@ -209,11 +209,12 @@ class SmartMultiLateration(Algorithm):
                     next_word = word_heap.remove(item)
                     return next_word.word
             item = word_heap.get_last_item()
-            return item
+            return item.word
         else:
             # return the queue top.
             if self.error_calc_method != BRUTE_FORCE:
                 next_word = word_heap.get_by_index(0)
+                word_heap.remove(next_word)
             else:
 
                 next_word = word_heap.remove(word_heap.pick_random())
@@ -228,9 +229,6 @@ class SmartMultiLateration(Algorithm):
 
                 # calc new val to add the vector.
                 val = self.calculate_new_error_val(item.word)
-
-                # updating the error vector in the queue, and update the weight.
-                item.error_vec.update(val)
 
                 # editing the weight
                 self.old_calculation(item, val)

@@ -82,7 +82,7 @@ class Agent():
         self.data.model.set_dist_function(self.host.model.dist_func)
 
     # only guess word should be abstract.
-    def start_play(self, out):
+    def start_play(self, out, dist_func_name):
 
         if self.data.is_priority:
             self.host.start_game(out)
@@ -93,8 +93,17 @@ class Agent():
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         counter = self.init()
+        i = 1
+        for guess in self.data.scores:
+            if (dist_func_name == "euclid" and abs(guess.score * self.host.error) == 0.0) or (
+                    dist_func_name == "euclid" and abs(guess.score * self.host.error) == 1.0):
+                out(f"\n\nyou won!!\nThe secret word is: {guess.word}.\nYou took => {i} guesses")
+                return
+            i += 1
+
         start_time = time.time()  # get the current time
-        while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score * self.host.error) != 0:
+        found = False
+        while not found:
             try:
                 word = self.guess_word()
                 self.data.last_score = round(self.host.check_word(word), 6)
@@ -109,14 +118,15 @@ class Agent():
                 counter += 1
                 current_time = time.time()  # get the current time
                 elapsed_time = current_time - start_time  # calculate elapsed time
-
+                if (dist_func_name == "euclid" and abs(self.data.last_score * self.host.error) == 0.0) or (dist_func_name == "euclid" and abs(self.data.last_score * self.host.error) == 1.0):
+                    found = True
                 if elapsed_time > 60*10:  # if more than 10 minutes seconds have passed
                     out(f"\n\nTime is up. you lost!!\n")
                     return
             except ValueError as e:
                 out(e)
                 return
-        out(f"\n\nyou won!!\nThe secret word iss: {self.data.last_word}.\nYou took => {counter} guesses")
+        out(f"\n\nyou won!!\nThe secret word is: {self.data.last_word}.\nYou took => {counter} guesses")
 
     def start_manual(self, out):
         self.host.select_word_and_start_game(out)
@@ -200,8 +210,8 @@ class Agent():
         self.host.setWord(word)
 
     def reset_data(self):
-        self.data.reset_vocab()
         self.data.reset()
+        self.data.reset_vocab()
 
     def get_statistics(self):
         return self.data.get_statistics()
