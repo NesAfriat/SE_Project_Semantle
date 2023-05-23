@@ -13,12 +13,19 @@ class GameBuilder():
 
     def build_agent_host(self, game):
         self.host_builder.create_host(game["host"])
-        self.host_builder.with_model(game["host_model"],game["distance_function"])
+        self.host_builder.with_model(game["host_model"], game["distance_function"])
         self.host_builder.with_distance_function(game["distance_function"])
         host = self.host_builder.get_host()
-        # initiate an agent
-        self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory,
-                                                  game["distance_function"])
+
+        if game["host"] == "offline":
+            host_vocab = host.model.vocab
+            self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory,
+                                                      game["distance_function"],host_vocab)
+
+        else:
+            # initiate an agent
+            self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory,
+                                                      game["distance_function"])
         # set agent host
         self.agent_builder.set_host(host)
 

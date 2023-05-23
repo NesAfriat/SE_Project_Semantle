@@ -190,14 +190,21 @@ class ModelFactory:
     _model_map = {}
 
     @staticmethod
-    def get_model(model_name, dist_func_name):
+    def get_model(model_name, dist_func_name, host_vocab=None):
         words_list = "words.txt"
         if model_name in ModelFactory._model_map:
-            return ModelFactory._model_map[model_name]
+            model = ModelFactory._model_map[model_name]
+            if host_vocab is not None:
+                model.vocab = model.vocab & host_vocab
+            return model
         else:
             if not model_name in ModelFactory._model_map.keys():
                 if model_name == "Google_Word2Vec.bin":
                     ModelFactory._model_map[model_name] = load_from_file(model_name, words_list, dist_func_name)
                 else:
                     ModelFactory._model_map[model_name] = load_from_gensim(model_name, words_list, dist_func_name)
-        return ModelFactory._model_map[model_name]
+
+        model = ModelFactory._model_map[model_name]
+        if host_vocab is not None:
+            model.vocab = model.vocab & host_vocab
+        return model

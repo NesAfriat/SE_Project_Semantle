@@ -28,7 +28,7 @@ class Data:
         if word not in self.guesses.keys():
             self.last_score = distance
             self.last_word = word
-            self.guesses[word] = (distance, self.model.get_word_vec(word.word))
+            self.guesses[word] = (distance, self.model.get_word_vec(word))
             self.scores.append(GuessScore(word, distance))
 
     def update_state_map(self, word, score):
