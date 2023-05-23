@@ -5,7 +5,8 @@ class State:
 
     def reset(self):
         self.lis = list()
-        self.words_new_sum = dict()
+        for word in self.words_new_sum:
+            self.words_new_sum[word] = 0
 
     def update(self, word, dist):
         self.lis.append((word, dist))

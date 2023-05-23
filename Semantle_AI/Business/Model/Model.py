@@ -33,7 +33,11 @@ class Model:
             return self.model[list(self.vocab)[0]]
 
     def get_word_vec(self, word):
-        return self.model[word]
+        try:
+            return self.model[word]
+        except KeyError as e:
+            a = 10
+            return []
 
     def get_vocab(self):
         return self.vocab

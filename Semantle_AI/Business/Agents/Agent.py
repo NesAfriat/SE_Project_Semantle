@@ -93,16 +93,26 @@ class Agent():
         print(f"secret word is : {self.host.getWord()}")
         self.data.last_score = -2
         counter = self.init()
+        start_time = time.time()  # get the current time
         while abs(self.data.last_score * self.host.error) != 1.0 and abs(self.data.last_score * self.host.error) != 0:
             try:
                 word = self.guess_word()
                 self.data.last_score = round(self.host.check_word(word), 6)
+                while self.data.last_score == -2:
+                    word = self.guess_word()
+                    self.data.last_score = round(self.host.check_word(word), 6)
                 self.data.last_word = word
                 self.data.update_statistic()
                 self.add_to_list(self.data.last_word, self.data.last_score)
                 self.data.update_state_map(self.data.last_word, self.data.last_score)
                 out(f"Guess number {counter}:  \'{self.data.last_word}\'. The similarity is:  {str(round(self.data.last_score * 100, 2))}")
                 counter += 1
+                current_time = time.time()  # get the current time
+                elapsed_time = current_time - start_time  # calculate elapsed time
+
+                if elapsed_time > 60*10:  # if more than 10 minutes seconds have passed
+                    out(f"\n\nTime is up. you lost!!\n")
+                    return
             except ValueError as e:
                 out(e)
                 return
