@@ -217,7 +217,7 @@ class SmartMultiLateration(Algorithm):
                 word_heap.remove(next_word)
             else:
 
-                next_word = word_heap.remove(word_heap.pick_random())
+                next_word = word_heap.pick_random()
             return next_word.word
 
     def calculate(self):
