@@ -90,14 +90,14 @@ class Agent():
             self.host.select_word_and_start_game(out)
             self.data.update_statistic()
             self.data.update_state_map(self.data.last_word, self.data.last_score)
-        print(f"secret word is : {self.host.getWord()}")
+        print(f"\n\nsecret word is : {self.host.getWord()}")
         self.data.last_score = -2
         counter = self.init()
         i = 1
         for guess in self.data.scores:
             if (dist_func_name == "euclid" and abs(guess.score * self.host.error) == 0.0) or (
                     dist_func_name == "euclid" and abs(guess.score * self.host.error) == 1.0):
-                out(f"\n\nyou won!!\nThe secret word is: {guess.word}.\nYou took => {i} guesses")
+                out(f"\nyou won!!\nThe secret word is: {guess.word}.\nYou took => {i} guesses")
                 return
             i += 1
 

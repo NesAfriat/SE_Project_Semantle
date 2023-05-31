@@ -242,9 +242,13 @@ class SmartMultiLateration(Algorithm):
             # for each word selected, calculate the voi.
             best_voi = -1
             best_item = None
+            init = True
             for item in words:
                 voi = self.voi(self.data.state, item)
-                if voi > best_voi:
+                if init:
+                    best_item = item
+                    init = False
+                elif voi > best_voi:
                     best_item = item
             next_word = word_heap.remove(best_item)
             return next_word.word
