@@ -38,8 +38,8 @@ class Agent():
         algo = MultiLateration(self.data.model.dist_func)
         self.set_algorithm(algo, lambda: self.guess_n_random_word(1))
 
-    def set_agent_smart_MultiLateration_algorithm(self):
-        algo = SmartMultiLateration(self.data.model.dist_func)
+    def set_agent_smart_MultiLateration_algorithm(self, k_val):
+        algo = SmartMultiLateration(self.data.model.dist_func, k_val=k_val)
         self.set_algorithm(algo, lambda: self.guess_n_queue_word(1))
 
     def set_agent_trilateration_algorithm(self):
@@ -126,7 +126,7 @@ class Agent():
             except ValueError as e:
                 out(e)
                 return
-        out(f"\n\nyou won!!\nThe secret word is: {self.data.last_word}.\nYou took => {counter} guesses")
+        print(f"\n\nyou won!!\nThe secret word is: {self.data.last_word}.\nYou took => {counter} guesses")
 
     def start_manual(self, out):
         self.host.select_word_and_start_game(out)

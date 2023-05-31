@@ -35,12 +35,12 @@ class AgentBuilder():
         model = model_factory.get_model(dict_model.get(model_name), dist_func_name, host_vocab)
         self.agent.set_model(model)
 
-    def with_algo(self, algo):
+    def with_algo(self, algo, k_val=None):
         match algo:
             case "multi-lateration":
                 self.agent.set_agent_MultiLateration_algorithm()
             case "multi-lateration-agent-2":
-                self.agent.set_agent_smart_MultiLateration_algorithm()
+                self.agent.set_agent_smart_MultiLateration_algorithm(k_val)
             case "n-lateration":
                 self.agent.set_agent_nlateration_algorithm()
 

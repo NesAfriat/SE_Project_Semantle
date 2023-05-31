@@ -1,3 +1,4 @@
+import math
 import random
 
 import numpy as np
@@ -7,6 +8,7 @@ from Semantle_AI.Business.Algorithms.Algorithm import Algorithm
 import torch
 from Semantle_AI.Business.Container.SortedList import SortedList
 from Semantle_AI.Business.Container.State import State
+
 SUM = "SUM"
 SUM_RELATIVE = "Sum_Relative"
 BRUTE_FORCE = "Brute_force"
@@ -17,7 +19,7 @@ VOI = "VOI"
 
 
 class SmartMultiLateration(Algorithm):
-    def __init__(self, dist_formula, vec_calc_method=SUM, vec_value_method=NORM2):
+    def __init__(self, dist_formula, vec_calc_method=SUM, vec_value_method=NORM2, k_val=None):
         super().__init__()
         self.dist_formula = dist_formula
         self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative),
@@ -27,6 +29,7 @@ class SmartMultiLateration(Algorithm):
         self.vector_value_method = vec_value_method
         self.using_entropy = not (self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.k_val = k_val
 
     def set_error_method(self, method_name):
         self.error_calc_method = method_name
@@ -93,14 +96,23 @@ class SmartMultiLateration(Algorithm):
         # converting to array for numpy.
         s_array = np.array(s.lis)
         words = s_array[:, 0]
+        sum = 0
+        ret = 0
+        for word in words:
+            e_w_s = -(self.e_w_s(word, s, isProb))
+            exp = math.exp(e_w_s)
+            sum += exp
         # summing f_w_s for each word for the factor.s
-        return np.sum(np.exp(-np.array([self.e_w_s(word, s, isProb) for word in words])))
+        sec_val = np.sum(np.exp(-np.array([self.e_w_s(word, s, isProb) for word in words])))
+
+        return sum
 
     def p_w_s(self, w, s: State, isProb=False):
         norm_factor = self.data.get_state_norm(s)
         if norm_factor == -1:
             norm_factor = self.norm_factor(s, isProb)
             self.data.add_state_norm(s, norm_factor)
+            # todo: handle the fact p_w_s isn't normalized because f is higher than norm.
         return self.f_w_s(w, s, isProb) / norm_factor
 
     def s_w_w(self, s: State, w, w_t):
@@ -165,7 +177,7 @@ class SmartMultiLateration(Algorithm):
         voi_val = self.E(s) - self.E_s_w(s, item.word)
 
         # update the weight of the item
-        self.data.words_heap.change_weight(item=item, value=abs(voi_val))
+        return abs(voi_val)
 
     def calculate_new_weight(self, weight, val):
         if self.vector_value_method == NORM2:
@@ -181,10 +193,7 @@ class SmartMultiLateration(Algorithm):
 
     def new_calculation(self, item):
 
-        if self.vector_value_method == PROB:
-            self.prob(item)
-        elif self.vector_value_method == VOI:
-            self.voi(self.data.state, item)
+        self.prob(item)
 
     def prob(self, item):
 
@@ -197,19 +206,48 @@ class SmartMultiLateration(Algorithm):
         if len(word_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
         if self.vector_value_method == PROB:
-            probability = random.random()
-            sum = 0
+            probability = random.uniform(word_heap.get_by_index(0).weight, word_heap.get_last_item().weight)
+            prob_sum = 0
             word_index = 0
             while word_index < len(word_heap) - 1:
                 item = word_heap.get_by_index(word_index)
-                if item.weight + sum <= probability:
+                if item.weight + prob_sum <= probability:
                     word_index += 1
-                    sum += item.weight
+                    prob_sum += item.weight
                 else:
                     next_word = word_heap.remove(item)
                     return next_word.word
             item = word_heap.get_last_item()
             return item.word
+        elif self.vector_value_method == VOI:
+            # get the k words selected by the prob
+            words = []
+            last_weight = word_heap.get_last_item().weight
+            first_weight = word_heap.get_by_index(0).weight
+            for i in range(self.k_val):
+                prob_sum = 0
+                word_index = 0
+                # select random probability
+                # normalizing the random . check if need to random the weights.
+                probability = random.uniform(first_weight, last_weight)
+                while word_index < len(word_heap) - 1:
+                    item = word_heap.get_by_index(word_index)
+                    if item.weight + prob_sum <= probability:
+                        word_index += 1
+                        prob_sum += item.weight
+                    else:
+                        if item not in words:
+                            words.append(item)
+                        break
+            # for each word selected, calculate the voi.
+            best_voi = -1
+            best_item = None
+            for item in words:
+                voi = self.voi(self.data.state, item)
+                if voi > best_voi:
+                    best_item = item
+            next_word = word_heap.remove(best_item)
+            return next_word.word
         else:
             # return the queue top.
             if self.error_calc_method != BRUTE_FORCE:

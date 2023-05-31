@@ -30,6 +30,7 @@ def transform_input(config_file_path):
             "algorithm": config["algorithm"],
             "algorithm_list": config["algorithm_list"],
             "runs": config["runs"],
+            "k_val": config["k_val"],
             "game_type": config["game_type"]
         }
         games.append(game)

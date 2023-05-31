@@ -201,7 +201,7 @@ def create_error_compare_graph(runs_number, agent: Agent, model1_name, model2_na
         # setting the secret word in each session.
         agent.set_secret_word(word)
         start_time = time.time()
-        agent.start_play(lambda args: print(args), dist_func_name)
+        agent.start_play(lambda args: args, dist_func_name)
         current_time = time.time()  # get the current time
         elapsed_time = current_time - start_time  # calculate elapsed time
         print(f"The number of minuted for this game => {elapsed_time/60}")
@@ -244,7 +244,7 @@ def show_png_file(file_path):
 
 # =======================================Game Manager Class===============================================
 
-class GameManager():
+class GameManager:
     def __init__(self):
         self.games = []
         self.statistics = []
@@ -252,7 +252,7 @@ class GameManager():
     def add_game(self, agent, runs_number, game_type, algo_list, dist_name, host_model, agent_model, error,
                  error_method, size_method):
         game = {"agent": agent, "runs_number": runs_number, "game_type": game_type, "algo_list": algo_list,
-                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model, "error":error,
+                "dist_name": dist_name, "host_model": host_model, "agent_model": agent_model, "error": error,
                 "error_method": error_method, "size_method": size_method}
         self.games.append(game)
 

@@ -20,7 +20,7 @@ class GameBuilder():
         if game["host"] == "offline":
             host_vocab = host.model.vocab
             self.agent_builder.create_agent_and_model(game["agent"], host, game["agent_model"], ModelFactory,
-                                                      game["distance_function"],host_vocab)
+                                                      game["distance_function"], host_vocab)
 
         else:
             # initiate an agent
@@ -30,7 +30,7 @@ class GameBuilder():
         self.agent_builder.set_host(host)
 
         self.agent_builder.with_id(self.id_counter)
-        self.agent_builder.with_algo(game["algorithm"])
+        self.agent_builder.with_algo(game["algorithm"], game["k_val"])
         return self.agent_builder.get_agent()
 
     def build(self, games):
