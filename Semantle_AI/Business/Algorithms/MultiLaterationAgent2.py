@@ -92,27 +92,19 @@ class SmartMultiLateration(Algorithm):
     def f_w_s(self, w, s: State, isProb=False):
         return np.exp(-self.e_w_s(w, s, isProb))
 
+# todo: replace with the sum of f for all words.
     def norm_factor(self, s: State, isProb=False):
         # converting to array for numpy.
         s_array = np.array(s.lis)
         words = s_array[:, 0]
-        sum = 0
-        ret = 0
-        for word in words:
-            e_w_s = -(self.e_w_s(word, s, isProb))
-            exp = math.exp(e_w_s)
-            sum += exp
         # summing f_w_s for each word for the factor.s
-        sec_val = np.sum(np.exp(-np.array([self.e_w_s(word, s, isProb) for word in words])))
-
-        return sum
+        return np.sum(np.exp(-np.array([self.e_w_s(word, s, isProb) for word in words])))
 
     def p_w_s(self, w, s: State, isProb=False):
         norm_factor = self.data.get_state_norm(s)
         if norm_factor == -1:
             norm_factor = self.norm_factor(s, isProb)
             self.data.add_state_norm(s, norm_factor)
-            # todo: handle the fact p_w_s isn't normalized because f is higher than norm.
         return self.f_w_s(w, s, isProb) / norm_factor
 
     def s_w_w(self, s: State, w, w_t):
@@ -218,6 +210,7 @@ class SmartMultiLateration(Algorithm):
                     next_word = word_heap.remove(item)
                     return next_word.word
             item = word_heap.get_last_item()
+            word_heap.remove(item)
             return item.word
         elif self.vector_value_method == VOI:
             # get the k words selected by the prob

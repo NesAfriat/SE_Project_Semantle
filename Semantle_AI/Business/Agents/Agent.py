@@ -107,9 +107,11 @@ class Agent():
             try:
                 word = self.guess_word()
                 self.data.last_score = round(self.host.check_word(word), 6)
+                self.add_to_list(self.data.last_word, self.data.last_score)
                 while self.data.last_score == -2:
                     word = self.guess_word()
                     self.data.last_score = round(self.host.check_word(word), 6)
+                    self.add_to_list(self.data.last_word, self.data.last_score)
                 self.data.last_word = word
                 self.data.update_statistic()
                 self.add_to_list(self.data.last_word, self.data.last_score)
@@ -124,7 +126,7 @@ class Agent():
                     out(f"\n\nTime is up. you lost!!\n")
                     return
             except ValueError as e:
-                out(e)
+                print(e)
                 return
         print(f"\n\nyou won!!\nThe secret word is: {self.data.last_word}.\nYou took => {counter} guesses")
 

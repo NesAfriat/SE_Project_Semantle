@@ -80,7 +80,6 @@ class SortedList:
     def get_last_item(self) -> Optional[MyItem]:
         if self.items:
             item = self.items[-1]
-            self.remove(item)
             return item
         else:
             return None
