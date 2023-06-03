@@ -10,7 +10,7 @@
         "host_model": "glove_wiki",
         "algorithm": "multi-lateration-agent-2",
         "algorithm_list": "None",
-        "runs": 5,
+        "runs": 40,
         "k_val": 2,
         "game_type": "create_error_compare_graph"
     }

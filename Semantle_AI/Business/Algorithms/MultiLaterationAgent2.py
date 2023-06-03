@@ -92,20 +92,8 @@ class SmartMultiLateration(Algorithm):
     def f_w_s(self, w, s: State, isProb=False):
         return np.exp(-self.e_w_s(w, s, isProb))
 
-# todo: replace with the sum of f for all words.
-    def norm_factor(self, s: State, isProb=False):
-        # converting to array for numpy.
-        s_array = np.array(s.lis)
-        words = s_array[:, 0]
-        # summing f_w_s for each word for the factor.s
-        return np.sum(np.exp(-np.array([self.e_w_s(word, s, isProb) for word in words])))
-
     def p_w_s(self, w, s: State, isProb=False):
-        norm_factor = self.data.get_state_norm(s)
-        if norm_factor == -1:
-            norm_factor = self.norm_factor(s, isProb)
-            self.data.add_state_norm(s, norm_factor)
-        return self.f_w_s(w, s, isProb) / norm_factor
+        return self.f_w_s(w, s, isProb)
 
     def s_w_w(self, s: State, w, w_t):
         # adding new tuple of word-dist to the state.
@@ -144,6 +132,9 @@ class SmartMultiLateration(Algorithm):
         words = s_array[:, 0]
         # calculating the probability.
         p_w_s_values = np.array([self.p_w_s(word, s) for word in words])
+        norm = 1/sum(p_w_s_values)
+        self.data.add_state_norm(state=s, norm=norm)
+        p_w_s_values = [value*norm for value in p_w_s_values]
         Entropy = -np.sum(p_w_s_values * np.log2(p_w_s_values))
         # returning the entropy.
         return Entropy
@@ -156,7 +147,8 @@ class SmartMultiLateration(Algorithm):
         # for each word in the remain list, calculate:
         for word in V_s_without_w:
             # call the prob. modify the state with the new word
-            p_w_prime_s = self.p_w_s(word, s)
+            norm = self.data.get_state_norm(s)
+            p_w_prime_s = self.p_w_s(word, s) * norm
             s_w_w_prime = self.s_w_w(s, w, word)
             # using the original entropy formula for calculation.
             entropy_sum += p_w_prime_s * self.E(s_w_w_prime)
@@ -185,20 +177,21 @@ class SmartMultiLateration(Algorithm):
 
     def new_calculation(self, item):
 
-        self.prob(item)
+        return self.prob(item)
 
     def prob(self, item):
 
         # update the weight of the item
         new_weight = self.p_w_s(item.word, self.data.state, isProb=True)
         self.data.words_heap.change_weight(item=item, value=new_weight)
+        return new_weight
 
     def choose_next(self, word_heap: SortedList):
         # sanity check
         if len(word_heap) == 0:
             raise ValueError("error occurred, there are no words left to guess.")
         if self.vector_value_method == PROB:
-            probability = random.uniform(word_heap.get_by_index(0).weight, word_heap.get_last_item().weight)
+            probability = random.random()
             prob_sum = 0
             word_index = 0
             while word_index < len(word_heap) - 1:
@@ -215,14 +208,11 @@ class SmartMultiLateration(Algorithm):
         elif self.vector_value_method == VOI:
             # get the k words selected by the prob
             words = []
-            last_weight = word_heap.get_last_item().weight
-            first_weight = word_heap.get_by_index(0).weight
             for i in range(self.k_val):
                 prob_sum = 0
                 word_index = 0
                 # select random probability
-                # normalizing the random . check if need to random the weights.
-                probability = random.uniform(first_weight, last_weight)
+                probability = random.random()
                 while word_index < len(word_heap) - 1:
                     item = word_heap.get_by_index(word_index)
                     if item.weight + prob_sum <= probability:
@@ -237,7 +227,7 @@ class SmartMultiLateration(Algorithm):
             best_item = None
             init = True
             for item in words:
-                voi = self.voi(self.data.state, item)
+                voi = self.voi(s=self.data.state, item=item)
                 if init:
                     best_item = item
                     init = False
@@ -257,6 +247,7 @@ class SmartMultiLateration(Algorithm):
 
     def calculate(self):
 
+        norm_factor = 0
         # Modify the items in the queue
         for item in self.data.words_heap:
 
@@ -270,8 +261,15 @@ class SmartMultiLateration(Algorithm):
 
             else:
                 # in case of the new improved methods.
-                self.new_calculation(item)
+                norm_factor += self.new_calculation(item)
 
+        # dividing the f results with the norm factor. now it is the p result.
+        inv_norm_factor = 1.0 / norm_factor
+        self.data.add_state_norm(self.data.state, norm_factor)
+        for item in self.data.words_heap:
+            item.weight *= inv_norm_factor
+
+        # sorting by the new p values.
         self.data.words_heap.sort()
         # choose the next word guess from the updated list.
         return self.choose_next(self.data.words_heap)
