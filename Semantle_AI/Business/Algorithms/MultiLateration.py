@@ -22,6 +22,8 @@ class MultiLateration(Algorithm):
 
         res = []
         for x in self.data.remain_words:
+            # filter all words that aren't in the length range from the last guessed word.
+            # the distance is given by the host as the score.
             if in_range(self.dist_formula(self.data.get_word_vec(x), last_vec), self.data.last_score, 0.01):
                 res.append(x)
 

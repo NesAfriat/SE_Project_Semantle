@@ -24,7 +24,7 @@ class SmartMultiLateration(Algorithm):
         self.dist_formula = dist_formula
         self.error_calculation_forms = dict([(SUM, self.sum), (SUM_RELATIVE, self.sum_relative),
                                              (BRUTE_FORCE, self.ret_zero)])
-        self.vector_value_forms = dict([(NORM2, self.mse), (NORM1, self.sum_vec), (PROB, self.prob), (VOI, self.voi)])
+        self.vector_value_forms = dict([(NORM2, self.norm_i), (NORM1, self.norm_i), (PROB, self.prob), (VOI, self.voi)])
         self.error_calc_method = vec_calc_method
         self.vector_value_method = vec_value_method
         self.using_entropy = not (self.vector_value_method == NORM1 or self.vector_value_method == NORM2)
@@ -57,17 +57,6 @@ class SmartMultiLateration(Algorithm):
         return dist_from_secret - dist_from_guess
 
     @staticmethod
-    def mse(vector):
-        tensor = torch.tensor(vector)
-        mse = float(torch.mean((tensor ** 2).float()))
-        return torch.sqrt(torch.tensor(mse))
-
-    def sum_vec(self, vector):
-        new_vec = [abs(x) for x in vector]
-        tensor_vector = torch.tensor(new_vec, dtype=torch.float32, device=self.device)
-        return torch.sum(tensor_vector).item()
-
-    @staticmethod
     def norm_i(i, weight, val):
         val = torch.pow(torch.tensor(abs(val)), i).item()
         return weight + val
@@ -75,7 +64,8 @@ class SmartMultiLateration(Algorithm):
     def e_w_s(self, w, s: State, isProb=False):
         if not s:
             raise ValueError("State (s) cannot be an empty list")
-        # getting the new value in the state
+        # getting the new value in the state.
+        # isProb used to differ the calculation of p to entropy.
         if not isProb:
             last_elem = s.lis[-1]
             word = last_elem[0]
@@ -104,6 +94,8 @@ class SmartMultiLateration(Algorithm):
         new_state.lis.append((w, d_w_w))
         return new_state
 
+    # The weight method for brute-force.
+    # put the weights as 0. so the next choose will be random.
     @staticmethod
     def ret_zero(word):
         return 0
@@ -117,6 +109,8 @@ class SmartMultiLateration(Algorithm):
             return self.ret_zero(word)
 
     def E(self, s: State):
+        # before calculating, check of the value already exists in the cache.
+        # if not, calculate it and add to cache.
         entropy = self.data.get_state_entropy(s)
         if entropy == -1:
             entropy = self.calc_entropy(s)
@@ -157,7 +151,8 @@ class SmartMultiLateration(Algorithm):
         return entropy_sum
 
     def voi(self, s: State, item: MyItem):
-        # calculating the new weight to be the difference between E(s) to E(s,w) and updating the weight on the list.
+        # calculating the new weight to be the difference between E(s) to E(s,w)
+        # and updating the weight on the list.
         voi_val = self.E(s) - self.E_s_w(s, item.word)
 
         # update the weight of the item
@@ -261,11 +256,18 @@ class SmartMultiLateration(Algorithm):
 
             else:
                 # in case of the new improved methods.
+                # add the new weight to the new norm factor.
+                # the division will happen after all weight updating.
                 norm_factor += self.new_calculation(item)
 
         # dividing the f results with the norm factor. now it is the p result.
-        inv_norm_factor = 1.0 / norm_factor
-        self.data.add_state_norm(self.data.state, norm_factor)
+        # if the norm already calculated, use it. otherwise, calculate it and add to cache.
+        if self.data.get_state_norm(self.data.state)== -1:
+            inv_norm_factor = 1.0 / norm_factor
+            self.data.add_state_norm(self.data.state, norm_factor)
+        else:
+            inv_norm_factor = self.data.get_state_norm(self.data.state)
+        # divide all f results by norm factor to get the p value.
         for item in self.data.words_heap:
             item.weight *= inv_norm_factor
 

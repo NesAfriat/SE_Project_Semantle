@@ -21,6 +21,7 @@ class Menu:
             print(f"Input transformation has failed- check configuration file\n error {e}")
 
     def build_games(self):
+        # in tests, removes the test dir from path to get the right dir and not relative.
         if "Tests" in os.getcwd():
             path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
             path = os.path.join(path, "New_Service", "configurations.json")
@@ -28,8 +29,8 @@ class Menu:
             path = os.path.join(os.getcwd(), "New_Service", "configurations.json")
 
         self.validate_input(path)
-        self.transform_input(path)
-        self.game_manager = self.game_builder.build(self.input_games)
+        self.transform_input(path)  # reads all games configurations.
+        self.game_manager = self.game_builder.build(self.input_games)  # init all games instances.
         print(len(self.input_games), "games added")
 
     def start_menu(self):

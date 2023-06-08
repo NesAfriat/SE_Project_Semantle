@@ -10,17 +10,23 @@ from Semantle_AI.Business.Container.GuessScore import GuessScore
 
 class Data:
     def __init__(self):
+        # stores all words with their weights. for the choosing methods.
         self.words_heap = SortedList()
+        # holds all guessed words with the distances.
         self.guesses = dict()
+        # holds all distanced from the init words. that aren't calculated withing the play game
+        # method. and needed to be checked separately.
         self.scores = []
         self.model = None
         self.remain_words = None
         self.last_score = -1
         self.last_word = None
+        # holds game statistics by order for saving in the graphs and csv.
         self.statistics = OrderedDict()
         self.copy_vocab = None
         self.is_priority = False
         self.state = State()
+        # caches dicts for the normal factor and entropy.
         self.normCache = OrderedDict()
         self.entropyCache = OrderedDict()
 

@@ -1,4 +1,3 @@
-import random
 import time
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Algorithms.MultiLaterationAgent2 import SmartMultiLateration
