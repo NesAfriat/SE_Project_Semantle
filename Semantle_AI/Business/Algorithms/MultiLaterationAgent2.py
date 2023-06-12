@@ -229,6 +229,9 @@ class SmartMultiLateration(Algorithm):
                 elif voi > best_voi:
                     best_item = item
             next_word = word_heap.remove(best_item)
+            if next_word is None:
+                item = word_heap.get_by_index(0)
+                return word_heap.remove(item).word
             return next_word.word
         else:
             # return the queue top.

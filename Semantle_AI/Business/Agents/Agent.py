@@ -121,8 +121,8 @@ class Agent():
                 elapsed_time = current_time - start_time  # calculate elapsed time
                 if (dist_func_name == "euclid" and abs(self.data.last_score * self.host.error) == 0.0) or (dist_func_name == "euclid" and abs(self.data.last_score * self.host.error) == 1.0):
                     found = True
-                if elapsed_time > 60*20:  # if more than 10 minutes seconds have passed
-                    print(f"\n\nTime is up. you lost!!\n")
+                if elapsed_time > 60*90:  # if more than 10 minutes seconds have passed
+                    print(f"\n\nTime is up. you lost!!\ncounter = {counter}")
                     return
             except ValueError as e:
                 print(e)
