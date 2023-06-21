@@ -6,7 +6,7 @@
 import cProfile
 import pstats
 import pandas as pd
-from Semantle_AI.New_service.Menu import Menu
+from Semantle_AI.GamHandler.Menu import Menu
 import openpyxl
 
 def main():

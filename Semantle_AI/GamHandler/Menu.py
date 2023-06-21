@@ -1,7 +1,7 @@
 import os
 
 from Semantle_AI.Business.Game.GameBuilder import GameBuilder
-from Semantle_AI.New_service import TransformInput
+from Semantle_AI.GamHandler import TransformInput
 
 
 class Menu:
