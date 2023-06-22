@@ -14,7 +14,10 @@ class Model:
 
     def get_distance_of_word(self, word1, word2):
         if len(self.distances_dict) > 0:
-            return self.error * self.distances_dict[f"{word1}{word2}"]
+            if f"{word1}{word2}" in self.distances_dict:
+                return self.error *  self.distances_dict[f"{word1}{word2}"]
+            else:
+                return -1
         return self.error * self.dist_func(self.model[word1], self.model[word2])
 
     def setError(self, err):

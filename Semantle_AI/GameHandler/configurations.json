@@ -10,8 +10,8 @@
         "host_model": "local_word2vec",
         "algorithm": "multi-lateration",
         "algorithm_list": "None",
-        "runs": 2,
+        "runs": 1,
         "k_val": 5,
-        "game_type": "create_error_compare_graph"
+        "game_type": "None"
     }
 ]

@@ -20,6 +20,14 @@ class OnlineHost(Host):
         self.guesses = {}
         self.legal_guesses = 0
         self.error = 1.0
+        self.model = None
+
+    def get_model(self):
+        return self.model
+
+    def set_model(self, model, vocab):
+        self.model = model
+        self.vocabulary = list(vocab)
 
     def check_word(self, word):
         word = str.lower(word)

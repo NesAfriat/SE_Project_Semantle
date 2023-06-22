@@ -278,8 +278,8 @@ class GameManager:
                     # name field
                     continue
                 case _:
-                    for i in range(game[0]):
+                    for i in range(game["runs_number"]):
 
-                        game[1].start_play(game["dist_name"])
-                        self.statistics.append(game[1].get_statistics())
+                        game["agent"].start_play(lambda x: print(x), game["dist_name"])
+                        self.statistics.append(game["agent"].get_statistics())
                         # decide what to do with statistic or drop them instead
