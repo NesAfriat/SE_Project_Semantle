@@ -1,7 +1,6 @@
 import copy
 import os
 from gensim.models import KeyedVectors
-
 from Semantle_AI.Business import MethodDistances
 from Semantle_AI.Business.Model.Model import Model
 import gensim.downloader as api

@@ -1,7 +1,7 @@
 import os
 
 from Semantle_AI.Business.Game.GameBuilder import GameBuilder
-from Semantle_AI.GamHandler import TransformInput
+from Semantle_AI.GameHandler import TransformInput
 
 
 class Menu:
@@ -24,9 +24,9 @@ class Menu:
         # in tests, removes the test dir from path to get the right dir and not relative.
         if "Tests" in os.getcwd():
             path = replace_subdir(os.getcwd(), "Tests", "Semantle_AI")
-            path = os.path.join(path, "New_Service", "configurations.json")
+            path = os.path.join(path, "GameHandler", "configurations.json")
         else:
-            path = os.path.join(os.getcwd(), "New_Service", "configurations.json")
+            path = os.path.join(os.getcwd(), "GameHandler", "configurations.json")
 
         self.validate_input(path)
         self.transform_input(path)  # reads all games configurations.

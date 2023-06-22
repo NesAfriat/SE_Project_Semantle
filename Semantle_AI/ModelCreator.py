@@ -38,7 +38,7 @@ def filter_vocab(vocab, word_list):
         raise e
 
 
-def save_word_combinations(kv_model, vocabulary, the_model_name, distance_path, vector_path, func):
+def save_word_combinations(kv_model, vocabulary, the_model_name, distance_path, vector_path,func):
     print(f"Word combinations starts for model  {the_model_name}")
     vocabulary = list(vocabulary)
 
@@ -47,7 +47,7 @@ def save_word_combinations(kv_model, vocabulary, the_model_name, distance_path, 
         os.remove(distance_path)
 
     # If vector file exists, delete it
-    if os.path.isfile(vector_path) and dist_func_name == "euclid":
+    if os.path.isfile(vector_path):
         os.remove(vector_path)
 
     distances_dict = dict()
@@ -57,9 +57,8 @@ def save_word_combinations(kv_model, vocabulary, the_model_name, distance_path, 
             # Save word vector
             vector = kv_model[word1]
             vectors_dict[word1] = vector
-            if dist_func_name == "euclid":
-                vector_str = ' '.join(map(str, vector))
-                vector_file.write(f"{word1}={vector_str}\n")
+            vector_str = ' '.join(map(str, vector))
+            vector_file.write(f"{word1}={vector_str}\n")
 
             # Save the distance
             for word2 in vocabulary:
@@ -71,6 +70,7 @@ def save_word_combinations(kv_model, vocabulary, the_model_name, distance_path, 
                 distance_file.write(line)
     print(f"Word combinations and distances saved to {distance_path} and {vector_path}")
     return distances_dict, vectors_dict
+
 
 
 if __name__ == "__main__":

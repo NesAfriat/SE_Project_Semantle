@@ -28,7 +28,7 @@ def generate_algorithms_compare_name():
     time, cwd = getTimeAndCwd()
     if "Tests" in os.getcwd():
         cwd = replace_subdir(cwd, "Tests", "Semantle_AI")
-    path = os.path.join(cwd, "GamHandler", "Reports_output", "algorithms_compare")
+    path = os.path.join(cwd, "GameHandler", "Reports_output", "algorithms_compare")
     try:
         if os.path.exists(path):
             os.remove(path)

@@ -1,0 +1,17 @@
+[
+
+    {
+        "agent": "agent1",
+        "host": "online",
+        "distance_function": "cosine",
+        "error": "1.0",
+        "calc_error": "SUM$VOI",
+        "agent_model": "local_word2vec",
+        "host_model": "local_word2vec",
+        "algorithm": "multi-lateration",
+        "algorithm_list": "None",
+        "runs": 2,
+        "k_val": 5,
+        "game_type": "create_error_compare_graph"
+    }
+]

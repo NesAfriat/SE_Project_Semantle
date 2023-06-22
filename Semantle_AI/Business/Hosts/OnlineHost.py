@@ -11,6 +11,9 @@ class OnlineHost(Host):
     def start_game(self, out):
         pass
 
+    def set_model(self, model, vocab):
+        pass
+
     # check if the guess word is match
     def __init__(self):
         self.browser = None

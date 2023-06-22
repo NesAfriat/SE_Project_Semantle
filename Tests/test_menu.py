@@ -3,7 +3,7 @@ import os
 import unittest
 from io import StringIO
 from unittest.mock import MagicMock, patch
-from Semantle_AI.GamHandler.Menu import Menu
+from Semantle_AI.GameHandler.Menu import Menu
 from Semantle_AI.Service.AgentHandlers.ManualAgentHandler import ManualAgentHandler
 
 
